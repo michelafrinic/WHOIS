@@ -26,7 +26,7 @@ public final class QueryMessages {
                 + "% The objects are in RPSL format.\n"
                 + "%\n"
                 + "% The AFRINIC Database is subject to Terms and Conditions.\n"
-                + "% See http://www.ripe.net/db/support/db-terms-conditions.pdf\n");
+                + "% See http://www.afrinic.net/en/services\n");
     }
 
     public static Message termsAndConditionsDump() {
@@ -35,7 +35,7 @@ public final class QueryMessages {
                 "# The contents of this file are subject to \n" +
                 "# AFRINIC Database Terms and Conditions\n" +
                 "#\n" +
-                "# http://www.ripe.net/db/support/db-terms-conditions.pdf\n" +
+                "# http://www.afrinic.net/en/services\n" +
                 "#\n");
     }
 
@@ -117,7 +117,7 @@ public final class QueryMessages {
         return new Message(Type.ERROR, ""
                 + "%ERROR:100: internal software error\n"
                 + "%\n"
-                + "% Please contact ripe-dbm@ripe.net if the problem persists.\n");
+                + "% Please contact afrinic-dbm@afrinic.net if the problem persists.\n");
     }
 
     public static Message noResults(final CharSequence source) {
@@ -213,8 +213,16 @@ public final class QueryMessages {
                 + "%ERROR:112: unsupported query\n"
                 + "%\n"
                 + "% '-mM' query options are not allowed on very large ranges/prefixes.\n"
+                + "% This data is available from bulk whois:\n"
+                + "% http://www.afrinic.net/en/library/membership-documents/207-bulk-whois-access-form-\n");
+        /*
+        return new Message(Type.ERROR, ""
+                + "%ERROR:112: unsupported query\n"
+                + "%\n"
+                + "% '-mM' query options are not allowed on very large ranges/prefixes.\n"
                 + "% This data is available from the daily object split files:\n"
                 + "% ftp://ftp.ripe.net/ripe/dbase/split/\n");
+        */
     }
 
     public static Message unsupportedQuery() {
@@ -254,7 +262,8 @@ public final class QueryMessages {
                 + "%% Sorry, access from your host has been permanently\n"
                 + "%% denied because of a repeated excessive querying.\n"
                 + "%% For more information, see\n"
-                + "%% http://www.ripe.net/data-tools/db/faq/faq-db/why-did-you-receive-the-error-201-access-denied\n",
+                //+ "%% http://www.ripe.net/data-tools/db/faq/faq-db/why-did-you-receive-the-error-201-access-denied\n",
+                + "%% http://www.afrinic.net/en/faqs/whois\n",
                 remoteAddress.getHostAddress());
     }
 
@@ -265,7 +274,8 @@ public final class QueryMessages {
                 + "%% Queries from your IP address have passed the daily limit of controlled objects.\n"
                 + "%% Access from your host has been temporarily denied.\n"
                 + "%% For more information, see\n"
-                + "%% http://www.ripe.net/data-tools/db/faq/faq-db/why-did-you-receive-the-error-201-access-denied\n",
+                //+ "%% http://www.ripe.net/data-tools/db/faq/faq-db/why-did-you-receive-the-error-201-access-denied\n",
+                + "%% http://www.afrinic.net/en/faqs/whois\n",
                 remoteAddress.getHostAddress());
     }
 
