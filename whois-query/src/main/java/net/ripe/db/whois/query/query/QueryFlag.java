@@ -137,10 +137,13 @@ public enum QueryFlag {
             .requiresArgument(String.class)),
 
     LIST_SOURCES(new Builder("list-sources")
+            /*
             .describedAs("" +
                     "Returns the current set of sources along with the information required for mirroring. " +
                     "See [REF], section 2.9 \"Other server features\" for more information.")),
-
+            */
+            .describedAs("" +
+                         "Returns the current set of sources along with the information required for mirroring. ")),
     VERSION(new Builder("version")
             .describedAs("Displays the current version of the server.")),
 

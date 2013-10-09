@@ -70,9 +70,13 @@ public final class QueryMessages {
     }
 
     public static Message servedByNotice(final CharSequence version) {
+        /*
         return new Message(Type.INFO,
                 "%% This query was served by the AFRINIC Database Query Service version %s (%s)\n",
                 version, Hosts.getLocalHost());
+        */
+        return new Message(Type.INFO,
+                "%% This query was served by the AFRINIC Database Query Service\n");
     }
 
     public static Message versionListHeader(final CharSequence type, final CharSequence key) {

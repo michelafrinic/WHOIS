@@ -48,8 +48,8 @@ public class HelpQueryExecutor implements QueryExecutor {
         }
 
         help.append("% SEE ALSO\n");
-        help.append(prettyPrint("%", "[REF] RIPE Database Reference Manual.", IND_1, MAX_LINE_LENGTH, true));
-        help.append(prettyPrint("%", "http://www.ripe.net/data-tools/support/documentation", IND_2, MAX_LINE_LENGTH, true));
+        help.append(prettyPrint("%", "[REF] AFRINIC Database Reference Manual.", IND_1, MAX_LINE_LENGTH, true));
+        help.append(prettyPrint("%", "http://www.afrinic.net/en/library/membership-documents/197-database-afrinic-database-reference-manual-", IND_2, MAX_LINE_LENGTH, true));
         help.append("%\n");
 
         HELP_RESPONSE = new MessageObject(help.toString());
