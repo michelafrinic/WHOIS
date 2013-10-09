@@ -22,10 +22,10 @@ public final class QueryMessages {
 
     public static Message termsAndConditions() {
         return new Message(Type.INFO, ""
-                + "% This is the RIPE Database query service.\n"
+                + "% This is the AFRINIC Database query service.\n"
                 + "% The objects are in RPSL format.\n"
                 + "%\n"
-                + "% The RIPE Database is subject to Terms and Conditions.\n"
+                + "% The AFRINIC Database is subject to Terms and Conditions.\n"
                 + "% See http://www.ripe.net/db/support/db-terms-conditions.pdf\n");
     }
 
@@ -33,7 +33,7 @@ public final class QueryMessages {
         return new Message(Type.INFO, "" +
                 "#\n" +
                 "# The contents of this file are subject to \n" +
-                "# RIPE Database Terms and Conditions\n" +
+                "# AFRINIC Database Terms and Conditions\n" +
                 "#\n" +
                 "# http://www.ripe.net/db/support/db-terms-conditions.pdf\n" +
                 "#\n");
@@ -71,7 +71,7 @@ public final class QueryMessages {
 
     public static Message servedByNotice(final CharSequence version) {
         return new Message(Type.INFO,
-                "%% This query was served by the RIPE Database Query Service version %s (%s)\n",
+                "%% This query was served by the AFRINIC Database Query Service version %s (%s)\n",
                 version, Hosts.getLocalHost());
     }
 
@@ -278,7 +278,7 @@ public final class QueryMessages {
         return new Message(Type.ERROR, ""
                 + "%ERROR:305: connection has been closed\n"
                 + "%\n"
-                + "% The connection to the RIPE Database query server\n"
+                + "% The connection to the AFRINIC Database query server\n"
                 + "% has been closed after a period of inactivity.\n");
     }
 
