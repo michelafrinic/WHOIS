@@ -108,12 +108,28 @@ interface AttributeSyntax extends Documented {
             "without trailing dot (\".\").  The total length should not exceed\n" +
             "254 characters (octets).\n");
 
+    /*
     AttributeSyntax DS_RDATA_SYNTAX = new AttributeSyntaxParser(new AttributeParser.DsRdataParser(), "" +
             "<Keytag> <Algorithm> <Digest type> <Digest>\n" +
             "\n" +
             "Keytag is represented by an unsigned decimal integer (0-65535).\n" +
             "\n" +
             "Algorithm is represented by an unsigned decimal integer (0-255).\n" +
+            "\n" +
+            "Digest type is represented by a unsigned decimal integer (0-255).\n" +
+            "\n" +
+            "Digest is a digest in hexadecimal representation (case insensitive). Its length varies for various digest types.\n" +
+            "For digest type SHA-1 digest is represented by 20 octets (40 characters, plus possible spaces).\n" +
+            "\n" +
+            "For more details, see RFC4034.\n");
+    *//*-AFRINIC-*/
+    AttributeSyntax DS_RDATA_SYNTAX = new AttributeSyntaxParser(new AttributeParser.DsRdataParser(), "" +
+            "<Keytag> <Algorithm> <Digest type> <Digest>\n" +
+            "\n" +
+            "Keytag is represented by an unsigned decimal integer (0-65535).\n" +
+            "\n" +
+            "Algorithm is represented by an unsigned decimal integer (0-255) or one of the following mnemonics:\n" +
+            "RSAMD5, DH, DSA, ECC, RSASHA1, INDIRECT, PRIVATEDNS, PRIVATEOID.\n" +
             "\n" +
             "Digest type is represented by a unsigned decimal integer (0-255).\n" +
             "\n" +

@@ -107,6 +107,16 @@ public enum AttributeType implements Documented {
             .doc("Domain name.")
             .syntax(DOMAIN_SYNTAX)),
 
+    /*-AFRINIC-*/
+    DOM_NET(new Builder("dom-net", "do")
+            .doc("List of IP networks in a domain.\n" +
+                    "\n" +
+                    "  An IPv4 address is represented as a sequence of four\n" +
+                    "  integers in the range from 0 to 255 separated by the\n" +
+                    "  character dot (\".\").  For example, 128.9.128.5 represents a\n" +
+                    "  valid IPv4 address.")
+            .syntax(DOMAIN_SYNTAX)),
+
     DS_RDATA(new Builder("ds-rdata", "ds")
             .doc("DS records for this domain.")
             .syntax(DS_RDATA_SYNTAX)),
@@ -476,6 +486,25 @@ public enum AttributeType implements Documented {
             .syntax(OBJECT_NAME_SYNTAX)
             .references(ObjectType.MNTNER)),
 
+    /*-AFRINIC-*/
+    REFER(new Builder("refer", "rf")
+            .doc("Specifies the referral type, hostname and port that the server\n" +
+                    "should use to redirect the query when using referral mechanism\n" +
+                    "for lookups for domain objects.\n" +
+                    "\n" +
+                    "  <type> <hostname> [<port>]\n" +
+                    "\n" +
+                    "  <type>  specifies the type of referral to be used.\n" +
+                    "  Supported types are SIMPLE, INTERNIC, RIPE, and\n" +
+                    "  CLIENTADDRESS.\n" +
+                    "\n" +
+                    "  <hostname>  is the DNS name or <ipv4 address> of\n" +
+                    "  the referred host.\n" +
+                    "\n" +
+                    "  <port>  is an integer specifying TCP port number at\n" +
+                    "  which queries are accepted by the referred host.  If\n" +
+                    "  <port> is omitted, the default number of 43 is used.")),/*-AFRINIC-*/
+
     REF_NFY(new Builder("ref-nfy", "rn")
             .doc("Specifies the e-mail address to be notified when a reference to the organisation object is added " +
                     "or removed. This attribute is filtered from the default whois output when at least one of the " +
@@ -524,6 +553,17 @@ public enum AttributeType implements Documented {
 
     STATUS(new Builder("status", "st")
             .doc("Specifies the status of the address range represented by inetnum or inet6num object.")
+            .syntax(STATUS_SYNTAX)),
+
+    /*-AFRINIC-*/
+    SUB_DOM(new Builder("sub-dom", "sd")
+            .doc("Specifies list of sub-domains of a domain.  Domain names are\n" +
+                    "relative to the domain represented by the domain object that\n" +
+                    "contains this attribute.\n" +
+                    "\n" +
+                    "  Domain name as specified in RFC 1034 with or without\n" +
+                    "  trailing dot (\".\").  The total length should not exceed\n" +
+                    "  254 characters (octets).")
             .syntax(STATUS_SYNTAX)),
 
     TECH_C(new Builder("tech-c", "tc")
