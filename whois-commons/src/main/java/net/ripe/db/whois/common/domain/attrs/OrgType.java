@@ -9,6 +9,7 @@ import java.util.Map;
 import static net.ripe.db.whois.common.domain.CIString.ciString;
 
 public enum OrgType {
+    /*
     IANA("for Internet Assigned Numbers Authority"),
     RIR("for Regional Internet Registries"),
     NIR("for National Internet Registries (there are no NIRs in the RIPE NCC service region)"),
@@ -16,6 +17,17 @@ public enum OrgType {
     WHITEPAGES("for special links to industry people"),
     DIRECT_ASSIGNMENT("for direct contract with RIPE NCC"),
     OTHER("for all other organisations.");
+    *//*-AFRINIC-*/
+    IANA(""),
+    RIR(""),
+    LIR(""),
+    EU_PI(""),
+    EU_AS(""),
+    MEMBER_ONLY(""),
+    CLOSED(""),
+    INACTIVE_MEMBER(""),
+    NON_REGISTRY(""),
+    OTHER("");
 
     private static final Map<CIString, OrgType> ORG_TYPE_MAP;
     private final String info;
@@ -44,5 +56,11 @@ public enum OrgType {
     @Nullable
     public static OrgType getFor(final CIString value) {
         return ORG_TYPE_MAP.get(value);
+    }
+
+    /*-AFRINIC-*/
+    @Override
+    public String toString() {
+        return super.toString().replaceAll("_", "-");
     }
 }
