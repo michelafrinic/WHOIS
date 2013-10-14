@@ -182,6 +182,16 @@ public class AuthoritativeResource {
         }
     }
 
+    /*-AFRINIC-*/
+    public Ipv4Resource getParent(Ipv4Resource key) {
+        List<Ipv4Resource> parentList = inetRanges.findFirstMoreSpecific(key);
+        if (parentList != null && parentList.size() > 0) {
+            Ipv4Resource parent = parentList.get(0);
+            return parent;
+        }
+        return null;
+    }
+
     public Set<ObjectType> getResourceTypes() {
         return RESOURCE_TYPES;
     }

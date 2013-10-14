@@ -6,6 +6,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.domain.ResponseObject;
+import net.ripe.db.whois.common.grs.AuthoritativeResourceData;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.transform.FilterAuthFunction;
 import net.ripe.db.whois.common.rpsl.transform.FilterEmailFunction;
@@ -42,6 +43,7 @@ public class RpslResponseDecorator {
     private final FilterPersonalDecorator filterPersonalDecorator;
     private final SourceContext sourceContext;
     private final AbuseCInfoFunction abuseCInfoFunction;
+    private ParentFunction parentFunction = null;/*-AFRINIC-*/
     private final BriefAbuseCFunction briefAbuseCFunction;
     private final DummifyFunction dummifyFunction;
     private final ValidSyntaxFunction validSyntaxFunction;
@@ -53,6 +55,7 @@ public class RpslResponseDecorator {
     public RpslResponseDecorator(final RpslObjectDao rpslObjectDao,
                                  final FilterPersonalDecorator filterPersonalDecorator,
                                  final SourceContext sourceContext,
+                                 final AuthoritativeResourceData authoritativeResourceData,/*-AFRINIC-*/
                                  final AbuseCFinder abuseCFinder,
                                  final DummifyFunction dummifyFunction,
                                  final FilterTagsDecorator filterTagsDecorator,
@@ -66,6 +69,9 @@ public class RpslResponseDecorator {
         this.filterTagsDecorator = filterTagsDecorator;
         this.filterPlaceholdersDecorator = filterPlaceholdersDecorator;
         this.abuseCInfoFunction = new AbuseCInfoFunction(abuseCFinder);
+        if (authoritativeResourceData != null) {/*-AFRINIC-*/
+            this.parentFunction = new ParentFunction(sourceContext, authoritativeResourceData);
+        }
         this.briefAbuseCFunction = new BriefAbuseCFunction(abuseCFinder);
         this.decorators = Sets.newHashSet(decorators);
     }
@@ -80,10 +86,20 @@ public class RpslResponseDecorator {
 
         result = applyAbuseC(query, result);
         result = applyValidSyntax(query, result);
-        result = filterEmail(query, result);
+        //result = filterEmail(query, result); /*--AFRINIC--*/
+        result = applyParent(query, result);  /*--AFRINIC--*/
         result = filterAuth(result);
 
         result = applyOutputFilters(query, result);
+
+        return result;
+    }
+
+    /*--AFRINIC--*/
+    private Iterable<? extends ResponseObject> applyParent(final Query query, final Iterable<? extends ResponseObject> result) {
+        if (this.parentFunction!=null && query.isValidSyntax()) {
+            return Iterables.concat(Iterables.transform(result, parentFunction));
+        }
 
         return result;
     }

@@ -14,6 +14,7 @@ import java.util.Set;
 
 import static net.ripe.db.whois.common.Messages.Type;
 
+/*--AFRINIC--*/
 public final class QueryMessages {
     private static final Joiner JOINER = Joiner.on(", ");
 

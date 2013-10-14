@@ -137,6 +137,7 @@ public enum QueryFlag {
             .requiresArgument(String.class)),
 
     LIST_SOURCES(new Builder("list-sources")
+            /*--AFRINIC--*/
             /*
             .describedAs("" +
                     "Returns the current set of sources along with the information required for mirroring. " +

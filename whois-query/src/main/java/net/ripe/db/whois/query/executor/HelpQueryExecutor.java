@@ -47,6 +47,7 @@ public class HelpQueryExecutor implements QueryExecutor {
             help.append("%\n");
         }
 
+        /*--AFRINIC--*/
         help.append("% SEE ALSO\n");
         help.append(prettyPrint("%", "[REF] AFRINIC Database Reference Manual.", IND_1, MAX_LINE_LENGTH, true));
         help.append(prettyPrint("%", "http://www.afrinic.net/en/library/membership-documents/197-database-afrinic-database-reference-manual-", IND_2, MAX_LINE_LENGTH, true));
