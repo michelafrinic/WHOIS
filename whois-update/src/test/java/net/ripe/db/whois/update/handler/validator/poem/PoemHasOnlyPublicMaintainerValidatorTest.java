@@ -30,7 +30,8 @@ public class PoemHasOnlyPublicMaintainerValidatorTest {
 
     @Test
     public void getTypes() {
-        assertThat(subject.getTypes(), containsInAnyOrder(ObjectType.POEM));
+        //assertThat(subject.getTypes(), containsInAnyOrder(ObjectType.POEM));/*-AFRINIC-*/
+        assertThat(subject.getTypes(), containsInAnyOrder(ObjectType.LIMERICK));/*-AFRINIC-*/
     }
 
     @Test

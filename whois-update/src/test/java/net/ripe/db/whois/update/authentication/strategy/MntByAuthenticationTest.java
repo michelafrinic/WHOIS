@@ -57,8 +57,8 @@ public class MntByAuthenticationTest {
 
     @Test
     public void supports_every_object_with_a_mntby_attribute() {
-        when(update.getType()).thenReturn(ObjectType.POEM);
-        assertThat(subject.supports(update), is(true));
+        //when(update.getType()).thenReturn(ObjectType.POEM);/*-AFRINIC-*/
+        //assertThat(subject.supports(update), is(true));/*-AFRINIC-*/
 
         when(update.getType()).thenReturn(ObjectType.INETNUM);
         assertThat(subject.supports(update), is(true));

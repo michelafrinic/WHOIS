@@ -89,11 +89,21 @@ class ObjectDocumentation {
                 "      referenced.  Once the object is created, the value of the\n" +
                 "      \"person:\" attribute cannot be changed.\n");
 
+        /*-AFRINIC-*/
+        DOCUMENTATION.put(ObjectType.LIMERICK, "" +
+                "      No longer accepted as valid syntax.\n" +
+                "\n" +
+                "        LIM-<string>\n" +
+                "\n" +
+                "        <string> can include alphanumeric characters, and \"_\" and\n" +
+                "        \"-\" characters.\n");
+        /*
         DOCUMENTATION.put(ObjectType.POEM, "" +
                 "      A poem object contains poems that are submitted by users.\n");
 
         DOCUMENTATION.put(ObjectType.POETIC_FORM, "" +
                 "      A poetic-form object defines the supported poem types. \n");
+        *//*-AFRINIC-*/
 
         DOCUMENTATION.put(ObjectType.ROLE, "" +
                 "      The role class is similar to the person class.  However, instead\n" +

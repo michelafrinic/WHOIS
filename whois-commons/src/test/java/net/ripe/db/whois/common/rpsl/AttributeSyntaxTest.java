@@ -1019,6 +1019,7 @@ public class AttributeSyntaxTest {
         verifySuccess(ObjectType.PERSON, AttributeType.PERSON, "Martin . Fowler");
     }
 
+    /*
     @Test
     public void poem() {
         verifyFailure(ObjectType.POEM, AttributeType.POEM, "poem");
@@ -1044,6 +1045,7 @@ public class AttributeSyntaxTest {
         verifySuccess(ObjectType.POETIC_FORM, AttributeType.POETIC_FORM, "FORM-FORM-FORM");
         verifySuccess(ObjectType.POETIC_FORM, AttributeType.POETIC_FORM, "FORM-FORM-A1-B2-C3");
     }
+    *//*-AFRINIC-*/
 
     @Test
     public void remarks() {
@@ -1197,6 +1199,7 @@ public class AttributeSyntaxTest {
         verifySuccess(ObjectType.IRT, AttributeType.SIGNATURE, "AUTO-123");
     }
 
+    /*
     @Test
     public void text() {
         verifySuccess(ObjectType.POEM, AttributeType.TEXT, "");
@@ -1208,6 +1211,7 @@ public class AttributeSyntaxTest {
 
         verifySuccess(ObjectType.POEM, AttributeType.TEXT, builder.toString());
     }
+    *//*-AFRINIC-*/
 
     @Test
     public void techc() {

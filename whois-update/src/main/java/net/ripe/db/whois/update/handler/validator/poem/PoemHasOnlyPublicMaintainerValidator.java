@@ -27,7 +27,8 @@ public class PoemHasOnlyPublicMaintainerValidator implements BusinessRuleValidat
 
     @Override
     public List<ObjectType> getTypes() {
-        return Lists.newArrayList(ObjectType.POEM);
+        //return Lists.newArrayList(ObjectType.POEM);/*-AFRINIC-*/
+        return Lists.newArrayList(ObjectType.LIMERICK);/*-AFRINIC-*/
     }
 
     @Override

@@ -140,7 +140,7 @@ public class JdbcRpslObjectDaoTest extends AbstractDaoTest {
     /*
      * Poetic Form
      */
-
+    /*
     @Test
     public void successfulPoeticFormQuery() {
         databaseHelper.addObject("poetic-form:FORM-SONNET-INDONESIAN");
@@ -154,11 +154,11 @@ public class JdbcRpslObjectDaoTest extends AbstractDaoTest {
     public void nonexistentPoeticFormLookup() {
         subject.getByKey(ObjectType.POETIC_FORM, "nonexistent");
     }
-
+    *//*-AFRINIC-*/
     /*
      * Poem
      */
-
+    /*
     @Test
     public void successfulPoemQuery() {
         databaseHelper.addObject("poem:POEM-MELAYU");
@@ -172,7 +172,7 @@ public class JdbcRpslObjectDaoTest extends AbstractDaoTest {
     public void nonexistentPoemLookup() {
         subject.getByKey(ObjectType.POEM, "nonexistent");
     }
-
+    *//*-AFRINIC-*/
     /*
      * Key-cert
      */

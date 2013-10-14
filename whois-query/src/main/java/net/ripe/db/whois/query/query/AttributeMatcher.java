@@ -98,8 +98,9 @@ abstract class AttributeMatcher { // TODO [AK] Figure out what can be delegated 
         attributeMatchers.put(AttributeType.ORGANISATION, Sets.newHashSet(AttributeMatcher.ORGANISATION_MATCHER));
         attributeMatchers.put(AttributeType.PEERING_SET, Sets.newHashSet(AttributeMatcher.PEERING_SET_MATCHER));
         attributeMatchers.put(AttributeType.PERSON, Sets.newHashSet(AttributeMatcher.ANYTHING_CONTAINING_ALPHA_MATCHER));
-        attributeMatchers.put(AttributeType.POEM, Sets.newHashSet(AttributeMatcher.POEM_MATCHER));
-        attributeMatchers.put(AttributeType.POETIC_FORM, Sets.newHashSet(AttributeMatcher.POETIC_FORM_MATCHER));
+        attributeMatchers.put(AttributeType.LIMERICK, Sets.newHashSet(AttributeMatcher.POEM_MATCHER));/*-AFRINIC-*/
+        //attributeMatchers.put(AttributeType.POEM, Sets.newHashSet(AttributeMatcher.POEM_MATCHER));/*-AFRINIC-*/
+        //attributeMatchers.put(AttributeType.POETIC_FORM, Sets.newHashSet(AttributeMatcher.POETIC_FORM_MATCHER));/*-AFRINIC-*/
         attributeMatchers.put(AttributeType.ROLE, Sets.newHashSet(AttributeMatcher.ANYTHING_CONTAINING_ALPHA_MATCHER));
         attributeMatchers.put(AttributeType.ROUTE, Sets.newHashSet(AttributeMatcher.IPV4_MATCHER, AttributeMatcher.ROUTE4_MATCHER));
         attributeMatchers.put(AttributeType.ROUTE6, Sets.newHashSet(AttributeMatcher.IPV6_MATCHER, AttributeMatcher.ROUTE6_MATCHER));

@@ -46,7 +46,7 @@ public final class IndexStrategies {
                 new Unindexed(AttributeType.FILTER),
                 new IndexWithValue(AttributeType.FILTER_SET, "filter_set", "filter_set"),
                 new IndexWithValue(AttributeType.FINGERPR, "fingerpr", "fingerpr"),
-                new IndexWithReference(AttributeType.FORM, "form", "form_id"),
+                //new IndexWithReference(AttributeType.FORM, "form", "form_id"),/*-AFRINIC-*/
                 new Unindexed(AttributeType.GEOLOC),
                 new Unindexed(AttributeType.HOLES),
                 new IndexWithIfAddr(AttributeType.IFADDR),
@@ -97,8 +97,9 @@ public final class IndexStrategies {
                 new Unindexed(AttributeType.PHONE),
                 new IndexWithReference(AttributeType.PING_HDL, "ping_hdl", "pe_ro_id"),
                 new Unindexed(AttributeType.PINGABLE),
-                new IndexWithValue(AttributeType.POEM, "poem", "poem"),
-                new IndexWithValue(AttributeType.POETIC_FORM, "poetic_form", "poetic_form"),
+                new IndexWithValue(AttributeType.LIMERICK, "limerick", "limerick"),/*-AFRINIC-*/
+                //new IndexWithValue(AttributeType.POEM, "poem", "poem"),/*-AFRINIC-*/
+                //new IndexWithValue(AttributeType.POETIC_FORM, "poetic_form", "poetic_form"),/*-AFRINIC-*/
                 new IndexWithReference(AttributeType.REFERRAL_BY, "referral_by", "mnt_id"),
                 new IndexWithValue(AttributeType.REF_NFY, "ref_nfy", "ref_nfy"),
                 new Unindexed(AttributeType.REMARKS),
