@@ -64,12 +64,12 @@ public class InetnumStatusTest {
         assertThat(ALLOCATED_PI.isValidOrgType(OrgType.LIR), is(true));
         assertThat(ALLOCATED_PI.isValidOrgType(OrgType.RIR), is(true));
         assertThat(ALLOCATED_PI.isValidOrgType(OrgType.IANA), is(true));
-        assertThat(ALLOCATED_PI.isValidOrgType(OrgType.WHITEPAGES), is(false));
+        //assertThat(ALLOCATED_PI.isValidOrgType(OrgType.WHITEPAGES), is(false));/*-AFRINIC-*/
 
         assertThat(ALLOCATED_PA.isValidOrgType(OrgType.LIR), is(true));
         assertThat(ALLOCATED_PA.isValidOrgType(OrgType.RIR), is(true));
         assertThat(ALLOCATED_PA.isValidOrgType(OrgType.IANA), is(true));
-        assertThat(ALLOCATED_PA.isValidOrgType(OrgType.DIRECT_ASSIGNMENT), is(false));
+        //assertThat(ALLOCATED_PA.isValidOrgType(OrgType.DIRECT_ASSIGNMENT), is(false));/*-AFRINIC-*/
 
         assertThat(ALLOCATED_UNSPECIFIED.isValidOrgType(OrgType.LIR), is(true));
         assertThat(ALLOCATED_UNSPECIFIED.isValidOrgType(OrgType.RIR), is(true));
@@ -78,7 +78,7 @@ public class InetnumStatusTest {
 
         assertThat(LIR_PARTITIONED_PA.isValidOrgType(OrgType.OTHER), is(true));
         assertThat(LIR_PARTITIONED_PA.isValidOrgType(OrgType.LIR), is(true));
-        assertThat(LIR_PARTITIONED_PA.isValidOrgType(OrgType.NIR), is(false));
+        //assertThat(LIR_PARTITIONED_PA.isValidOrgType(OrgType.NIR), is(false));/*-AFRINIC-*/
 
         assertThat(LIR_PARTITIONED_PI.isValidOrgType(OrgType.OTHER), is(true));
         assertThat(LIR_PARTITIONED_PI.isValidOrgType(OrgType.LIR), is(true));
@@ -89,7 +89,7 @@ public class InetnumStatusTest {
 
         assertThat(ASSIGNED_PA.isValidOrgType(OrgType.OTHER), is(true));
         assertThat(ASSIGNED_PA.isValidOrgType(OrgType.LIR), is(true));
-        assertThat(ASSIGNED_PA.isValidOrgType(OrgType.WHITEPAGES), is(false));
+        //assertThat(ASSIGNED_PA.isValidOrgType(OrgType.WHITEPAGES), is(false));/*-AFRINIC-*/
 
         assertThat(ASSIGNED_ANYCAST.isValidOrgType(OrgType.OTHER), is(true));
         assertThat(ASSIGNED_ANYCAST.isValidOrgType(OrgType.LIR), is(true));
@@ -97,13 +97,13 @@ public class InetnumStatusTest {
 
         assertThat(EARLY_REGISTRATION.isValidOrgType(OrgType.OTHER), is(true));
         assertThat(EARLY_REGISTRATION.isValidOrgType(OrgType.LIR), is(true));
-        assertThat(EARLY_REGISTRATION.isValidOrgType(OrgType.WHITEPAGES), is(false));
+        //assertThat(EARLY_REGISTRATION.isValidOrgType(OrgType.WHITEPAGES), is(false));/*-AFRINIC-*/
 
         assertThat(ASSIGNED_PI.isValidOrgType(OrgType.RIR), is(true));
         assertThat(ASSIGNED_PI.isValidOrgType(OrgType.LIR), is(true));
         assertThat(ASSIGNED_PI.isValidOrgType(OrgType.OTHER), is(true));
-        assertThat(ASSIGNED_PI.isValidOrgType(OrgType.NIR), is(false));
-        assertThat(ASSIGNED_PI.isValidOrgType(OrgType.DIRECT_ASSIGNMENT), is(false));
+        //assertThat(ASSIGNED_PI.isValidOrgType(OrgType.NIR), is(false));/*-AFRINIC-*/
+        //assertThat(ASSIGNED_PI.isValidOrgType(OrgType.DIRECT_ASSIGNMENT), is(false));/*-AFRINIC-*/
     }
 
     @Test
