@@ -513,8 +513,13 @@ public enum AttributeType implements Documented {
             .syntax(KEY_CERT_SYNTAX)
             .references(ObjectType.KEY_CERT)),
 
+    /*
     SOURCE(new Builder("source", "so")
             .doc("Specifies the registry where the object is registered. Should be \"RIPE\" for the RIPE Database.")
+            .syntax(SOURCE_SYNTAX)),
+    *//*-AFRINIC-*/
+    SOURCE(new Builder("source", "so")
+            .doc("Specifies the registry where the object is registered. Should be \"AFRINIC\" for the AFRINIC Database.")
             .syntax(SOURCE_SYNTAX)),
 
     STATUS(new Builder("status", "st")
