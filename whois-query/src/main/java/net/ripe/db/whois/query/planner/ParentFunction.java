@@ -30,8 +30,6 @@ import java.util.Set;
  */
 public class ParentFunction implements Function<ResponseObject, Iterable<? extends ResponseObject>> {
 
-    private static final Set<ObjectType> OBJECT_TYPES = Sets.newHashSet(ObjectType.INETNUM, ObjectType.INET6NUM);
-
     private final SourceContext sourceContext;
     private final AuthoritativeResourceData authoritativeResourceData;
 
@@ -46,17 +44,21 @@ public class ParentFunction implements Function<ResponseObject, Iterable<? exten
     public Iterable<? extends ResponseObject> apply(@Nullable ResponseObject input) {
         if (input instanceof RpslObject) {
             final RpslObject object = (RpslObject) input;
-
-            if (OBJECT_TYPES.contains(object.getType())) {
-                final AuthoritativeResource resourceData = authoritativeResourceData.getAuthoritativeResource(sourceContext.getCurrentSource().getName());
-
+            final AuthoritativeResource resourceData = authoritativeResourceData.getAuthoritativeResource(sourceContext.getCurrentSource().getName());
+            ObjectType objectType = object.getType();
+            if (ObjectType.INETNUM == objectType)  {
                 Ipv4Resource ipv4Resource = Ipv4Resource.parse(object.getKey());
                 Ipv4Resource parent = resourceData.getParent(ipv4Resource);
 
-                if (parent != null) {
-                    return Arrays.asList(input, new MessageObject("parent:        " + parent.toRangeString()));
+                if (parent == null) {
+                    return Arrays.asList(input, new MessageObject("parent:         0.0.0.0 - 255.255.255.255"));
+                } else {
+                    return Arrays.asList(input, new MessageObject("parent:         " + parent.toRangeString()));
                 }
+            } else if (ObjectType.INET6NUM == objectType) {
+                //FIXME
             }
+
         }
         return Collections.singletonList(input);
     }
