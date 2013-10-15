@@ -97,7 +97,7 @@ public class RpslResponseDecorator {
 
     /*--AFRINIC--*/
     private Iterable<? extends ResponseObject> applyParent(final Query query, final Iterable<? extends ResponseObject> result) {
-        if (this.parentFunction!=null && query.isValidSyntax()) {
+        if (this.parentFunction!=null) {
             return Iterables.concat(Iterables.transform(result, parentFunction));
         }
 
