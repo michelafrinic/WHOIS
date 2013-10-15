@@ -7,6 +7,7 @@ import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.IpInterval;
 import net.ripe.db.whois.common.domain.Ipv4Resource;
+import net.ripe.db.whois.common.domain.Ipv6Resource;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.grs.AuthoritativeResource;
 import net.ripe.db.whois.common.grs.AuthoritativeResourceData;
@@ -56,7 +57,14 @@ public class ParentFunction implements Function<ResponseObject, Iterable<? exten
                     return Arrays.asList(input, new MessageObject("parent:         " + parent.toRangeString()));
                 }
             } else if (ObjectType.INET6NUM == objectType) {
-                //FIXME
+                Ipv6Resource ipv6Resource = Ipv6Resource.parse(object.getKey());
+                Ipv6Resource parent = resourceData.getParent6(ipv6Resource);
+
+                if (parent == null) {
+                    return Arrays.asList(input, new MessageObject("parent:         ::0 - ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"));
+                } else {
+                    return Arrays.asList(input, new MessageObject("parent:         " + parent.toString()));
+                }
             }
 
         }

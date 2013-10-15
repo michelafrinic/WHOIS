@@ -184,9 +184,19 @@ public class AuthoritativeResource {
 
     /*-AFRINIC-*/
     public Ipv4Resource getParent(Ipv4Resource key) {
-        List<Ipv4Resource> parentList = inetRanges.findFirstMoreSpecific(key);
+        List<Ipv4Resource> parentList = inetRanges.findAllLessSpecific(key);
         if (parentList != null && parentList.size() > 0) {
-            Ipv4Resource parent = parentList.get(0);
+            Ipv4Resource parent = parentList.get(parentList.size()-1);
+            return parent;
+        }
+        return null;
+    }
+
+    /*-AFRINIC-*/
+    public Ipv6Resource getParent6(Ipv6Resource key) {
+        List<Ipv6Resource> parentList = inet6Ranges.findAllLessSpecific(key);
+        if (parentList != null && parentList.size() > 0) {
+            Ipv6Resource parent = parentList.get(parentList.size()-1);
             return parent;
         }
         return null;
