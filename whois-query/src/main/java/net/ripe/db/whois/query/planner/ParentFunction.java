@@ -10,8 +10,7 @@ import net.ripe.db.whois.common.iptree.Ipv4Entry;
 import net.ripe.db.whois.common.iptree.Ipv6Entry;
 import net.ripe.db.whois.common.iptree.Ipv4Tree;
 import net.ripe.db.whois.common.iptree.Ipv6Tree;
-import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.*;
 import net.ripe.db.whois.query.domain.MessageObject;
 
 import javax.annotation.Nullable;
@@ -41,7 +40,7 @@ public class ParentFunction implements Function<ResponseObject, Iterable<? exten
     @Override
     public Iterable<? extends ResponseObject> apply(@Nullable ResponseObject input) {
         if (input instanceof RpslObject) {
-            final RpslObject object = (RpslObject) input;
+            RpslObject object = (RpslObject) input;
             ObjectType objectType = object.getType();
             if (ObjectType.INETNUM == objectType)  {
                 Ipv4Resource ipv4Resource = Ipv4Resource.parse(object.getKey());
@@ -50,12 +49,16 @@ public class ParentFunction implements Function<ResponseObject, Iterable<? exten
                 if (ipv4EntryList != null && !ipv4EntryList.isEmpty()) {
                     parent = ipv4EntryList.get(ipv4EntryList.size()-1);
                 }
-                if (parent == null) {
-                    return Arrays.asList(input, new MessageObject("parent:         0.0.0.0 - 255.255.255.255"));
-                } else {
-                    return Arrays.asList(input, new MessageObject("parent:         " + parent.getKey().toRangeString()));
-                }
 
+                RpslAttribute rpslAttribute = null;
+                if (parent == null) {
+                    rpslAttribute = new RpslAttribute(AttributeType.PARENT, "0.0.0.0 - 255.255.255.255");
+                    //return Arrays.asList(input, new MessageObject("parent:         0.0.0.0 - 255.255.255.255"));
+                } else {
+                    rpslAttribute = new RpslAttribute(AttributeType.PARENT, parent.getKey().toRangeString());
+                    //return Arrays.asList(input, new MessageObject("parent:         " + parent.getKey().toRangeString()));
+                }
+                object = new RpslObjectFilter(object).addAttributes(Arrays.asList(rpslAttribute));
             } else if (ObjectType.INET6NUM == objectType) {
                 Ipv6Resource ipv6Resource = Ipv6Resource.parse(object.getKey());
                 List<Ipv6Entry> ipv6EntryList = ipv6Tree.findFirstLessSpecific(ipv6Resource);
@@ -64,11 +67,15 @@ public class ParentFunction implements Function<ResponseObject, Iterable<? exten
                     parent = ipv6EntryList.get(ipv6EntryList.size()-1);
                 }
 
+                RpslAttribute rpslAttribute = null;
                 if (parent == null) {
-                    return Arrays.asList(input, new MessageObject("parent:         ::0 - ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"));
+                    rpslAttribute = new RpslAttribute(AttributeType.PARENT, "::0 - ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff");
+                    //return Arrays.asList(input, new MessageObject("parent:         ::0 - ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"));
                 } else {
-                    return Arrays.asList(input, new MessageObject("parent:         " + parent.getKey().toString()));
+                    rpslAttribute = new RpslAttribute(AttributeType.PARENT, parent.getKey().toString());
+                    //return Arrays.asList(input, new MessageObject("parent:         " + parent.getKey().toString()));
                 }
+                object = new RpslObjectFilter(object).addAttributes(Arrays.asList(rpslAttribute));
             }
 
         }
