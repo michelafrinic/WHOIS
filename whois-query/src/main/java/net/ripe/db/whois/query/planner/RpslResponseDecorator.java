@@ -6,8 +6,8 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.domain.ResponseObject;
-import net.ripe.db.whois.common.grs.AuthoritativeResourceData;
 import net.ripe.db.whois.common.iptree.Ipv4Tree;
+import net.ripe.db.whois.common.iptree.Ipv6Tree;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.transform.FilterAuthFunction;
 import net.ripe.db.whois.common.rpsl.transform.FilterEmailFunction;
@@ -57,7 +57,7 @@ public class RpslResponseDecorator {
                                  final FilterPersonalDecorator filterPersonalDecorator,
                                  final SourceContext sourceContext,
                                  final Ipv4Tree ipv4Tree,/*-AFRINIC-*/
-                                 final AuthoritativeResourceData authoritativeResourceData,/*-AFRINIC-*/
+                                 final Ipv6Tree ipv6Tree,/*-AFRINIC-*/
                                  final AbuseCFinder abuseCFinder,
                                  final DummifyFunction dummifyFunction,
                                  final FilterTagsDecorator filterTagsDecorator,
@@ -71,9 +71,7 @@ public class RpslResponseDecorator {
         this.filterTagsDecorator = filterTagsDecorator;
         this.filterPlaceholdersDecorator = filterPlaceholdersDecorator;
         this.abuseCInfoFunction = new AbuseCInfoFunction(abuseCFinder);
-        if (authoritativeResourceData != null) {/*-AFRINIC-*/
-            this.parentFunction = new ParentFunction(sourceContext, ipv4Tree, authoritativeResourceData);
-        }
+        this.parentFunction = new ParentFunction(ipv4Tree, ipv6Tree);/*-AFRINIC-*/
         this.briefAbuseCFunction = new BriefAbuseCFunction(abuseCFinder);
         this.decorators = Sets.newHashSet(decorators);
     }
