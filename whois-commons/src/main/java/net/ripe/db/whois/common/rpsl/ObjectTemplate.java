@@ -160,7 +160,8 @@ public class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(MNT_DOMAINS, OPTIONAL, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(MNT_IRT, OPTIONAL, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
-                        new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
+                        new AttributeTemplate(SOURCE, MANDATORY, SINGLE),
+                        new AttributeTemplate(PARENT, GENERATED, SINGLE)),
 
                 new ObjectTemplate(ObjectType.INETNUM, 5,
                         new AttributeTemplate(INETNUM, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
@@ -181,7 +182,8 @@ public class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(MNT_ROUTES, OPTIONAL, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(MNT_IRT, OPTIONAL, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
-                        new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
+                        new AttributeTemplate(SOURCE, MANDATORY, SINGLE),
+                        new AttributeTemplate(PARENT, GENERATED, SINGLE)),
 
                 new ObjectTemplate(ObjectType.IRT, 41,
                         new AttributeTemplate(IRT, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),

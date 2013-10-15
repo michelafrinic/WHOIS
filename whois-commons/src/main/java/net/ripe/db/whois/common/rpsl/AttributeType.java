@@ -438,6 +438,17 @@ public enum AttributeType implements Documented {
             .doc("Specifies the owner of the public key.")
             .syntax(GENERATED_SYNTAX)),
 
+    /*-AFRINIC-*/
+    LIMERICK(new Builder("limerick", "li")
+            .doc("Specifies the title of the poem.")
+            .syntax(POEM_SYNTAX)),
+
+    /*-AFRINIC-*/
+    PARENT(new Builder("parent", "pr")
+            .doc("Generated at query time to show the parent object.\n" +
+                    "\n" +
+                    "  A sequence of ASCII characters.")),
+
     PEER(new Builder("peer", "pe")
             .doc("Details of any (interior or exterior) router peerings.")
             .syntax(PEER_SYNTAX)),
@@ -473,10 +484,6 @@ public enum AttributeType implements Documented {
                     "The IP address must be within the address range of the prefix containing this attribute.")
             .syntax(PINGABLE_SYNTAX)),
 
-    /*-AFRINIC-*/
-    LIMERICK(new Builder("limerick", "li")
-            .doc("Specifies the title of the limerick.")
-            .syntax(POEM_SYNTAX)),
     /*
     POEM(new Builder("poem", "po")
             .doc("Specifies the title of the poem.")
@@ -571,8 +578,7 @@ public enum AttributeType implements Documented {
                     "\n" +
                     "  Domain name as specified in RFC 1034 with or without\n" +
                     "  trailing dot (\".\").  The total length should not exceed\n" +
-                    "  254 characters (octets).")
-            .syntax(STATUS_SYNTAX)),
+                    "  254 characters (octets).")),
 
     TECH_C(new Builder("tech-c", "tc")
             .doc("References a technical contact.")
