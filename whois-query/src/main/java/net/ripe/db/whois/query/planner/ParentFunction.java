@@ -50,7 +50,7 @@ public class ParentFunction implements Function<ResponseObject, Iterable<? exten
             if (OBJECT_TYPES.contains(object.getType())) {
                 final AuthoritativeResource resourceData = authoritativeResourceData.getAuthoritativeResource(sourceContext.getCurrentSource().getName());
 
-                Ipv4Resource ipv4Resource = Ipv4Resource.parse(object.getFormattedKey());
+                Ipv4Resource ipv4Resource = Ipv4Resource.parse(object.getKey());
                 Ipv4Resource parent = resourceData.getParent(ipv4Resource);
 
                 if (parent != null) {
