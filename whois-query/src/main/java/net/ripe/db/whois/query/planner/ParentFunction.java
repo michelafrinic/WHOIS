@@ -59,6 +59,7 @@ public class ParentFunction implements Function<ResponseObject, Iterable<? exten
                     //return Arrays.asList(input, new MessageObject("parent:         " + parent.getKey().toRangeString()));
                 }
                 object = new RpslObjectFilter(object).addAttributes(Arrays.asList(rpslAttribute));
+                return Collections.singletonList(object);
             } else if (ObjectType.INET6NUM == objectType) {
                 Ipv6Resource ipv6Resource = Ipv6Resource.parse(object.getKey());
                 List<Ipv6Entry> ipv6EntryList = ipv6Tree.findFirstLessSpecific(ipv6Resource);
@@ -76,6 +77,7 @@ public class ParentFunction implements Function<ResponseObject, Iterable<? exten
                     //return Arrays.asList(input, new MessageObject("parent:         " + parent.getKey().toString()));
                 }
                 object = new RpslObjectFilter(object).addAttributes(Arrays.asList(rpslAttribute));
+                return Collections.singletonList(object);
             }
 
         }
