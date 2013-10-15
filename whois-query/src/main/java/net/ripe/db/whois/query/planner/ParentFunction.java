@@ -38,6 +38,7 @@ public class ParentFunction implements Function<ResponseObject, Iterable<? exten
     public ParentFunction(SourceContext sourceContext, AuthoritativeResourceData authoritativeResourceData) {
         this.sourceContext = sourceContext;
         this.authoritativeResourceData = authoritativeResourceData;
+        authoritativeResourceData.refreshAuthoritativeResourceCache();
     }
 
     @Nullable
@@ -47,7 +48,6 @@ public class ParentFunction implements Function<ResponseObject, Iterable<? exten
             final RpslObject object = (RpslObject) input;
 
             if (OBJECT_TYPES.contains(object.getType())) {
-
                 final AuthoritativeResource resourceData = authoritativeResourceData.getAuthoritativeResource(sourceContext.getCurrentSource().getName());
 
                 Ipv4Resource ipv4Resource = Ipv4Resource.parse(object.getFormattedKey());
