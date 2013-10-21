@@ -251,8 +251,8 @@ public class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(PHONE, OPTIONAL, MULTIPLE),
                         new AttributeTemplate(FAX_NO, OPTIONAL, MULTIPLE),
                         new AttributeTemplate(E_MAIL, MANDATORY, MULTIPLE, LOOKUP_KEY),
-                        new AttributeTemplate(GEOLOC, OPTIONAL, SINGLE),
-                        new AttributeTemplate(LANGUAGE, OPTIONAL, MULTIPLE),
+                        //new AttributeTemplate(GEOLOC, OPTIONAL, SINGLE),/*-AFRINIC-*/
+                        //new AttributeTemplate(LANGUAGE, OPTIONAL, MULTIPLE),/*-AFRINIC-*/
                         new AttributeTemplate(ORG, OPTIONAL, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(ADMIN_C, OPTIONAL, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(TECH_C, OPTIONAL, MULTIPLE, INVERSE_KEY),

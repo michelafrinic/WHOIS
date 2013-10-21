@@ -24,7 +24,7 @@ public final class QueryMessages {
     public static Message termsAndConditions() {
         return new Message(Type.INFO, ""
                 + "% This is the AFRINIC Database query service.\n"
-                + "% The objects are in RPSL format.\n"
+                //+ "% The objects are in RPSL format.\n"
                 + "%\n");
     }
 
@@ -75,7 +75,7 @@ public final class QueryMessages {
                 version, Hosts.getLocalHost());
         */
         return new Message(Type.INFO,
-                "\n");
+                "");
     }
 
     public static Message versionListHeader(final CharSequence type, final CharSequence key) {
