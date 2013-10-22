@@ -19,12 +19,19 @@ interface AttributeSyntax extends Documented {
 
     AttributeSyntax ADDRESS_PREFIX_RANGE_SYNTAX = new AttributeSyntaxParser(new AttributeParser.AddressPrefixRangeParser());
 
+    /*-AFRINIC-*/
+    /*
     AttributeSyntax ALIAS_SYNTAX = new AttributeSyntaxRegexp(254,
             Pattern.compile("(?i)^[A-Z0-9]([-A-Z0-9]*[A-Z0-9])?(\\.[A-Z0-9]([-A-Z0-9]*[A-Z0-9])?)*(\\.)?$"), "" +
             "Domain name as specified in RFC 1034 (point 5.2.1.2) with or\n" +
             "without trailing dot (\".\").  The total length should not exceed\n" +
             "254 characters (octets).\n");
-
+    */
+    AttributeSyntax ALIAS_SYNTAX = new AttributeSyntaxRegexp(254,
+            Pattern.compile("(?i)^[A-Z0-9]([-A-Z0-9]*[A-Z0-9])?(\\.[A-Z0-9]([-A-Z0-9]*[A-Z0-9])?)*(\\.)?$"), "" +
+            "Domain name as specified in RFC 1034 with or\n" +
+            "without trailing dot (\".\").  The total length should not exceed\n" +
+            "254 characters (octets).\n");
     AttributeSyntax AS_BLOCK_SYNTAX = new AttributeSyntaxParser(new AttributeParser.AsBlockParser(), "" +
             "<as-number> - <as-number>\n");
 
@@ -104,8 +111,7 @@ interface AttributeSyntax extends Documented {
             "to <peering> [action <action>] [networks <filter>]");
 
     AttributeSyntax DOMAIN_SYNTAX = new AttributeSyntaxParser(new AttributeParser.DomainParser(), "" +
-            //"Domain name as specified in RFC 1034 with or\n" +/*-AFRINIC-*/
-            "Domain name as specified in RFC 1034 (point 5.2.1.2) with or\n" +/*-AFRINIC-*/
+            "Domain name as specified in RFC 1034 with or\n" +
             "without trailing dot (\".\").  The total length should not exceed\n" +
             "254 characters (octets).\n");
 
@@ -194,7 +200,8 @@ interface AttributeSyntax extends Documented {
 
     AttributeSyntax INET_RTR_SYNTAX = new AttributeSyntaxRegexp(254,
             Pattern.compile("(?i)^[A-Z0-9]([-_A-Z0-9]*[A-Z0-9])?(\\.[A-Z0-9]([-_A-Z0-9]*[A-Z0-9])?)*(\\.)?$"), "" +
-            "Domain name as specified in RFC 1034 (point 5.2.1.2) with or\n" +
+            //"Domain name as specified in RFC 1034 (point 5.2.1.2) with or\n" +
+            "Domain name as specified in RFC 1034 with or\n" +/*-AFRINIC-*/
             "without trailing dot (\".\").  The total length should not exceed\n" +
             "254 characters (octets).\n");
 
@@ -384,7 +391,8 @@ interface AttributeSyntax extends Documented {
 
     AttributeSyntax POEM_SYNTAX = new AttributeSyntaxRegexp(80,
             Pattern.compile("(?i)^POEM-[A-Z0-9][A-Z0-9_-]*$"), "" +
-            "POEM-<string>\n" +
+            //"POEM-<string>\n" +/*-AFRINIC-*/
+            "LIM-<string>\n" +/*-AFRINIC-*/
             "\n" +
             "<string> can include alphanumeric characters, and \"_\" and\n" +
             "\"-\" characters.\n");
@@ -731,13 +739,13 @@ interface AttributeSyntax extends Documented {
 
                 case RTR_SET:
                     return allowIpv6 ? "" +
-                            "list of\n" +
+                            //"list of\n" +/*-AFRINIC-*/
                             "<inet-rtr-name> or\n" +
                             "<rtr-set-name> or\n" +
                             "<ipv4-address> or\n" +
                             "<ipv6-address>\n"
                             : "" +
-                            "list of\n" +
+                            //"list of\n" +/*-AFRINIC-*/
                             "<inet-rtr-name> or\n" +
                             "<rtr-set-name> or\n" +
                             "<ipv4-address>\n";

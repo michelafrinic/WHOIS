@@ -75,7 +75,8 @@ public enum AttributeType implements Documented {
             .references(ObjectType.KEY_CERT)),
 
     AUTHOR(new Builder("author", "ah")
-            .doc("References a poem author.")
+            //.doc("References a poem author.")/*-AFRINIC-*/
+            .doc("References a limerick author.")/*-AFRINIC-*/
             .syntax(NIC_HANDLE_SYNTAX)
             .references(ObjectType.PERSON, ObjectType.ROLE)),
 
@@ -193,7 +194,12 @@ public enum AttributeType implements Documented {
             .syntax(GEOLOC_SYNTAX)),
 
     HOLES(new Builder("holes", "ho")
+            /*-AFRINIC-*/
+            /*
             .doc("Lists the component address prefixes that are not reachable through the aggregate route" +
+                    "(perhaps that part of the address space is unallocated).")
+            */
+            .doc("Lists the component IPv6 address prefixes that are not reachable through the aggregate route" +
                     "(perhaps that part of the address space is unallocated).")
             .syntax(HOLES_SYNTAX)
             .listValue()),
@@ -450,7 +456,11 @@ public enum AttributeType implements Documented {
             .syntax(ORG_NAME_SYNTAX)),
 
     ORG_TYPE(new Builder("org-type", "ot")
-            .doc("Specifies the type of the organisation.")
+            /*-AFRINIC-*/
+            //.doc("Specifies the type of the organisation.")
+            .doc("Specifies the type of the organisation. The possible values are 'IANA' for " +
+                    "Internet Assigned Numbers Authority, 'RIR' for Regional Internet " +
+                    "Registries, 'NIR' for National Internet Registries and 'LIR' for Local Internet Registries.")
             .syntax(ORG_TYPE_SYNTAX)),
 
     ORGANISATION(new Builder("organisation", "oa")
@@ -472,7 +482,7 @@ public enum AttributeType implements Documented {
 
     /*-AFRINIC-*/
     LIMERICK(new Builder("limerick", "li")
-            .doc("Specifies the title of the poem.")
+            .doc("No longer accepted as valid syntax.")
             .syntax(POEM_SYNTAX)),
 
     /*-AFRINIC-*/
@@ -618,7 +628,8 @@ public enum AttributeType implements Documented {
             .references(ObjectType.PERSON, ObjectType.ROLE)),
 
     TEXT(new Builder("text", "tx")
-            .doc("Text of the poem. Must be humorous, but not malicious or insulting.")
+            //.doc("Text of the poem. Must be humorous, but not malicious or insulting.")/*-AFRINIC-*/
+            .doc("Text of the limerick. Must be humorous, but not malicious or insulting.")/*-AFRINIC-*/
             .syntax(FREE_FORM_SYNTAX)),
 
     UPD_TO(new Builder("upd-to", "dt")
