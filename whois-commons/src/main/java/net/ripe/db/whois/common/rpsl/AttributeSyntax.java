@@ -58,6 +58,8 @@ interface AttributeSyntax extends Documented {
     AttributeSyntax AGGR_MTD_SYNTAX = new AttributeSyntaxParser(new AggrMtdParser(), "" +
             "inbound | outbound [<as-expression>]\n");
 
+    /*-AFRINIC-*/
+    /*
     AttributeSyntax AUTH_SCHEME_SYNTAX = new AttributeSyntaxRegexp(
             Pattern.compile("(?i)^(MD5-PW \\$1\\$[A-Z0-9./]{1,8}\\$[A-Z0-9./]{22}|PGPKEY-[A-F0-9]{8}|X509-[1-9][0-9]{0,19}|AUTO-[1-9][0-9]*)$"), "" +
             "<auth-scheme> <scheme-info>       Description\n" +
@@ -85,6 +87,52 @@ interface AttributeSyntax extends Documented {
             "                                  <nnn> is the index number of the\n" +
             "                                  corresponding key-cert object's\n" +
             "                                  \"key-cert:\" attribute (X509-nnn).\n");
+    */
+    AttributeSyntax AUTH_SCHEME_SYNTAX = new AttributeSyntaxRegexp(
+            Pattern.compile("(?i)^(MD5-PW \\$1\\$[A-Z0-9./]{1,8}\\$[A-Z0-9./]{22}|PGPKEY-[A-F0-9]{8}|X509-[1-9][0-9]{0,19}|AUTO-[1-9][0-9]*)$"), "" +
+            "<auth-scheme> <scheme-info>       Description\n" +
+            "\n" +
+            "CRYPT-PW      encrypted           This scheme is our weeakest form\n"+
+            "              password, produced  of authentication.  It is by\n"+
+            "              by UNIX crypt(3)    no means meant to keep out a\n"+
+            "              routine             determined malicious attacker.  The\n"+
+            "                                  crypt function is vulnerable to\n"+
+            "                                  exhaustive search by (lots of) fast\n"+
+            "                                  machines and programs to do the\n"+
+            "                                  searching are widely available. For\n"+
+            "                                  this reason it is strongly\n"+
+            "                                  discouraged to use encrypted\n"+
+            "                                  passwords also used for other\n"+
+            "                                  purposes such as UNIX login accounts\n"+
+            "                                  in this scheme. As you are\n"+
+            "                                  publishing the encrypted password in\n"+
+            "                                  the database, it is open to attack.\n"+
+            "                                  The usual caveats about crypt\n"+
+            "                                  passwords apply, so it is not very\n"+
+            "                                  wise to use words or combinations of\n"+
+            "                                  words found in any dictionary of any\n"+
+            "                                  language.\n"+
+            "\n"+
+            "MD5-PW        encrypted           This scheme is similar to the CRYPT-PW\n"+
+            "              password, produced  scheme, except that it uses an MD5\n"+
+            "              using the FreeBSD   hash rather than DES encryption to\n"+
+            "              crypt_md5           generate the password. The main\n"+
+            "              algorithm           benefit over CRYPT-PW is that pass\n"+
+            "                                  phrases longer than 8 characters may\n"+
+            "                                  be used. All of the dangers of\n"+
+            "                                  CRYPT-PW also apply to MD5-PW.\n"+
+            "\n"+
+            "PGPKEY-<id>                       Strong scheme of authentication.\n"+
+            "                                  <id> is the PGP key ID to be\n"+
+            "                                  used for authentication. This string\n"+
+            "                                  is the same one that is used in the\n"+
+            "                                  corresponding key-cert object's\n"+
+            "                                  \"key-cert:\" attribute.\n"+
+            "\n"+
+            "X509-<nnn>                        Strong scheme of authentication.\n"+
+            "                                  <nnn> is the index number of the\n"+
+            "                                  corresponding key-cert object's\n"+
+            "                                  \"key-cert:\" attribute (X509-nnn).");
 
     AttributeSyntax CERTIF_SYNTAX = new AnySyntax("" +
             "The value of the public key should be supplied either using\n" +
