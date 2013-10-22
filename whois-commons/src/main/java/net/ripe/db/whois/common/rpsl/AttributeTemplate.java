@@ -41,7 +41,8 @@ public class AttributeTemplate {
 
     public static enum Key {
         PRIMARY_KEY("primary"),
-        LOOKUP_KEY("lookup"),
+        //LOOKUP_KEY("lookup"),/*-AFRINIC-*/
+        LOOKUP_KEY("look-up"),/*-AFRINIC-*/
         INVERSE_KEY("inverse");
 
         private final String name;
