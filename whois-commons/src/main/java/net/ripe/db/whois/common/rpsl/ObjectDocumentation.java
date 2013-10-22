@@ -67,7 +67,7 @@ class ObjectDocumentation {
                 "      Currently only PGP/GnuPG keys are supported.\n");
 
         DOCUMENTATION.put(ObjectType.MNTNER, "" +
-                "      Objects in the RIPE Database may be protected using mntner\n" +
+                "      Objects in the AFRINIC Database may be protected using mntner\n" +
                 "      (pronounced \"maintainer\") objects.  A mntner object specifies\n" +
                 "      authentication information required to authorise creation,\n" +
                 "      deletion or modification of the objects protected by the mntner.\n");
@@ -76,7 +76,9 @@ class ObjectDocumentation {
                 "      The organisation class provides information identifying \n" +
                 "      an organisation such as a company, charity or university,\n" +
                 "      that is a holder of a network resource whose data is stored \n" +
-                "      in the whois database.\n");
+                "      in the whois database.\n" +
+                "      Organisation objects are not created automatically, but are forwarded\n" +
+                "      to AfriNIC Database Administration (afrinic-dbm@rafrinic.net).\n");
 
         DOCUMENTATION.put(ObjectType.PEERING_SET, "" +
                 "      A peering-set object defines a set of peerings that are listed \n" +
@@ -91,12 +93,8 @@ class ObjectDocumentation {
 
         /*-AFRINIC-*/
         DOCUMENTATION.put(ObjectType.LIMERICK, "" +
-                "      No longer accepted as valid syntax.\n" +
-                "\n" +
-                "        LIM-<string>\n" +
-                "\n" +
-                "        <string> can include alphanumeric characters, and \"_\" and\n" +
-                "        \"-\" characters.\n");
+                "      The limerick object represents a humorous poem that has five\n" +
+                "      lines and the rhyme scheme \"aabba\".\n");
         /*
         DOCUMENTATION.put(ObjectType.POEM, "" +
                 "      A poem object contains poems that are submitted by users.\n");

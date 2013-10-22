@@ -12,13 +12,18 @@ import static net.ripe.db.whois.common.rpsl.AttributeSyntax.*;
 import static net.ripe.db.whois.common.rpsl.AttributeValueType.LIST_VALUE;
 
 public enum AttributeType implements Documented {
+    /*-AFRINIC-*/
+    /*
     ABUSE_MAILBOX(new Builder("abuse-mailbox", "am")
             .doc("Specifies the e-mail address to which abuse complaints should be sent. " +
                     "This attribute should only be used in the ROLE object. It will be deprecated from any other object. " +
                     "Adding this attribute to a ROLE object, then referencing it in an \"abuse-c:\" attribute of an ORGANISATION object, " +
                     "will remove any query limits for the ROLE object. These ROLE objects are considered to include only commercial data.")
             .syntax(EMAIL_SYNTAX)),
-
+    */
+    ABUSE_MAILBOX(new Builder("abuse-mailbox", "am")
+            .doc("Specifies the e-mail address to which abuse complaints should be sent.")
+            .syntax(EMAIL_SYNTAX)),
     ABUSE_C(new Builder("abuse-c", "au")
             .doc("References an abuse contact. " +
                     "This can only be a ROLE object containing an \"abuse-mailbox:\" attribute. " +
@@ -108,6 +113,7 @@ public enum AttributeType implements Documented {
             .syntax(DOMAIN_SYNTAX)),
 
     /*-AFRINIC-*/
+    /*
     DOM_NET(new Builder("dom-net", "do")
             .doc("List of IP networks in a domain.\n" +
                     "\n" +
@@ -116,6 +122,14 @@ public enum AttributeType implements Documented {
                     "  character dot (\".\").  For example, 128.9.128.5 represents a\n" +
                     "  valid IPv4 address.")
             .syntax(DOMAIN_SYNTAX)),
+    */
+    DOM_NET(new Builder("dom-net", "do")
+            .doc("List of IP networks in a domain.\n" +
+                    "\n" +
+                    "  An IPv4 address is represented as a sequence of four\n" +
+                    "  integers in the range from 0 to 255 separated by the\n" +
+                    "  character dot (\".\").  For example, 128.9.128.5 represents a\n" +
+                    "  valid IPv4 address.")),
 
     DS_RDATA(new Builder("ds-rdata", "ds")
             .doc("DS records for this domain.")
@@ -136,8 +150,16 @@ public enum AttributeType implements Documented {
                     "routes returns a subset of these routes.")
             .syntax(EXPORT_COMPS_SYNTAX)),
 
+    /*-AFRINIC-*/
+    /*
     E_MAIL(new Builder("e-mail", "em")
             .doc("The e-mail address of a person, role, organisation or irt team. " +
+                    "This attribute is filtered from the default whois output when at least one of the objects " +
+                    "returned by the query contains an abuse-mailbox attribute.")
+            .syntax(EMAIL_SYNTAX)),
+    */
+    E_MAIL(new Builder("e-mail", "em")
+            .doc("The e-mail address of a person, role or organisation. " +
                     "This attribute is filtered from the default whois output when at least one of the objects " +
                     "returned by the query contains an abuse-mailbox attribute.")
             .syntax(EMAIL_SYNTAX)),
@@ -274,7 +296,8 @@ public enum AttributeType implements Documented {
             .syntax(OBJECT_NAME_SYNTAX)
             .references(ObjectType.MNTNER)
             .listValue()),
-
+    /*-AFRINIC-*/
+    /*
     MNT_IRT(new Builder("mnt-irt", "mi")
             .doc("May appear in an inetnum or inet6num object. It points to an irt object representing a " +
                     "Computer Security Incident Response Team (CSIRT) that handles security incidents for " +
@@ -282,7 +305,14 @@ public enum AttributeType implements Documented {
             .syntax(IRT_SYNTAX)
             .references(ObjectType.IRT)
             .listValue()),
-
+    */
+    MNT_IRT(new Builder("mnt-irt", "mi")
+            .doc("May appear in an inetnum, inet6num or aut-num object. It points to an irt object representing a " +
+                    "Computer Security Incident Response Team (CSIRT) that handles security incidents for " +
+                    "the address space specified by the object.")
+            .syntax(IRT_SYNTAX)
+            .references(ObjectType.IRT)
+            .listValue()),
     MNT_LOWER(new Builder("mnt-lower", "ml")
             .doc("Specifies the identifier of a registered mntner object used for hierarchical authorisation. " +
                     "Protects creation of objects directly (one level) below in the hierarchy of an object type. " +
@@ -397,7 +427,8 @@ public enum AttributeType implements Documented {
             .syntax(NIC_HANDLE_SYNTAX)),
 
     NOTIFY(new Builder("notify", "ny")
-            .doc("Specifies the e-mail address to which notifications of changes to an object should be sent. " +
+            .doc("Specifies the e-mail address to which notifications of changes to an\n" +
+                    "object should be sent.\n" +
                     "This attribute is filtered from the default whois output.")
             .syntax(EMAIL_SYNTAX)),
 
@@ -436,7 +467,8 @@ public enum AttributeType implements Documented {
 
     OWNER(new Builder("owner", "ow")
             .doc("Specifies the owner of the public key.")
-            .syntax(GENERATED_SYNTAX)),
+            //.syntax(GENERATED_SYNTAX)),/*-AFRINIC-*/
+            .syntax(ASCII_SYNTAX)),/*-AFRINIC-*/
 
     /*-AFRINIC-*/
     LIMERICK(new Builder("limerick", "li")
@@ -531,7 +563,7 @@ public enum AttributeType implements Documented {
             .syntax(FREE_FORM_SYNTAX)),
 
     ROLE(new Builder("role", "ro")
-            .doc("Specifies the full name of a role entity, e.g. RIPE DBM.")
+            .doc("Specifies the full name of a role entity, e.g. AFRINIC DBM.")
             .syntax(PERSON_ROLE_NAME_SYNTAX)),
 
     ROUTE(new Builder("route", "rt")
