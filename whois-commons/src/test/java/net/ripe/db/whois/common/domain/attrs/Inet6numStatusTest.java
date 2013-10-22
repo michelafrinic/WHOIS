@@ -22,7 +22,7 @@ public class Inet6numStatusTest {
         assertThat(ALLOCATED_BY_RIR.requiresRsMaintainer(), is(true));
         assertThat(ASSIGNED.requiresRsMaintainer(), is(false));
 
-        assertThat(ASSIGNED_ANYCAST.requiresRsMaintainer(), is(true));
+        //assertThat(ASSIGNED_ANYCAST.requiresRsMaintainer(), is(true));/*-AFRINIC-*/
         assertThat(ASSIGNED_PI.requiresRsMaintainer(), is(true));
     }
 
@@ -34,7 +34,7 @@ public class Inet6numStatusTest {
         assertThat(ALLOCATED_BY_RIR.requiresAllocMaintainer(), is(true));
 
         assertThat(ASSIGNED.requiresAllocMaintainer(), is(false));
-        assertThat(ASSIGNED_ANYCAST.requiresAllocMaintainer(), is(false));
+        //assertThat(ASSIGNED_ANYCAST.requiresAllocMaintainer(), is(false));/*-AFRINIC-*/
         assertThat(ASSIGNED_PI.requiresAllocMaintainer(), is(false));
     }
 
@@ -52,8 +52,8 @@ public class Inet6numStatusTest {
         assertThat(AGGREGATED_BY_LIR.worksWithParentStatus(ASSIGNED, HAS_RS_MAINTAINER), is(false));
         assertThat(AGGREGATED_BY_LIR.worksWithParentStatus(ASSIGNED, HAS_NOT_RS_MAINTAINER), is(false));
 
-        assertThat(AGGREGATED_BY_LIR.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_RS_MAINTAINER), is(false));
-        assertThat(AGGREGATED_BY_LIR.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_NOT_RS_MAINTAINER), is(false));
+        //assertThat(AGGREGATED_BY_LIR.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_RS_MAINTAINER), is(false));/*-AFRINIC-*/
+        //assertThat(AGGREGATED_BY_LIR.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_NOT_RS_MAINTAINER), is(false));/*-AFRINIC-*/
 
         assertThat(AGGREGATED_BY_LIR.worksWithParentStatus(ASSIGNED_PI, HAS_RS_MAINTAINER), is(false));
         assertThat(AGGREGATED_BY_LIR.worksWithParentStatus(ASSIGNED_PI, HAS_NOT_RS_MAINTAINER), is(false));
@@ -73,8 +73,8 @@ public class Inet6numStatusTest {
         assertThat(ALLOCATED_BY_LIR.worksWithParentStatus(ASSIGNED, HAS_RS_MAINTAINER), is(false));
         assertThat(ALLOCATED_BY_LIR.worksWithParentStatus(ASSIGNED, HAS_NOT_RS_MAINTAINER), is(false));
 
-        assertThat(ALLOCATED_BY_LIR.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_RS_MAINTAINER), is(false));
-        assertThat(ALLOCATED_BY_LIR.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_NOT_RS_MAINTAINER), is(false));
+        //assertThat(ALLOCATED_BY_LIR.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_RS_MAINTAINER), is(false));/*-AFRINIC-*/
+        //assertThat(ALLOCATED_BY_LIR.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_NOT_RS_MAINTAINER), is(false));/*-AFRINIC-*/
 
         assertThat(ALLOCATED_BY_LIR.worksWithParentStatus(ASSIGNED_PI, HAS_RS_MAINTAINER), is(false));
         assertThat(ALLOCATED_BY_LIR.worksWithParentStatus(ASSIGNED_PI, HAS_NOT_RS_MAINTAINER), is(false));
@@ -94,8 +94,8 @@ public class Inet6numStatusTest {
         assertThat(ALLOCATED_BY_RIR.worksWithParentStatus(ASSIGNED, HAS_RS_MAINTAINER), is(false));
         assertThat(ALLOCATED_BY_RIR.worksWithParentStatus(ASSIGNED, HAS_NOT_RS_MAINTAINER), is(false));
 
-        assertThat(ALLOCATED_BY_RIR.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_RS_MAINTAINER), is(false));
-        assertThat(ALLOCATED_BY_RIR.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_NOT_RS_MAINTAINER), is(false));
+        //assertThat(ALLOCATED_BY_RIR.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_RS_MAINTAINER), is(false));/*-AFRINIC-*/
+        //assertThat(ALLOCATED_BY_RIR.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_NOT_RS_MAINTAINER), is(false));/*-AFRINIC-*/
 
         assertThat(ALLOCATED_BY_RIR.worksWithParentStatus(ASSIGNED_PI, HAS_RS_MAINTAINER), is(false));
         assertThat(ALLOCATED_BY_RIR.worksWithParentStatus(ASSIGNED_PI, HAS_NOT_RS_MAINTAINER), is(false));
@@ -115,13 +115,15 @@ public class Inet6numStatusTest {
         assertThat(ASSIGNED.worksWithParentStatus(ASSIGNED, HAS_RS_MAINTAINER), is(false));
         assertThat(ASSIGNED.worksWithParentStatus(ASSIGNED, HAS_NOT_RS_MAINTAINER), is(false));
 
-        assertThat(ASSIGNED.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_RS_MAINTAINER), is(false));
-        assertThat(ASSIGNED.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_NOT_RS_MAINTAINER), is(false));
+        //assertThat(ASSIGNED.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_RS_MAINTAINER), is(false));/*-AFRINIC-*/
+        //assertThat(ASSIGNED.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_NOT_RS_MAINTAINER), is(false));/*-AFRINIC-*/
 
         assertThat(ASSIGNED.worksWithParentStatus(ASSIGNED_PI, HAS_RS_MAINTAINER), is(false));
         assertThat(ASSIGNED.worksWithParentStatus(ASSIGNED_PI, HAS_NOT_RS_MAINTAINER), is(false));
     }
 
+    /*-AFRINIC-*/
+    /*
     @Test
     public void worksWithParentStatus_assigned_anycast() {
         assertThat(ASSIGNED_ANYCAST.worksWithParentStatus(AGGREGATED_BY_LIR, HAS_RS_MAINTAINER), is(false));
@@ -142,7 +144,7 @@ public class Inet6numStatusTest {
         assertThat(ASSIGNED_ANYCAST.worksWithParentStatus(ASSIGNED_PI, HAS_RS_MAINTAINER), is(false));
         assertThat(ASSIGNED_ANYCAST.worksWithParentStatus(ASSIGNED_PI, HAS_NOT_RS_MAINTAINER), is(false));
     }
-
+    */
 
     @Test
     public void worksWithParentStatus_assigned_pi() {
@@ -158,8 +160,8 @@ public class Inet6numStatusTest {
         assertThat(ASSIGNED_PI.worksWithParentStatus(ASSIGNED, HAS_RS_MAINTAINER), is(false));
         assertThat(ASSIGNED_PI.worksWithParentStatus(ASSIGNED, HAS_NOT_RS_MAINTAINER), is(false));
 
-        assertThat(ASSIGNED_PI.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_RS_MAINTAINER), is(false));
-        assertThat(ASSIGNED_PI.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_NOT_RS_MAINTAINER), is(false));
+        //assertThat(ASSIGNED_PI.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_RS_MAINTAINER), is(false));/*-AFRINIC-*/
+        //assertThat(ASSIGNED_PI.worksWithParentStatus(ASSIGNED_ANYCAST, HAS_NOT_RS_MAINTAINER), is(false));/*-AFRINIC-*/
 
         assertThat(ASSIGNED_PI.worksWithParentStatus(ASSIGNED_PI, HAS_RS_MAINTAINER), is(false));
         assertThat(ASSIGNED_PI.worksWithParentStatus(ASSIGNED_PI, HAS_NOT_RS_MAINTAINER), is(false));
@@ -172,7 +174,7 @@ public class Inet6numStatusTest {
         assertThat(ALLOCATED_BY_RIR.needsOrgReference(), is(true));
         assertThat(ASSIGNED.needsOrgReference(), is(false));
 
-        assertThat(ASSIGNED_ANYCAST.needsOrgReference(), is(true));
+        //assertThat(ASSIGNED_ANYCAST.needsOrgReference(), is(true));/*-AFRINIC-*/
         assertThat(ASSIGNED_PI.needsOrgReference(), is(true));
     }
 
@@ -182,7 +184,7 @@ public class Inet6numStatusTest {
         assertThat(ALLOCATED_BY_LIR.getAllowedOrgTypes(), containsInAnyOrder(LIR, OTHER));
         assertThat(ALLOCATED_BY_RIR.getAllowedOrgTypes(), containsInAnyOrder(IANA, RIR, LIR));
         assertThat(ASSIGNED.getAllowedOrgTypes(), containsInAnyOrder(LIR, OTHER));
-        assertThat(ASSIGNED_ANYCAST.getAllowedOrgTypes(), containsInAnyOrder(LIR, OTHER));
+        //assertThat(ASSIGNED_ANYCAST.getAllowedOrgTypes(), containsInAnyOrder(LIR, OTHER));/*-AFRINIC-*/
         assertThat(ASSIGNED_PI.getAllowedOrgTypes(), containsInAnyOrder(LIR, OTHER));
     }
 
@@ -220,13 +222,16 @@ public class Inet6numStatusTest {
         assertThat(ASSIGNED.isValidOrgType(IANA), is(false));
         assertThat(ASSIGNED.isValidOrgType(RIR), is(false));
 
+        /*-AFRINIC-*/
+        /*
         assertThat(ASSIGNED_ANYCAST.isValidOrgType(LIR), is(true));
         assertThat(ASSIGNED_ANYCAST.isValidOrgType(OTHER), is(true));
-        //assertThat(ASSIGNED_ANYCAST.isValidOrgType(DIRECT_ASSIGNMENT), is(false));/*-AFRINIC-*/
-        //assertThat(ASSIGNED_ANYCAST.isValidOrgType(NIR), is(false));/*-AFRINIC-*/
-        //assertThat(ASSIGNED_ANYCAST.isValidOrgType(WHITEPAGES), is(false));/*-AFRINIC-*/
+        assertThat(ASSIGNED_ANYCAST.isValidOrgType(DIRECT_ASSIGNMENT), is(false));
+        assertThat(ASSIGNED_ANYCAST.isValidOrgType(NIR), is(false));
+        assertThat(ASSIGNED_ANYCAST.isValidOrgType(WHITEPAGES), is(false));
         assertThat(ASSIGNED_ANYCAST.isValidOrgType(IANA), is(false));
         assertThat(ASSIGNED_ANYCAST.isValidOrgType(RIR), is(false));
+        */
 
         assertThat(ASSIGNED_PI.isValidOrgType(LIR), is(true));
         assertThat(ASSIGNED_PI.isValidOrgType(OTHER), is(true));
@@ -243,7 +248,7 @@ public class Inet6numStatusTest {
         assertThat(ALLOCATED_BY_LIR.getLiteralStatus(), is(CIString.ciString("ALLOCATED-BY-LIR")));
         assertThat(ALLOCATED_BY_RIR.getLiteralStatus(), is(CIString.ciString("ALLOCATED-BY-RIR")));
         assertThat(ASSIGNED.getLiteralStatus(), is(CIString.ciString("ASSIGNED")));
-        assertThat(ASSIGNED_ANYCAST.getLiteralStatus(), is(CIString.ciString("ASSIGNED ANYCAST")));
+        //assertThat(ASSIGNED_ANYCAST.getLiteralStatus(), is(CIString.ciString("ASSIGNED ANYCAST")));/*-AFRINIC-*/
         assertThat(ASSIGNED_PI.getLiteralStatus(), is(CIString.ciString("ASSIGNED PI")));
     }
 
@@ -253,7 +258,7 @@ public class Inet6numStatusTest {
         assertThat(Inet6numStatus.getStatusFor(CIString.ciString("ALLOCATED-BY-LIR")), is(ALLOCATED_BY_LIR));
         assertThat(Inet6numStatus.getStatusFor(CIString.ciString("ALLOCATED-BY-RIR")), is(ALLOCATED_BY_RIR));
         assertThat(Inet6numStatus.getStatusFor(CIString.ciString("ASSIGNED")), is(ASSIGNED));
-        assertThat(Inet6numStatus.getStatusFor(CIString.ciString("ASSIGNED ANYCAST")), is(ASSIGNED_ANYCAST));
+        //assertThat(Inet6numStatus.getStatusFor(CIString.ciString("ASSIGNED ANYCAST")), is(ASSIGNED_ANYCAST));/*-AFRINIC-*/
         assertThat(Inet6numStatus.getStatusFor(CIString.ciString("ASSIGNED PI")), is(ASSIGNED_PI));
 
         try {

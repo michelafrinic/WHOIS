@@ -37,9 +37,12 @@ public class MntLowerAddedRemoved implements BusinessRuleValidator {
             return;
         }
 
+        /*-AFRINIC-*/
+        /*
         if (ObjectType.INETNUM.equals(update.getType()) && !InetnumStatus.ASSIGNED_ANYCAST.equals(getStatus(update))) {
             return;
         }
+        */
 
         if (ObjectType.INET6NUM.equals(update.getType()) && !getStatus(update).requiresRsMaintainer()) {
             return;
