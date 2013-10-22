@@ -23,9 +23,7 @@ public final class QueryMessages {
 
     public static Message termsAndConditions() {
         return new Message(Type.INFO, ""
-                + "% This is the AFRINIC Database query service.\n"
-                //+ "% The objects are in RPSL format.\n"
-                + "%\n");
+                + "% This is the AfriNIC Whois server.\n");
     }
 
     public static Message termsAndConditionsDump() {
