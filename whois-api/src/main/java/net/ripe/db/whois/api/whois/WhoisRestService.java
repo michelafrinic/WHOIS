@@ -116,6 +116,8 @@ public class WhoisRestService {
         this.updatePerformer = updatePerformer;
     }
 
+    /*-AFRINIC-*/
+    /*
     @DELETE
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/{source}/{objectType}/{key:.*}")
@@ -192,6 +194,7 @@ public class WhoisRestService {
 
         return Response.ok(createWhoisResources(request, response, false)).build();
     }
+    */
 
     private void checkForMainSource(String source) {
         if (!sourceContext.getCurrentSource().getName().toString().equalsIgnoreCase(source)) {
