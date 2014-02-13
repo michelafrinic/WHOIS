@@ -6,14 +6,14 @@ interface FilenameStrategy {
     class SplitFile implements FilenameStrategy {
         @Override
         public String getFilename(final ObjectType objectType) {
-            return "ripe.db." + objectType.getName();
+            return "afrinic.db." + objectType.getName();
         }
     }
 
     class SingleFile implements FilenameStrategy {
         @Override
         public String getFilename(final ObjectType objectType) {
-            return "ripe.db";
+            return "afrinic.db";
         }
     }
 
