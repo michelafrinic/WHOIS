@@ -99,6 +99,7 @@ public class GrsImporter implements DailyScheduledTask {
             final GrsSource grsSource = grsSources.get(enabledSource);
             if (grsSource == null) {
                 LOGGER.warn("Unknown source: {}", enabledSource);
+                LOGGER.warn("Allowed sources: {}", grsSources);
             } else {
                 futures.add(executorService.submit(new Runnable() {
                     @Override
