@@ -332,7 +332,8 @@ public class JdbcRpslObjectOperations {
 
     public static void sanityCheck(final JdbcTemplate jdbcTemplate) {
         final String dbName = jdbcTemplate.queryForObject("SELECT database()", String.class);
-        if (!dbName.matches("(?i).*_mirror_.+_grs.*") && !dbName.matches("(?i).*test.*")) {
+        //if (!dbName.matches("(?i).*_mirror_.+_grs.*") && !dbName.matches("(?i).*test.*")) {
+        if (!dbName.matches("(?i).*_grs.*") && !dbName.matches("(?i).*test.*")) {
             throw new IllegalStateException(String.format("%s has no 'test' or 'grs' in the name, exiting", dbName));
         }
 
