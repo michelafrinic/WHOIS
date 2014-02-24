@@ -143,7 +143,8 @@ class GrsSourceImporter {
                             if (messages.hasErrors()) {
                                 logger.debug("Errors for object with key {}: {}", typeAttribute, messages);
                                 nrIgnored++;
-                            } else if (authoritativeData.isMaintainedInRirSpace(cleanObject)) {
+                            //} else if (authoritativeData.isMaintainedInRirSpace(cleanObject)) {
+                            } else { // AFRINIC: We wish to import all for Routing Registry
                                 createOrUpdate(cleanObject);
                             }
                         }
