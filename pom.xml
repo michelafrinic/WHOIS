@@ -66,6 +66,7 @@
         <module>whois-endtoend</module>
         <module>whois-oneshot</module>
         <module>whois-logsearch</module>
+        <module>whois-rules</module>
     </modules>
 
     <dependencyManagement>
@@ -76,6 +77,7 @@
                 <artifactId>whois-commons</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>net.ripe.db</groupId>
                 <artifactId>whois-commons</artifactId>
@@ -620,10 +622,13 @@
                     </includes>
                     <runOrder>random</runOrder>
                     <threadCount>1</threadCount>
+                    <!--
                     <excludedGroups>
                         net.ripe.db.whois.common.IntegrationTest,
                         net.ripe.db.whois.common.ManualTest
                     </excludedGroups>
+                    -->
+                    <groups/>
                 </configuration>
             </plugin>
             <plugin>

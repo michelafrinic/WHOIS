@@ -6,8 +6,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang.WordUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.util.*;
 
 import static net.ripe.db.whois.common.rpsl.AttributeTemplate.Cardinality.MULTIPLE;
@@ -449,20 +451,21 @@ public class ObjectTemplate implements Comparable<ObjectTemplate> {
         TEMPLATE_MAP = Collections.unmodifiableMap(templateMap);
     }
 
-    private final ObjectType objectType;
-    private final int orderPosition;
-    private final Map<AttributeType, AttributeTemplate> attributeTemplateMap;
-    private final List<AttributeTemplate> attributeTemplates;
-    private final Set<AttributeType> allAttributeTypes;
-    private final Set<AttributeType> keyAttributes;
-    private final Set<AttributeType> lookupAttributes;
-    private final Set<AttributeType> inverseLookupAttributes;
-    private final Set<AttributeType> mandatoryAttributes;
+    private ObjectType objectType;
+    private int orderPosition;
+    private Map<AttributeType, AttributeTemplate> attributeTemplateMap;
+    private List<AttributeTemplate> attributeTemplates;
+    private Set<AttributeType> allAttributeTypes;
+    private Set<AttributeType> keyAttributes;
+    private Set<AttributeType> lookupAttributes;
+    private Set<AttributeType> inverseLookupAttributes;
+    private Set<AttributeType> mandatoryAttributes;
 
     private ObjectTemplate(final ObjectType objectType, final int orderPosition, final AttributeTemplate... attributeTemplates) {
         this.objectType = objectType;
         this.orderPosition = orderPosition;
 
+        /*
         this.attributeTemplates = Collections.unmodifiableList(Lists.newArrayList(attributeTemplates));
         this.allAttributeTypes = Collections.unmodifiableSet(Sets.newLinkedHashSet(Iterables.transform(this.attributeTemplates, new Function<AttributeTemplate, AttributeType>() {
             @Nullable
@@ -481,6 +484,8 @@ public class ObjectTemplate implements Comparable<ObjectTemplate> {
         lookupAttributes = getAttributes(attributeTemplates, LOOKUP_KEY);
         inverseLookupAttributes = getAttributes(attributeTemplates, INVERSE_KEY);
         mandatoryAttributes = getAttributes(attributeTemplates, MANDATORY);
+        */
+        setAttributeTemplates(attributeTemplates);
     }
 
     private Set<AttributeType> getAttributes(final AttributeTemplate[] attributeTemplates, final Key key) {
@@ -659,5 +664,44 @@ public class ObjectTemplate implements Comparable<ObjectTemplate> {
 
     public boolean hasAttribute(final AttributeType attributeType) {
         return getAllAttributes().contains(attributeType);
+    }
+
+    public ObjectTemplate() {
+    }
+
+    public void setObjectType(ObjectType objectType) {
+        this.objectType = objectType;
+    }
+
+    public void setOrderPosition(int orderPosition) {
+        this.orderPosition = orderPosition;
+    }
+
+    public void setAttributeTemplateArray(AttributeTemplate attributeTemplates, int pos) {
+        setAttributeTemplates(attributeTemplates);
+    }
+
+    public void setAttributeTemplateArray(AttributeTemplate[] attributeTemplates) {
+        setAttributeTemplates(attributeTemplates);
+    }
+    public void setAttributeTemplates(AttributeTemplate... attributeTemplates) {
+        this.attributeTemplates = Collections.unmodifiableList(Lists.newArrayList(attributeTemplates));
+        this.allAttributeTypes = Collections.unmodifiableSet(Sets.newLinkedHashSet(Iterables.transform(this.attributeTemplates, new Function<AttributeTemplate, AttributeType>() {
+            @Nullable
+            @Override
+            public AttributeType apply(final AttributeTemplate input) {
+                return input.getAttributeType();
+            }
+        })));
+
+        this.attributeTemplateMap = Maps.newEnumMap(AttributeType.class);
+        for (final AttributeTemplate attributeTemplate : attributeTemplates) {
+            this.attributeTemplateMap.put(attributeTemplate.getAttributeType(), attributeTemplate);
+        }
+
+        keyAttributes = getAttributes(attributeTemplates, PRIMARY_KEY);
+        lookupAttributes = getAttributes(attributeTemplates, LOOKUP_KEY);
+        inverseLookupAttributes = getAttributes(attributeTemplates, INVERSE_KEY);
+        mandatoryAttributes = getAttributes(attributeTemplates, MANDATORY);
     }
 }

@@ -8,6 +8,7 @@ import net.ripe.db.whois.common.domain.attrs.MntRoutes;
 import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.update.authentication.Principal;
+import net.ripe.db.whois.update.authentication.Subject;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -49,7 +50,8 @@ public class AddOrRemoveRipeNccMaintainerValidator implements BusinessRuleValida
     }
 
     private void validateForSpecialMaintainer(final Principal principal, final Set<CIString> specialMaintainers, final PreparedUpdate update, final UpdateContext updateContext) {
-        if (updateContext.getSubject(update).hasPrincipal(principal)) {
+        Subject subject = updateContext.getSubject(update);
+        if (subject == null || subject.hasPrincipal(principal)) {
             return;
         }
 
