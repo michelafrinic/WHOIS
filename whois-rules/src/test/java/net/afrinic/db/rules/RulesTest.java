@@ -6,40 +6,43 @@ import net.ripe.db.whois.common.rpsl.ObjectTemplate;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Created by yogesh on 4/4/14.
+ *
+ * @see http://maven.apache.org/surefire/maven-surefire-plugin/examples/junit.html
  */
 @RunWith(MockitoJUnitRunner.class)
 public class RulesTest {
 
-    private final WhoisRules whr = new WhoisRules();
+    private final WhoisRules whoisRulesUnderTest = new WhoisRules();
 
     @Test
-    public void printRpsl() {
+    public void rpslTemplateCheck() {
 
-        ObjectTemplate[] objectTemplates = buildObjectTree();
+        ObjectTemplate[] objectTemplates = ObjectTemplateBuilder.buildObjectTemplateArray(whoisRulesUnderTest);
 
         for (ObjectTemplate objectTemplate: objectTemplates) {
             System.out.println();
             System.out.println(objectTemplate);
         }
 
+        for (ObjectTemplate objectTemplate: objectTemplates) {
+            Assert.assertTrue(objectTemplate.getAllAttributes().size() > 1);
+        }
+
     }
 
     @Test
-    public void afrinicPerson() {
+    @Category(AfrinicTestGroup.class)
+    public void afrinicPersonObjectTemplate() {
         AttributeTemplate personEmail = null;
         AttributeTemplate personMntBy = null;
 
-        AttributeTemplate[] attributeTemplates = whr.getAttributeTemplates();
+        AttributeTemplate[] attributeTemplates = whoisRulesUnderTest.getAttributeTemplates();
 
 
         for (AttributeTemplate attributeTemplate: attributeTemplates) {
@@ -57,11 +60,12 @@ public class RulesTest {
     }
 
     @Test
-    public void ripePerson() {
+    @Category(RipeTestGroup.class)
+    public void ripePersonObjectTemplate() {
         AttributeTemplate personEmail = null;
         AttributeTemplate personMntBy = null;
 
-        AttributeTemplate[] attributeTemplates = whr.getAttributeTemplates();
+        AttributeTemplate[] attributeTemplates = whoisRulesUnderTest.getAttributeTemplates();
 
 
         for (AttributeTemplate attributeTemplate: attributeTemplates) {
@@ -78,80 +82,4 @@ public class RulesTest {
         Assert.assertEquals(AttributeTemplate.Requirement.MANDATORY, personMntBy.getRequirement());
     }
 
-    private ObjectTemplate[] buildObjectTree() {
-
-        Map<ObjectType,Set<AttributeTemplate>> mapA = new HashMap<>();
-
-        AttributeTemplate[] attributeTemplates = whr.getAttributeTemplates();
-        for (AttributeTemplate attributeTemplate: attributeTemplates) {
-            ObjectType objectType = attributeTemplate.getObjectType();
-            if (!mapA.containsKey(objectType))  {
-                mapA.put(objectType, new LinkedHashSet<AttributeTemplate>());
-            }
-            mapA.get(objectType).add(attributeTemplate);
-
-            System.out.println(attributeTemplate);
-        }
-
-        ObjectTemplate[] objectTemplates = whr.getObjectTemplates();
-        for (ObjectTemplate objectTemplate: objectTemplates) {
-            ObjectType objectType =  objectTemplate.getObjectType();
-            if (mapA.containsKey(objectType)) {
-                objectTemplate.setAttributeTemplates(mapA.get(objectType).toArray(new AttributeTemplate[0]));
-            }
-        }
-
-        return objectTemplates;
-    }
-
-
-    // TODO replace the whole PERSON object definition in ObjectTemplate
-
-
-    /*
-    @Test
-    public void test1() {
-        ObjectMapper om = new ObjectMapper();
-        try {
-            AttributeTemplate t = om.readValue(
-                    "{\"attributeType\":\"CHANGED\", " +
-                            "\"requirement\": \"OPTIONAL\", " +
-                            "\"cardinality\":\"MULTIPLE\", " +
-                            "\"keys\": [\"PRIMARY_KEY\", \"LOOKUP_KEY\"]}", AttributeTemplate.class);
-            System.out.println();
-            System.out.println(t);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    */
-
-    /*
-    @Test
-    public void test2() {
-        ObjectMapper om = new ObjectMapper();
-        try {
-            ObjectTemplate t = om.readValue(
-                    "{\"objectType\": \"ROUTE\", " +
-                        "\"orderPosition\": 10, " +
-                        "\"attributeTemplates\": ["+
-                          "{\"attributeType\":\"ROUTE\", " +
-                          "\"requirement\": \"MANDATORY\", " +
-                          "\"cardinality\":\"SINGLE\", " +
-                          "\"keys\": [\"PRIMARY_KEY\", \"LOOKUP_KEY\"]" +
-                          "}," +
-                          "{\"attributeType\":\"CHANGED\", " +
-                            "\"requirement\": \"OPTIONAL\", " +
-                            "\"cardinality\":\"MULTIPLE\", " +
-                            "\"keys\": [\"PRIMARY_KEY\", \"LOOKUP_KEY\"]" +
-                          "}" +
-                        "]" +
-                    "}", ObjectTemplate.class);
-            System.out.println();
-            System.out.println(t);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    */
 }

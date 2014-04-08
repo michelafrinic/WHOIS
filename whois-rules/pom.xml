@@ -17,6 +17,7 @@
     <properties>
         <rulesHome>${project.basedir}</rulesHome>
         <rulesFilename>ExampleWhoisRules.xls</rulesFilename>
+        <rulesGroups/>
     </properties>
 
     <profiles>
@@ -30,6 +31,7 @@
             </activation>
             <properties>
                 <rulesFilename>AfrinicWhoisRules.xls</rulesFilename>
+                <rulesGroups>net.afrinic.db.rules.AfrinicTestGroup</rulesGroups>
             </properties>
         </profile>
 
@@ -43,6 +45,7 @@
             </activation>
             <properties>
                 <rulesFilename>RipeWhoisRules.xls</rulesFilename>
+                <rulesGroups>net.afrinic.db.rules.RipeTestGroup</rulesGroups>
             </properties>
         </profile>
     </profiles>
@@ -85,6 +88,7 @@
                     <includes>
                         <include>**/*Test.class</include>
                     </includes>
+                    <groups>${rulesGroups}</groups>
                 </configuration>
             </plugin>
             <plugin>
@@ -103,8 +107,7 @@
                                 <taskdef name="openlgen" classpathref="maven.compile.classpath" classname="org.openl.conf.ant.JavaWrapperAntTask"/>
                                 <echo message="Generating from ${rulesHome}/rules/${rulesFilename}"/>
                                 <delete dir="${rulesHome}/build"/>
-                                <delete dir="${rulesHome}/src/main/java/net"/>
-                                <delete dir="${rulesHome}/src/main/java/org"/>
+                                <delete file="${rulesHome}/src/main/java/net/afrinic/db/rules/WhoisRules"/>
                                 <mkdir dir="${rulesHome}/build"/>
                                 <openlgen openlName="org.openl.xls" userHome="."
                                           srcFile="${rulesHome}/rules/${rulesFilename}"
