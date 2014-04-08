@@ -704,4 +704,8 @@ public class ObjectTemplate implements Comparable<ObjectTemplate> {
         inverseLookupAttributes = getAttributes(attributeTemplates, INVERSE_KEY);
         mandatoryAttributes = getAttributes(attributeTemplates, MANDATORY);
     }
+
+    public AttributeTemplate getAttributeTemplate(AttributeType attributeType) {
+        return attributeTemplateMap.get(attributeType);
+    }
 }

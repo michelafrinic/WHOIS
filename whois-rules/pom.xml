@@ -18,6 +18,7 @@
         <rulesHome>${project.basedir}</rulesHome>
         <rulesFilename>ExampleWhoisRules.xls</rulesFilename>
         <rulesGroups/>
+        <drools.version>5.5.0.Final</drools.version>
     </properties>
 
     <profiles>
@@ -69,6 +70,11 @@
             <groupId>org.openl.rules</groupId>
             <artifactId>org.openl.rules</artifactId>
             <version>5.9.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-compiler</artifactId>
+            <version>${drools.version}</version>
         </dependency>
     </dependencies>
     <build>
