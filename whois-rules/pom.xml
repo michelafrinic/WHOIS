@@ -17,36 +17,27 @@
     <properties>
         <rulesHome>${project.basedir}</rulesHome>
         <rulesFilename>ExampleWhoisRules.xls</rulesFilename>
-        <rulesGroups/>
+        <rulesGroups></rulesGroups>
         <drools.version>5.5.0.Final</drools.version>
+        <droolsRulesFile></droolsRulesFile>
     </properties>
 
     <profiles>
         <profile>
             <id>afrinic</id>
-            <activation>
-                <property>
-                    <name>rules</name>
-                    <value>afrinic</value>
-                </property>
-            </activation>
             <properties>
                 <rulesFilename>AfrinicWhoisRules.xls</rulesFilename>
                 <rulesGroups>net.afrinic.db.rules.AfrinicTestGroup</rulesGroups>
+                <droolsRulesFile>afrinic.drl</droolsRulesFile>
             </properties>
         </profile>
 
         <profile>
             <id>ripe</id>
-            <activation>
-                <property>
-                    <name>rules</name>
-                    <value>ripe</value>
-                </property>
-            </activation>
             <properties>
                 <rulesFilename>RipeWhoisRules.xls</rulesFilename>
                 <rulesGroups>net.afrinic.db.rules.RipeTestGroup</rulesGroups>
+                <droolsRulesFile>ripe.drl</droolsRulesFile>
             </properties>
         </profile>
     </profiles>
@@ -95,6 +86,9 @@
                         <include>**/*Test.class</include>
                     </includes>
                     <groups>${rulesGroups}</groups>
+                    <systemProperties>
+                        <drools.rules.file>${droolsRulesFile}</drools.rules.file>
+                    </systemProperties>
                 </configuration>
             </plugin>
             <plugin>
