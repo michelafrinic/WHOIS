@@ -2,30 +2,39 @@
 # Init script for RIPE Database
 
 # Email address of operator
-OPEREMAIL=unread@ripe.net
+OPEREMAIL=michel.odou@afrinic.net
 
 # user to run whois.jar (non-root!)
-ROLE_USER=dbase
+ROLE_USER=michel
 
 ### JVM to use to start whois
 JAVA="java"
+DEBUG_OPTS="-Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=5005,suspend=n"
 
 ### Port number to listen on
 JMXPORT="1099"
 
 # Default memory
-MEM="-Xms1024m -Xmx8g"
+MEM="-Xms1024m -Xmx2g"
 
 ### JMX
 JMX="-Dcom.sun.management.jmxremote -Dhazelcast.jmx=true -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=${JMXPORT}"
 
-### Final assembled command line
-COMMAND="$JAVA -D${SERVICE} $JMX $SNMP $MEM -Dwhois.config=properties -Dhazelcast.config=hazelcast.xml -Dlog4j.configuration=file:log4j.xml -jar whois.jar"
-COMMAND_REGEXP="$JAVA -D${SERVICE}"'.*'" -jar whois.jar"
+WHOISHOME=/home/michel/workspace/whois
+WHOISJAR=$WHOISHOME/whois-db/target/whois-db-1.71-SNAPSHOT.jar
+WHOISPROPERTIES=$WHOISHOME/whois-commons/src/main/resources/whois.properties
+HAZELCASTXML=$WHOISHOME/tools/hazelcast.xml
+LOG4JXML=$WHOISHOME/tools/log4j.xml
 
 # location of console.log
-LOG=var/console.log
+LOG=~/var/console.log
 SERVICE=whois
+
+### Final assembled command line
+COMMAND="$JAVA -D${SERVICE} $JMX $SNMP $MEM -Dwhois.config=$WHOISPROPERTIES -Dhazelcast.config=$HAZELCASTXML -Dlog4j.configuration=file:$LOG4JXML -jar $WHOISJAR"
+COMMAND_DEBUG="$JAVA -D${SERVICE} $JMX $SNMP $MEM -Dwhois.config=$WHOISPROPERTIES -Dhazelcast.config=$HAZELCASTXML -Dlog4j.configuration=file:$LOG4JXML ${DEBUG_OPTS} -jar $WHOISJAR"
+
+COMMAND_REGEXP="$JAVA -D${SERVICE}"'.*'" -jar $WHOISJAR"
 
 ##############################################################################################
 # become role user (drop root)
@@ -53,7 +62,7 @@ function print_status() {
 ##############################################################################################
 # get server status
 function server_up() {
-	QUERY_PORT=$(perl -ne '/^port\.query\s*=\s*(\d+)/ && print $1' <properties)
+	QUERY_PORT=$(perl -ne '/^port\.query\s*=\s*(\d+)/ && print $1' < $WHOISPROPERTIES)
 	echo -e "-r -L -T inetnum 193.0.0.1" | socat -,ignoreeof tcp:localhost:${QUERY_PORT},connect-timeout=1 2>/dev/null | grep -q '^inetnum:'
 	return $?
 }
@@ -114,7 +123,7 @@ function check_server() {
 function check_log() {
 	# kill child sleep process on exit to avoid them stacking up
 	trap "pkill -P $BASHPID; exit 0" TERM HUP
-	WHOIS_PID=$(pgrep -f -u dbase "$COMMAND_REGEXP")
+	WHOIS_PID=$(pgrep -f -u $ROLE_USER "$COMMAND_REGEXP")
 	
 	# let whois finish startup
 	sleep 3
@@ -124,7 +133,7 @@ function check_log() {
 		wait	# so bash responds to signals, like the one above
 		
 		# exit if server already exited
-		PID=$(pgrep -f -u dbase "$COMMAND_REGEXP")
+		PID=$(pgrep -f -u $ROLE_USER "$COMMAND_REGEXP")
 		if [[ $PID -ne $WHOIS_PID ]]; then
 			exit 1
 		fi
@@ -161,7 +170,7 @@ function check_log() {
 # MAIN
 case "$1" in
 	start)
-		PID=$(pgrep -f -u dbase "$COMMAND_REGEXP")
+		PID=$(pgrep -f -u $ROLE_USER "$COMMAND_REGEXP")
 		if [[ $PID ]]; then
 			echo "$SERVICE is already running"
 			exit 1
@@ -171,28 +180,45 @@ case "$1" in
 		# rotate console.log
 		/usr/sbin/logrotate -f -s `mktemp` logrotate.conf
 		# start server
-		$COMMAND >>var/console.log 2>&1 </dev/null &
+		$COMMAND >> $LOG 2>&1 </dev/null &
 		# check if server startup successful
 		check_server
 		check_log </dev/null &>/dev/null &
 		;;
+	startdebug)
+		PID=$(pgrep -f -u $ROLE_USER "$COMMAND_REGEXP")
+		if [[ $PID ]]; then
+			echo "$SERVICE is already running"
+			exit 1
+		fi
+		
+		echo "Starting $SERVICE..."
+		# rotate console.log
+		/usr/sbin/logrotate -f -s `mktemp` logrotate.conf
+		# start server
+		$COMMAND_DEBUG >> $LOG 2>&1 </dev/null &
+		# check if server startup successful
+		# NOT WORKING IN CASE OF DEBUG MODE - TO BE FIXED
+		#check_server
+		check_log </dev/null &>/dev/null &
+		;;
 	stop)
 		# kill log checker process (if running)
-		PID=$(pgrep -f -u dbase "$SERVICE start")
+		PID=$(pgrep -f -u $ROLE_USER "$SERVICE start")
 		if [[ $PID ]]; then
 			kill $PID	# also kills sleep
 		fi
 		
 		# kill jvm
-		PID=$(pgrep -f -u dbase "$COMMAND_REGEXP")
+		PID=$(pgrep -f -u $ROLE_USER "$COMMAND_REGEXP")
 		if [[ $PID ]]; then
 			echo " *** If there is a long update running, $SERVICE can take up to 2 hours to exit gracefully!"
-			echo -n "Stopping $SERVICE"
+			echo -n "Stopping $SERVICE with PID $PID"
 			kill $PID
 			while true; do
 				sleep 1
 				echo -n "."
-				PID=$(pgrep -f -u dbase "$COMMAND_REGEXP")
+				PID=$(pgrep -f -u $ROLE_USER "$COMMAND_REGEXP")
 				if ! [[ $PID ]]; then
 					echo
 					break
@@ -205,9 +231,38 @@ case "$1" in
 			exit 1
 		fi
 		;;
+	stopdebug)
+		# kill log checker process (if running)
+		PID=$(pgrep -f -u $ROLE_USER "$SERVICE startdebug")
+		if [[ $PID ]]; then
+			kill $PID	# also kills sleep
+		fi
+		
+		# kill jvm
+		PID=$(pgrep -f -u $ROLE_USER "$COMMAND_REGEXP")
+		if [[ $PID ]]; then
+			echo " *** If there is a long update running, $SERVICE can take up to 2 hours to exit gracefully!"
+			echo -n "Stopping $SERVICE with PID $PID"
+			kill $PID
+			while true; do
+				sleep 1
+				echo -n "."
+				PID=$(pgrep -f -u $ROLE_USER "$COMMAND_REGEXP")
+				if ! [[ $PID ]]; then
+					echo
+					break
+				fi
+			done
+		else
+			echo "$SERVICE does not seem to be running in debug mode"
+			echo "Running java processes:"
+			ps uxww | grep [j]ava
+			exit 1
+		fi
+		;;
         jmx)
                 # drop into JMX console
-                PID=$(pgrep -f -u dbase "$COMMAND_REGEXP")
+                PID=$(pgrep -f -u $ROLE_USER "$COMMAND_REGEXP")
                 if [[ $PID ]]; then
                     # only-digits URL is handled specially, as a process id of a JVM to connect to
                     java -jar jmxterm-1.0-alpha-4-uber.jar --url $PID
@@ -219,7 +274,7 @@ case "$1" in
                 ;;
         threaddump)
                 # dump thread state to the console
-                PID=$(pgrep -f -u dbase "$COMMAND_REGEXP")
+                PID=$(pgrep -f -u $ROLE_USER "$COMMAND_REGEXP")
                 if [[ $PID ]]; then
                         echo "Sending signal to $SERVICE to dump thread state to console."
                         kill -3 $PID
@@ -233,7 +288,7 @@ case "$1" in
 		$0 start
 		;;
 	*)
-		echo "Usage: $0 {start|stop|restart|threaddump}"
+		echo "Usage: $0 {start|startdebug|stop|stopdebug|restart|threaddump}"
 		exit 1
 		;;
 esac
