@@ -930,10 +930,10 @@ public class AttributeSyntaxTest {
 
         verifySuccess(ObjectType.ORGANISATION, AttributeType.ORG_TYPE, "iana");
         verifySuccess(ObjectType.ORGANISATION, AttributeType.ORG_TYPE, "RIR");
-        verifySuccess(ObjectType.ORGANISATION, AttributeType.ORG_TYPE, "NIR");
+        verifyFailure(ObjectType.ORGANISATION, AttributeType.ORG_TYPE, "NIR");
         verifySuccess(ObjectType.ORGANISATION, AttributeType.ORG_TYPE, "LIR");
-        verifySuccess(ObjectType.ORGANISATION, AttributeType.ORG_TYPE, "WHITEPAGES");
-        verifySuccess(ObjectType.ORGANISATION, AttributeType.ORG_TYPE, "DIRECT_ASSIGNMENT");
+        verifyFailure(ObjectType.ORGANISATION, AttributeType.ORG_TYPE, "WHITEPAGES");
+        verifyFailure(ObjectType.ORGANISATION, AttributeType.ORG_TYPE, "DIRECT_ASSIGNMENT");
         verifySuccess(ObjectType.ORGANISATION, AttributeType.ORG_TYPE, "OTHER");
 
         final AttributeSyntax.OrgTypeSyntax orgTypeSyntax = new AttributeSyntax.OrgTypeSyntax();
@@ -941,13 +941,16 @@ public class AttributeSyntaxTest {
         assertThat(description, is("" +
                 "org-type can have one of these values:\n" +
                 "\n" +
-                "o 'IANA' for Internet Assigned Numbers Authority\n" +
-                "o 'RIR' for Regional Internet Registries\n" +
-                "o 'NIR' for National Internet Registries (there are no NIRs in the RIPE NCC service region)\n" +
-                "o 'LIR' for Local Internet Registries\n" +
-                "o 'WHITEPAGES' for special links to industry people\n" +
-                "o 'DIRECT_ASSIGNMENT' for direct contract with RIPE NCC\n" +
-                "o 'OTHER' for all other organisations.\n\n"));
+                "o 'IANA' \n"+
+                "o 'RIR' \n"+
+                "o 'LIR' \n"+
+                "o 'EU-PI' \n"+
+                "o 'EU-AS' \n"+
+                "o 'MEMBER-ONLY' \n"+
+                "o 'CLOSED' \n"+
+                "o 'INACTIVE-MEMBER' \n"+
+                "o 'NON-REGISTRY' \n"+
+                "o 'OTHER' \n\n"));
     }
 
     @Test

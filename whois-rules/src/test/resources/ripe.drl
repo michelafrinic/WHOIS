@@ -6,7 +6,7 @@ import net.ripe.db.whois.common.rpsl.AttributeTemplate;
 
 dialect "mvel"
 
-rule "Set rules for Afrinic"
+rule "Set rules for Ripe"
 	no-loop
 	when
 		// condition
