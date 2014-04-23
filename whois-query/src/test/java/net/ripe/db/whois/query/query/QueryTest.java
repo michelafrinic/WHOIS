@@ -946,7 +946,8 @@ public class QueryTest {
     @Test
     public void inverse_query_should_not_filter_object_types() {
         final Query query = Query.parse("-i nic-hdl 10.0.0.1");
-        assertThat(query.getObjectTypes(), hasSize(21));
+        // 20 instead of 20 because POEM and POETIC_FORM have been replaced by LIMERICK in Afrinic WHOIS
+        assertThat(query.getObjectTypes(), hasSize(20));
     }
 
     @Test

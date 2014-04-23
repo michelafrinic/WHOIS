@@ -32,9 +32,15 @@ public class QueryMessagesTest {
         assertThat(subject.hashCode(), is(clone.hashCode()));
     }
 
+    // Maybe one day ... for now, we don't have such a link so this test is commented out and replaced by the following
+    //@Test
+    //public void headerShouldContainLinkToTermsAndConditions() {
+    //    assertThat(QueryMessages.termsAndConditions().toString(), containsString("http://www.ripe.net/db/support/db-terms-conditions.pdf"));
+    //}
+
     @Test
-    public void headerShouldContainLinkToTermsAndConditions() {
-        assertThat(QueryMessages.termsAndConditions().toString(), containsString("http://www.ripe.net/db/support/db-terms-conditions.pdf"));
+     public void headerShouldContainTermsAndConditions() {
+        assertThat(QueryMessages.termsAndConditions().toString(), containsString("This is the AfriNIC Whois server"));
     }
 
     @Test

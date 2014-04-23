@@ -21,7 +21,7 @@ public class ValidSyntaxFunctionTest {
                 "descr:   description\n" +
                 "admin-c: TEST-RIPE\n" +
                 "mnt-by:  TST-MNT\n" +
-                "referral-by: TST-MNT\n" +
+                //"referral-by: TST-MNT\n" + // Not in Afrinic WHOIS
                 "upd-to:  dbtest@ripe.net\n" +
                 "auth:    MD5-PW $1$fU9ZMQN9$QQtm3kRqZXWAuLpeOiLN7. # update\n" +
                 "changed: dbtest@ripe.net 20120707\n" +

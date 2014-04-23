@@ -58,6 +58,6 @@ public class HelpQueryExecutorTest {
             }
         }
 
-        assertThat(helpText, containsString("RIPE Database Reference Manual"));
+        assertThat(helpText, containsString("AFRINIC Database Reference Manual"));
     }
 }

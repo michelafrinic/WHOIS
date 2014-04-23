@@ -50,7 +50,7 @@ public class RelatedIrtDecoratorTest {
 
     @Test
     public void decorate_not_supported() {
-        final RpslObject rpslObject = RpslObject.parse("poem:RIPE");
+        final RpslObject rpslObject = RpslObject.parse("limerick:RIPE");
         final Collection<RpslObjectInfo> infos = subject.decorate(Query.parse("RIPE"), rpslObject);
 
         verify(hierarchyLookupIpv4, times(1)).supports(rpslObject);

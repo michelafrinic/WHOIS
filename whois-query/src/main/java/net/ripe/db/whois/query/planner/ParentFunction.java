@@ -42,7 +42,7 @@ public class ParentFunction implements Function<ResponseObject, Iterable<? exten
         if (input instanceof RpslObject) {
             RpslObject object = (RpslObject) input;
             ObjectType objectType = object.getType();
-            if (ObjectType.INETNUM == objectType)  {
+            if (ObjectType.INETNUM == objectType && ipv4Tree != null)  {
                 Ipv4Resource ipv4Resource = Ipv4Resource.parse(object.getKey());
                 List<Ipv4Entry> ipv4EntryList = ipv4Tree.findFirstLessSpecific(ipv4Resource);
                 Ipv4Entry parent = null;
@@ -60,7 +60,7 @@ public class ParentFunction implements Function<ResponseObject, Iterable<? exten
                 }
                 object = new RpslObjectFilter(object).addAttributes(Arrays.asList(rpslAttribute));
                 return Collections.singletonList(object);
-            } else if (ObjectType.INET6NUM == objectType) {
+            } else if (ObjectType.INET6NUM == objectType && ipv6Tree != null) {
                 Ipv6Resource ipv6Resource = Ipv6Resource.parse(object.getKey());
                 List<Ipv6Entry> ipv6EntryList = ipv6Tree.findFirstLessSpecific(ipv6Resource);
                 Ipv6Entry parent = null;
