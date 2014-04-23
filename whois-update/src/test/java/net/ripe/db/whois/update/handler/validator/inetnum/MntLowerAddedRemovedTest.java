@@ -47,8 +47,8 @@ public class MntLowerAddedRemovedTest {
     @Test
     public void status_does_not_require_endMntnerAuthorisation_inet6num() {
         when(update.getType()).thenReturn(ObjectType.INET6NUM);
-        when(update.getReferenceObject()).thenReturn(RpslObject.parse("inet6num: ffff::/24\nstatus: ALLOCATED-BY-LIR"));
-        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inet6num: ffff::/24\nstatus: ALLOCATED-BY-LIR"));
+        when(update.getReferenceObject()).thenReturn(RpslObject.parse("inet6num: ffff::/24\nstatus: ASSIGNED PI"));
+        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inet6num: ffff::/24\nstatus: ASSIGNED PI"));
 
         subject.validate(update, updateContext);
 
@@ -142,8 +142,8 @@ public class MntLowerAddedRemovedTest {
     @Test
     public void modify_mntLower_removed_inet6num() {
         when(update.getType()).thenReturn(ObjectType.INET6NUM);
-        when(update.getReferenceObject()).thenReturn(RpslObject.parse("inet6num: ffff::/48\nstatus: ASSIGNED ANYCAST\nmnt-lower: TEST-MNT"));
-        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inet6num: ffff::/48\nstatus: ASSIGNED ANYCAST"));
+        when(update.getReferenceObject()).thenReturn(RpslObject.parse("inet6num: ffff::/48\nstatus: ASSIGNED PI\nmnt-lower: TEST-MNT"));
+        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inet6num: ffff::/48\nstatus: ASSIGNED PI"));
         when(update.getDifferences(AttributeType.MNT_LOWER)).thenReturn(ciSet("TEST-MNT"));
         when(authenticationSubject.hasPrincipal(any(Principal.class))).thenReturn(false);
         when(updateContext.getSubject(update)).thenReturn(authenticationSubject);
@@ -197,8 +197,8 @@ public class MntLowerAddedRemovedTest {
     @Test
     public void modify_mntLowers_same_inet6num() {
         when(update.getType()).thenReturn(ObjectType.INET6NUM);
-        when(update.getReferenceObject()).thenReturn(RpslObject.parse("inet6num: ffff::/24\nstatus: ASSIGNED ANYCAST\nmnt-lower: TEST-MNT"));
-        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inet6num: ffff::/24\nstatus: ASSIGNED ANYCAST\nmnt-lower: TEST-MNT"));
+        when(update.getReferenceObject()).thenReturn(RpslObject.parse("inet6num: ffff::/24\nstatus: ASSIGNED PI\nmnt-lower: TEST-MNT"));
+        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inet6num: ffff::/24\nstatus: ASSIGNED PI\nmnt-lower: TEST-MNT"));
         when(authenticationSubject.hasPrincipal(any(Principal.class))).thenReturn(false);
         when(updateContext.getSubject(update)).thenReturn(authenticationSubject);
 
@@ -237,8 +237,8 @@ public class MntLowerAddedRemovedTest {
     @Test
     public void modify_authorisation_succeeds_inet6num() {
         when(update.getType()).thenReturn(ObjectType.INET6NUM);
-        when(update.getReferenceObject()).thenReturn(RpslObject.parse("inet6num: ffff/32\nstatus: ASSIGNED ANYCAST\nmnt-lower: TEST-MNT"));
-        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inet6num: ffff::/32\nstatus: ASSIGNED ANYCAST\nmnt-lower: OTHER-MNT"));
+        when(update.getReferenceObject()).thenReturn(RpslObject.parse("inet6num: ffff/32\nstatus: ASSIGNED PI\nmnt-lower: TEST-MNT"));
+        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inet6num: ffff::/32\nstatus: ASSIGNED PI\nmnt-lower: OTHER-MNT"));
         when(authenticationSubject.hasPrincipal(any(Principal.class))).thenReturn(true);
         when(updateContext.getSubject(update)).thenReturn(authenticationSubject);
 
