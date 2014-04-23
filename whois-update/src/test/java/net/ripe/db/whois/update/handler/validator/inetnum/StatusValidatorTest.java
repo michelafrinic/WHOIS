@@ -143,13 +143,14 @@ public class StatusValidatorTest {
         when(objectDao.getById(1)).thenReturn(RpslObject.parse("inetnum: 0.0.0.0 - 255.255.255"));
         when(update.getType()).thenReturn(ObjectType.INETNUM);
         when(authenticationSubject.hasPrincipal(Principal.ALLOC_MAINTAINER)).thenReturn(false);
-        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ASSIGNED ANYCAST"));
+        //when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ASSIGNED ANYCAST"));
+        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: EARLY-REGISTRATION")); // EARLY-REGISTRATION requires RsMaintainer
 
         when(ipv4Tree.findFirstMoreSpecific(any(Ipv4Resource.class))).thenReturn(Lists.<Ipv4Entry>newArrayList());
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, UpdateMessages.statusRequiresAuthorization("ASSIGNED ANYCAST"));
+        verify(updateContext).addMessage(update, UpdateMessages.statusRequiresAuthorization("EARLY-REGISTRATION"));
     }
 
     @Test
@@ -298,7 +299,8 @@ public class StatusValidatorTest {
     @Test
     public void child_status_missing_results_in_warning_ipv6() {
         when(update.getType()).thenReturn(ObjectType.INET6NUM);
-        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inet6num: 2001::/48\nstatus: ALLOCATED-BY-LIR"));
+        //when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inet6num: 2001::/48\nstatus: ALLOCATED-BY-LIR"));
+        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inet6num: 2001::/48\nstatus: ASSIGNED PI")); // for Afrinic WHOIS
         when(authenticationSubject.hasPrincipal(Principal.ALLOC_MAINTAINER)).thenReturn(false);
 
         final RpslObject child = new RpslObject(2, Lists.newArrayList(new RpslAttribute("inet6num", "2001::/128")));
@@ -362,13 +364,15 @@ public class StatusValidatorTest {
         when(objectDao.getById(1)).thenReturn(RpslObject.parse("inet6num: ::0/0"));
         when(update.getType()).thenReturn(ObjectType.INET6NUM);
         when(authenticationSubject.hasPrincipal(Principal.ALLOC_MAINTAINER)).thenReturn(false);
-        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inet6num: 2001::/48\nstatus: ASSIGNED ANYCAST"));
+        //when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inet6num: 2001::/48\nstatus: ASSIGNED ANYCAST"));
+        // ASSIGNED PI requires Rs Maintainer in Afrinic WHOIS
+        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inet6num: 2001::/48\nstatus: ASSIGNED PI"));
 
         when(ipv6Tree.findFirstMoreSpecific(any(Ipv6Resource.class))).thenReturn(Lists.<Ipv6Entry>newArrayList());
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, UpdateMessages.statusRequiresAuthorization("ASSIGNED ANYCAST"));
+        verify(updateContext).addMessage(update, UpdateMessages.statusRequiresAuthorization("ASSIGNED PI"));
     }
 
     @Test
@@ -399,12 +403,13 @@ public class StatusValidatorTest {
 
         Ipv6Entry parentEntry = new Ipv6Entry(Ipv6Resource.parse("2001::/24"), 1);
         when(ipv6Tree.findFirstLessSpecific(any(Ipv6Resource.class))).thenReturn(Lists.<Ipv6Entry>newArrayList(parentEntry));
-        final RpslObject parent = RpslObject.parse("inet6num: 2001::/24\nstatus: ALLOCATED-BY-LIR");
+        //final RpslObject parent = RpslObject.parse("inet6num: 2001::/24\nstatus: ALLOCATED-BY-LIR");
+        final RpslObject parent = RpslObject.parse("inet6num: 2001::/24\nstatus: ASSIGNED PI");
         when(objectDao.getById(1)).thenReturn(parent);
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, UpdateMessages.incorrectParentStatus(ObjectType.INET6NUM, "ALLOCATED-BY-LIR"));
+        verify(updateContext).addMessage(update, UpdateMessages.incorrectParentStatus(ObjectType.INET6NUM, "ASSIGNED PI"));
     }
 
     @Test

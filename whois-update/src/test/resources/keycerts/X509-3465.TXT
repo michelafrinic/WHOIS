@@ -1,19 +1,28 @@
 key-cert:        X509-3465
 method:          X509
 owner:           /C=NL/ST=Some-State/O=BOGUS
-fingerpr:        07:AC:10:C0:22:64:84:E7:00:18:5A:29:F0:54:2C:F3
+fingerpr:        37:90:BE:18:17:A3:23:28:08:CC:A9:03:46:D2:98:C5
 certif:          -----BEGIN CERTIFICATE-----
-certif:          MIIB2zCCAUQCCQCawUbZqWvWuzANBgkqhkiG9w0BAQUFADAyMQswCQYDVQQGEwJO
-certif:          TDETMBEGA1UECBMKU29tZS1TdGF0ZTEOMAwGA1UEChMFQk9HVVMwHhcNMTMwNDE4
-certif:          MTU0MjIwWhcNMTQwNDE4MTU0MjIwWjAyMQswCQYDVQQGEwJOTDETMBEGA1UECBMK
-certif:          U29tZS1TdGF0ZTEOMAwGA1UEChMFQk9HVVMwgZ8wDQYJKoZIhvcNAQEBBQADgY0A
-certif:          MIGJAoGBAKfXtOd5+eArsGTY2NG4LJQUA0Uozfn9sGfLrdF7eWo940aY4VlVBeIr
-certif:          FM6jJt9BNBx3r9ZngzlkCIM8oZ6gyRf/lFI8yga2eOzr6QUf/VtVmBCOMW1BxAXf
-certif:          CyMT7jK2PPpe8SXD8NQ9VvzDbP8LHFA0zAV+t/6qvlpGXJft9YnbAgMBAAEwDQYJ
-certif:          KoZIhvcNAQEFBQADgYEARyzeqtZT00UOvlSz3NHSuX0AGhiOQvXei2G9XwJ9L7dX
-certif:          gbeh5wCvh9j19fcmmgpiLRIeijzc19bk/bgYddrAH3+OyjBsH7RmVHMO3FXbpTNq
-certif:          q91Ey/fALhdTtl20RNnbRE/iFlwoI56iiA9dTTQs5LH4BGnrK6XZK0xawfpx77k=
+certif:          MIIDXTCCAkWgAwIBAgIJALw/5HJRKE3XMA0GCSqGSIb3DQEBBQUAMEUxCzAJBgNV
+certif:          BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBX
+certif:          aWRnaXRzIFB0eSBMdGQwHhcNMTQwNDIzMTMxMzA3WhcNMTcwMTE2MTMxMzA3WjBF
+certif:          MQswCQYDVQQGEwJBVTETMBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwYSW50
+certif:          ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+certif:          CgKCAQEA7DYMOGkxLr3iskSEg+nWNHmIGFvbMhHBQoka2dFYmkEz+w7zztNMbRay
+certif:          syu/bcYF1FfJihFQJYxLVqmHu4mlIhbdUdfAPqFaN4Exymcnn/xcjJlaATLpyMxM
+certif:          54S07+CH5AGuJpgmJj6GgnD76bARdcgHR6kJwjSOcFNxYOQIBLyk7US9NkboQNly
+certif:          +nIOjKUQrEBr1RBt3d2FnwYXuSXPCGpUh33gk5V1dBMdyZKpJobntTUoirzDezEV
+certif:          BBmeSMAA/vJ1UqkqCBL3kv5Ng0vWqvYcuGTjIs9/Q2iip9YgpGfZE83KSN5DCQ7t
+certif:          gsG6MZePPyb3OVgQJkmPPtaj8K3IPQIDAQABo1AwTjAdBgNVHQ4EFgQUGLdizWvB
+certif:          cXh8pzBVHL66NePQ+ncwHwYDVR0jBBgwFoAUGLdizWvBcXh8pzBVHL66NePQ+ncw
+certif:          DAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOCAQEAmGkBLtdlgPeB+EINcqL8
+certif:          yZVMPmMNn/IvYwgkDzBfAnDnLRbA4J0rXYmxtLMgdFVqe3BUyHfdFQ+PpJxyhqZt
+certif:          mvPKtuygmKNbsiS/e8+yp+tPSepeuxRUeSDtAn+bpA4vSaQjtBk/7UnLzYM06Kqo
+certif:          nLqO8HzH/Vk7OWxBfXXtuhAZnuOCR9nyHh17N+T27ZAoEEx3FZGkRdX2TZCQWbbG
+certif:          D1MhWlb63VKewo4Vge49K2eIaITNNORy+w7GdiZDM01IZkQ5TsTmeRTNDY5VSYwz
+certif:          9/ynxSKJHCh6Ldy/1H15PL2rJk+ppXaepZTdmK7rzMXoJNFLtrP++ypyx2YROFOo
+certif:          XA==
 certif:          -----END CERTIFICATE-----
 mnt-by:          UPD-MNT
-changed:         noreply@ripe.net 20111128
+changed:         noreply@afrinic.net 20140423
 source:          TEST

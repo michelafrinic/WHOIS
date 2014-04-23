@@ -60,7 +60,7 @@ public class X509CertificateWrapperTest {
         X509CertificateWrapper subject = X509CertificateWrapper.parse(x509Keycert);
 
         assertThat(subject.getOwner(),
-                is("/C=NL/ST=Some-State/O=BOGUS"));
+                is("/C=AU/ST=Some-State/O=Internet Widgits Pty Ltd")); // because of the new certificate file
     }
 
     @Test
@@ -68,7 +68,7 @@ public class X509CertificateWrapperTest {
         X509CertificateWrapper subject = X509CertificateWrapper.parse(x509Keycert);
 
         assertThat(subject.getFingerprint(),
-                is("16:4F:B6:A4:D9:BC:0C:92:D4:48:13:FE:B6:EF:E2:82"));
+                is("37:90:BE:18:17:A3:23:28:08:CC:A9:03:46:D2:98:C5")); // because of he new certificate
     }
 
     @Test

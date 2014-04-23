@@ -37,7 +37,7 @@ public class PoemHasOnlyPublicMaintainerValidatorTest {
     @Test
     public void validate_LIM_MNT() {
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("" +
-                "poem:            POEM-FORM-LIMERICK\n" +
+                "limerick:            POEM-FORM-LIMERICK\n" +
                 "mnt-by:          LIM-MNT\n"));
 
         subject.validate(update, updateContext);
@@ -48,7 +48,7 @@ public class PoemHasOnlyPublicMaintainerValidatorTest {
     @Test
     public void validate_other_maintainer() {
         final RpslObject poem = RpslObject.parse("" +
-                "poem:            POEM-FORM-LIMERICK\n" +
+                "limerick:            POEM-FORM-LIMERICK\n" +
                 "mnt-by:          DEV-MNT\n");
 
         when(update.getUpdatedObject()).thenReturn(poem);
