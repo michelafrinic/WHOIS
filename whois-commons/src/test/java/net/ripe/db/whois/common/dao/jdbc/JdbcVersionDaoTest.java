@@ -66,7 +66,7 @@ public class JdbcVersionDaoTest extends AbstractDaoTest {
         assertThat(history, hasSize(0));
         assertNotNull(result.getLastDeletionTimestamp());
 
-        databaseHelper.addObject("domain:test.sk\ndescr:description1\nsource:RIPE\n");
+        RpslObject object =  databaseHelper.addObject("domain:test.sk\ndescr:description1\nsource:RIPE\n");
         databaseHelper.updateObject("domain:test.sk\ndescr:description2\nsource:RIPE\n");
         databaseHelper.updateObject("domain:test.sk\ndescr:description3\nsource:RIPE\n");
 

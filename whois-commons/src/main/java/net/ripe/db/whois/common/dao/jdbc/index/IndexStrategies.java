@@ -36,6 +36,7 @@ public final class IndexStrategies {
                 new Unindexed(AttributeType.COUNTRY),
                 new Unindexed(AttributeType.DEFAULT),
                 new Unindexed(AttributeType.DESCR),
+                new Unindexed(AttributeType.DOM_NET),
                 new IndexWithValue(AttributeType.DOMAIN, "domain", "domain"),
                 new IndexWithValue(AttributeType.DS_RDATA, "ds_rdata", "ds_rdata"),
                 new Unindexed(AttributeType.ENCRYPTION),
@@ -100,6 +101,7 @@ public final class IndexStrategies {
                 new IndexWithValue(AttributeType.LIMERICK, "limerick", "limerick"),/*-AFRINIC-*/
                 //new IndexWithValue(AttributeType.POEM, "poem", "poem"),/*-AFRINIC-*/
                 //new IndexWithValue(AttributeType.POETIC_FORM, "poetic_form", "poetic_form"),/*-AFRINIC-*/
+                new Unindexed(AttributeType.REFER),
                 new IndexWithReference(AttributeType.REFERRAL_BY, "referral_by", "mnt_id"),
                 new IndexWithValue(AttributeType.REF_NFY, "ref_nfy", "ref_nfy"),
                 new Unindexed(AttributeType.REMARKS),
@@ -111,6 +113,7 @@ public final class IndexStrategies {
                 new Unindexed(AttributeType.SIGNATURE),
                 new Unindexed(AttributeType.SOURCE),
                 new Unindexed(AttributeType.STATUS),
+                new IndexWithValue(AttributeType.SUB_DOM, "domain", "domain"),
                 new IndexWithReference(AttributeType.TECH_C, "tech_c", "pe_ro_id"),
                 new Unindexed(AttributeType.TEXT),
                 new IndexWithValue(AttributeType.UPD_TO, "upd_to", "upd_to"),

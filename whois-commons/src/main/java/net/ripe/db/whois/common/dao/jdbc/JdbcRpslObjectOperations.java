@@ -119,7 +119,13 @@ public class JdbcRpslObjectOperations {
         final ObjectTemplate objectTemplate = ObjectTemplate.getTemplate(rpslObjectInfo.getObjectType());
 
         for (AttributeTemplate attributeTemplate : objectTemplate.getAttributeTemplates()) {
-            IndexStrategies.get(attributeTemplate.getAttributeType()).removeFromIndex(jdbcTemplate, rpslObjectInfo);
+            IndexStrategy indexStrategy = IndexStrategies.get(attributeTemplate.getAttributeType());
+            if(indexStrategy != null) {
+                indexStrategy.removeFromIndex(jdbcTemplate, rpslObjectInfo);
+            }
+            else {
+                throw new IllegalArgumentException("IndexStrategy is null : " + indexStrategy.getLookupTableName());
+            }
         }
     }
 

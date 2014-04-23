@@ -96,10 +96,14 @@ public class JdbcRpslObjectUpdateDaoCtdTest extends AbstractDaoTest {
 
     @Test
     public void getReferences() {
-        final RpslObject role = RpslObject.parse("role: Role\nnic-hdl: NIC-TEST\nabuse-mailbox:abuse@ripe.net");
+        // since AFRINIC's organisation object does not have ABUSE-C, we replace it by ADMIN-C in this test. But admin-c needs a person reference
+        final RpslObject person = RpslObject.parse("person:person\nnic-hdl:PERS-TEST");
+        subject.createObject(person);
+
+        final RpslObject role = RpslObject.parse("role: Role\nnic-hdl: NIC-TEST\nabuse-mailbox:abuse@ripe.net\nadmin-c:PERS-TEST");
         subject.createObject(role);
 
-        final RpslObject org = RpslObject.parse("organisation: ORG-TEST\nabuse-c: NIC-TEST");
+        final RpslObject org = RpslObject.parse("organisation: ORG-TEST\nabuse-c: NIC-TEST\nadmin-c:NIC-TEST");
         subject.createObject(org);
 
         final Set<RpslObjectInfo> roleReferences = subject.getReferences(role);

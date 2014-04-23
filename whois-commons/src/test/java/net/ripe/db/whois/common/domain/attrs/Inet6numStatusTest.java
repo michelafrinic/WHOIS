@@ -247,8 +247,8 @@ public class Inet6numStatusTest {
 
     @Test
     public void getLiteralStatus() {
-        assertThat(AGGREGATED_BY_LIR.getLiteralStatus(), is(CIString.ciString("AGGREGATED-BY-LIR")));
-        assertThat(ALLOCATED_BY_LIR.getLiteralStatus(), is(CIString.ciString("ALLOCATED-BY-LIR")));
+        assertThat(AGGREGATED_BY_LIR.getLiteralStatus(), is(CIString.ciString("ASSIGNED PA")));
+        assertThat(ALLOCATED_BY_LIR.getLiteralStatus(), is(CIString.ciString("SUB-ALLOCATED PA")));
         assertThat(ALLOCATED_BY_RIR.getLiteralStatus(), is(CIString.ciString("ALLOCATED-BY-RIR")));
         //assertThat(ASSIGNED.getLiteralStatus(), is(CIString.ciString("ASSIGNED")));/*-AFRINIC-*/
         //assertThat(ASSIGNED_ANYCAST.getLiteralStatus(), is(CIString.ciString("ASSIGNED ANYCAST")));/*-AFRINIC-*/
@@ -257,8 +257,8 @@ public class Inet6numStatusTest {
 
     @Test
     public void getStatusFor() {
-        assertThat(Inet6numStatus.getStatusFor(CIString.ciString("AGGREGATED-BY-LIR")), is(AGGREGATED_BY_LIR));
-        assertThat(Inet6numStatus.getStatusFor(CIString.ciString("ALLOCATED-BY-LIR")), is(ALLOCATED_BY_LIR));
+        assertThat(Inet6numStatus.getStatusFor(CIString.ciString("ASSIGNED PA")), is(AGGREGATED_BY_LIR));
+        assertThat(Inet6numStatus.getStatusFor(CIString.ciString("SUB-ALLOCATED PA")), is(ALLOCATED_BY_LIR));
         assertThat(Inet6numStatus.getStatusFor(CIString.ciString("ALLOCATED-BY-RIR")), is(ALLOCATED_BY_RIR));
         //assertThat(Inet6numStatus.getStatusFor(CIString.ciString("ASSIGNED")), is(ASSIGNED));/*-AFRINIC-*/
         //assertThat(Inet6numStatus.getStatusFor(CIString.ciString("ASSIGNED ANYCAST")), is(ASSIGNED_ANYCAST));/*-AFRINIC-*/

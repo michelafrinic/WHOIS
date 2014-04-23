@@ -22,7 +22,7 @@ public class ObjectTemplateTest {
             "auth:            MD5-PW $1$q8Su3Hq/$rJt5M3TNLeRE4UoCh5bSH/\n" +
             "remarks:         password: secret\n" +
             "mnt-by:      DEV-MNT\n" +
-            "referral-by:     DEV-MNT\n" +
+            //"referral-by:     DEV-MNT\n" + // No referral by in AFRINIC's WHOIS
             "changed:         BECHA@example.net 20101010\n" +
             "source:          DEV";
 
@@ -125,8 +125,8 @@ public class ObjectTemplateTest {
                 "netname:        [mandatory]  [single]     [lookup key]\n" +
                 "descr:          [mandatory]  [multiple]   [ ]\n" +
                 "country:        [mandatory]  [multiple]   [ ]\n" +
-                "geoloc:         [optional]   [single]     [ ]\n" +
-                "language:       [optional]   [multiple]   [ ]\n" +
+                //"geoloc:         [optional]   [single]     [ ]\n" + //NOT IN AFRINIC WHOIS
+                //"language:       [optional]   [multiple]   [ ]\n" + //NOT IN AFRINIC WHOIS
                 "org:            [optional]   [single]     [inverse key]\n" +
                 "admin-c:        [mandatory]  [multiple]   [inverse key]\n" +
                 "tech-c:         [mandatory]  [multiple]   [inverse key]\n" +
@@ -139,7 +139,8 @@ public class ObjectTemplateTest {
                 "mnt-routes:     [optional]   [multiple]   [inverse key]\n" +
                 "mnt-irt:        [optional]   [multiple]   [inverse key]\n" +
                 "changed:        [mandatory]  [multiple]   [ ]\n" +
-                "source:         [mandatory]  [single]     [ ]\n"));
+                "source:         [mandatory]  [single]     [ ]\n" +
+                "parent:         [generated]  [multiple]   [ ]\n")); // AFRINIC WHOIS
     }
 
     @Test
@@ -155,8 +156,8 @@ public class ObjectTemplateTest {
                 "netname:        [mandatory]  [single]     [lookup key]\n" +
                 "descr:          [mandatory]  [multiple]   [ ]\n" +
                 "country:        [mandatory]  [multiple]   [ ]\n" +
-                "geoloc:         [optional]   [single]     [ ]\n" +
-                "language:       [optional]   [multiple]   [ ]\n" +
+                //"geoloc:         [optional]   [single]     [ ]\n" + //NOT IN AFRINIC WHOIS
+                //"language:       [optional]   [multiple]   [ ]\n" + //NOT IN AFRINIC WHOIS
                 "org:            [optional]   [single]     [inverse key]\n" +
                 "admin-c:        [mandatory]  [multiple]   [inverse key]\n" +
                 "tech-c:         [mandatory]  [multiple]   [inverse key]\n" +
@@ -170,6 +171,7 @@ public class ObjectTemplateTest {
                 "mnt-irt:        [optional]   [multiple]   [inverse key]\n" +
                 "changed:        [mandatory]  [multiple]   [ ]\n" +
                 "source:         [mandatory]  [single]     [ ]\n" +
+                "parent:         [generated]  [multiple]   [ ]\n" + // AFRINIC WHOIS
                 "\n" +
                 "The content of the attributes of the inetnum class are defined below:\n" +
                 "\n"));

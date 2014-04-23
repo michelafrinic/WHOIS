@@ -818,7 +818,8 @@ public class AttributeSyntaxTest {
         verifySuccess(ObjectType.ROLE, AttributeType.NIC_HDL, "ASAK");
 
         verifySuccess(ObjectType.ROLE, AttributeType.NIC_HDL, "aa1-aa");
-        verifySuccess(ObjectType.ROLE, AttributeType.NIC_HDL, "aa999999-aa");
+        verifyFailure(ObjectType.ROLE, AttributeType.NIC_HDL, "aa999999-aa"); // OLD RIPE : supposed to fail
+        verifySuccess(ObjectType.ROLE, AttributeType.NIC_HDL, "aa99999-aa"); // NEW AFRINIC
         verifySuccess(ObjectType.ROLE, AttributeType.NIC_HDL, "TSFP");
         verifySuccess(ObjectType.ROLE, AttributeType.NIC_HDL, "TsFP");
 
@@ -1178,17 +1179,18 @@ public class AttributeSyntaxTest {
         verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "ALLOCATED-BY-LIR");
         verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "ASSIGNED");
         verifySuccess(ObjectType.INETNUM, AttributeType.STATUS, "ALLOCATED PI");
-        verifySuccess(ObjectType.INETNUM, AttributeType.STATUS, "LIR-PARTITIONED PI");
-        verifySuccess(ObjectType.INETNUM, AttributeType.STATUS, "ASSIGNED ANYCAST");
+        verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "LIR-PARTITIONED PI");
+        verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "ASSIGNED ANYCAST");
 
         verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "AGGREGATED-BY-LIR");
-        verifySuccess(ObjectType.INET6NUM, AttributeType.STATUS, "AGGREGATED-BY-LIR");
+        verifyFailure(ObjectType.INET6NUM, AttributeType.STATUS, "AGGREGATED-BY-LIR");
 
         verifySuccess(ObjectType.INETNUM, AttributeType.STATUS, "ALLOCATED PI");
         verifyFailure(ObjectType.INET6NUM, AttributeType.STATUS, "ALLOCATED PI");
     }
 
     @Test
+
     public void signature() throws Exception {
         verifyFailure(ObjectType.IRT, AttributeType.SIGNATURE, "PGPKEY-");
         verifyFailure(ObjectType.IRT, AttributeType.SIGNATURE, "A6D57ECE");
