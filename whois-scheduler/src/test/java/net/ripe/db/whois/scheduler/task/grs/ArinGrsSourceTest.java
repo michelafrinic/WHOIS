@@ -56,6 +56,7 @@ public class ArinGrsSourceTest {
                 RpslObject.parse("" +
                         "inetnum:        192.104.33.0 - 192.104.33.255\n" +
                         "org:            THESPI\n" +
+                        "parent:         NET-192-0-0-0-0\n" + // Afrinic WHOIS has a generated "parent" element in the inetnum
                         "netname:        SPINK\n" +
                         "status:         assignment\n" +
                         "changed:        unread@ripe.net 19910409\n" +
@@ -64,6 +65,7 @@ public class ArinGrsSourceTest {
                 RpslObject.parse("" +
                         "inet6num:       2001:4d0::/32\n" +
                         "org:            NASA\n" +
+                        "parent:         NET6-2001-400-0\n" + // Afrinic WHOIS has a generated "parent" element in the inet6num
                         "netname:        NASA-PCCA-V6\n" +
                         "status:         allocation\n" +
                         "changed:        unread@ripe.net 20021114\n" +
@@ -73,6 +75,7 @@ public class ArinGrsSourceTest {
                 RpslObject.parse("" +
                         "inet6num:       2001:468:400::/40\n" +
                         "org:            V6IU\n" +
+                        "parent:         NET6-2001-468-1\n" + // Afrinic WHOIS has a generated "parent" element in the inet6num
                         "netname:        ABILENE-IU-V6\n" +
                         "status:         reallocation\n" +
                         "changed:        unread@ripe.net 20020531\n" +

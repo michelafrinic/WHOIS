@@ -34,6 +34,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import static net.ripe.db.whois.common.rpsl.AttributeTemplate.Requirement.GENERATED;
+
 @Component
 public class JdbcRpslObjectOperations {
     private static final Logger LOGGER = LoggerFactory.getLogger(JdbcRpslObjectOperations.class);
@@ -119,12 +121,14 @@ public class JdbcRpslObjectOperations {
         final ObjectTemplate objectTemplate = ObjectTemplate.getTemplate(rpslObjectInfo.getObjectType());
 
         for (AttributeTemplate attributeTemplate : objectTemplate.getAttributeTemplates()) {
-            IndexStrategy indexStrategy = IndexStrategies.get(attributeTemplate.getAttributeType());
-            if(indexStrategy != null) {
-                indexStrategy.removeFromIndex(jdbcTemplate, rpslObjectInfo);
-            }
-            else {
-                throw new IllegalArgumentException("IndexStrategy is null : " + indexStrategy.getLookupTableName());
+            // don't try to delete from tables with generated attribute types
+            if(!attributeTemplate.getRequirement().equals(GENERATED)) {
+                IndexStrategy indexStrategy = IndexStrategies.get(attributeTemplate.getAttributeType());
+                if (indexStrategy != null) {
+                    indexStrategy.removeFromIndex(jdbcTemplate, rpslObjectInfo);
+                } else {
+                    throw new IllegalArgumentException("No IndexStrategy for attribute template : " + attributeTemplate.getAttributeType().getName());
+                }
             }
         }
     }

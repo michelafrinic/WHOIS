@@ -11,13 +11,13 @@ public class FilenameStrategyTest {
     public void getFilename_SingleFile() {
         final FilenameStrategy subject = new FilenameStrategy.SingleFile();
 
-        assertThat(subject.getFilename(ObjectType.MNTNER), is("ripe.db"));
+        assertThat(subject.getFilename(ObjectType.MNTNER), is("afrinic.db"));
     }
 
     @Test
     public void getFilename_SplitFile() {
         final FilenameStrategy subject = new FilenameStrategy.SplitFile();
 
-        assertThat(subject.getFilename(ObjectType.MNTNER), is("ripe.db.mntner"));
+        assertThat(subject.getFilename(ObjectType.MNTNER), is("afrinic.db.mntner"));
     }
 }

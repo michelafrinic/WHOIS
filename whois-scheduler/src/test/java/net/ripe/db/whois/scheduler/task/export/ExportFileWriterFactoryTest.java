@@ -85,13 +85,13 @@ public class ExportFileWriterFactoryTest {
     public void isLastSerialFile_created() throws IOException {
         subject.createExportFileWriters(folder.getRoot(), LAST_SERIAL);
 
-        final File currentSerialFile = new File(folder.getRoot(), "dbase/RIPE.CURRENTSERIAL");
+        final File currentSerialFile = new File(folder.getRoot(), "dbase/" + ExportFileWriterFactory.CURRENTSERIAL_FILENAME);
         assertThat(currentSerialFile.exists(), Matchers.is(true));
 
         final String savedSerial = new String(FileCopyUtils.copyToByteArray(currentSerialFile), Charsets.ISO_8859_1);
         assertThat(savedSerial, Matchers.is(String.valueOf(LAST_SERIAL)));
 
-        final File newSerialFile = new File(folder.getRoot(), "dbase_new/RIPE.CURRENTSERIAL");
+        final File newSerialFile = new File(folder.getRoot(), "dbase_new/" + ExportFileWriterFactory.CURRENTSERIAL_FILENAME);
         assertThat(newSerialFile.exists(), Matchers.is(true));
 
         final String newSavedSerial = new String(FileCopyUtils.copyToByteArray(currentSerialFile), Charsets.ISO_8859_1);

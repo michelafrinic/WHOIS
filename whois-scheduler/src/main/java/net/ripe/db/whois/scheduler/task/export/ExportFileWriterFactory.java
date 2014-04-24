@@ -16,7 +16,7 @@ import java.util.List;
 @Component
 class ExportFileWriterFactory {
     private static final String SPLITFILE_FOLDERNAME = "split";
-    private static final String CURRENTSERIAL_FILENAME = "AFRINIC.CURRENTSERIAL";
+    public static final String CURRENTSERIAL_FILENAME = "AFRINIC.CURRENTSERIAL";
 
     private final DummifierLegacy dummifierLegacy;
     private final DummifierCurrent dummifierCurrent;

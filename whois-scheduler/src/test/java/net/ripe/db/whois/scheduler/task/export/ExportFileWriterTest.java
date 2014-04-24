@@ -71,7 +71,8 @@ public class ExportFileWriterTest {
 
         final File[] files = folder.getRoot().listFiles();
         Assert.assertNotNull(files);
-        Assert.assertThat(files.length, Matchers.is(21));
+        // only 20 types, not 21 : in Afrinic WHOIS we don't have POEM or POETIC_FORM but LIMERICK
+        Assert.assertThat(files.length, Matchers.is(20));
 
         for (final File file : files) {
             final String fileName = file.getName();
