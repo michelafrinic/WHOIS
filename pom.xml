@@ -67,7 +67,7 @@
         <module>whois-endtoend</module>
         <module>whois-oneshot</module>
         <module>whois-logsearch</module>
-        <module>whois-rules</module>
+        <!--<module>whois-rules</module>-->
     </modules>
 
     <dependencyManagement>
