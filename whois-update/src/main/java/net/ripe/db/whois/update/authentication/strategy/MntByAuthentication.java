@@ -68,9 +68,17 @@ class MntByAuthentication extends AuthenticationStrategyBase {
         Set<CIString> keys = authenticationObject.getValuesForAttribute(AttributeType.MNT_BY);
 
         if (keys.isEmpty()) {
+            if (update.getAction().equals(Action.CREATE)) {
+                return Collections.emptyList();
+            }
+
             if (update.getAction().equals(Action.MODIFY)) {
                 authenticationObject = update.getUpdatedObject();
                 keys = authenticationObject.getValuesForAttribute(AttributeType.MNT_BY);
+
+                if(keys.isEmpty()) {
+                    return Collections.emptyList();
+                }
             }
 
             if (update.getAction().equals(Action.DELETE)) {

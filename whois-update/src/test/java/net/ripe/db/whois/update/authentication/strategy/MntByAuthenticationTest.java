@@ -2,6 +2,7 @@ package net.ripe.db.whois.update.authentication.strategy;
 
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
+import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Ipv4Resource;
 import net.ripe.db.whois.common.domain.Maintainers;
 import net.ripe.db.whois.common.iptree.Ipv4Entry;
@@ -15,6 +16,8 @@ import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
 import net.ripe.db.whois.update.domain.UpdateMessages;
+import org.drools.marshalling.impl.ProtobufMessages;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,9 +26,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static net.ripe.db.whois.common.domain.CIString.ciSet;
 import static org.hamcrest.Matchers.contains;
@@ -257,5 +258,116 @@ public class MntByAuthenticationTest {
 
         final List<RpslObject> authenticated = subject.authenticate(update, updateContext);
         assertThat(authenticated, is(parentCandidates));
+    }
+
+    @Test
+    public void authenticate_create_person_without_mntby_succeeds() {
+        final RpslObject person = RpslObject.parse(""+
+                "person:         Ernest Byaruhanga\n" +
+                "address:        P O Box 9104, Kampala, Uganda\n" +
+                "phone:          +256 75 6000003\n" +
+                "fax-no:         +256 75 6789979\n" +
+                "nic-hdl:        AUTO-1\n" +
+                "e-mail:         eb@bind.org\n" +
+                "changed:        eee@bbb.cd\n" +
+                "source:         TEST");
+
+        when(update.getType()).thenReturn(person.getType());
+        when(update.getReferenceObject()).thenReturn(person);
+        when(update.getUpdatedObject()).thenReturn(person);
+        when(update.getAction()).thenReturn(Action.CREATE);
+
+        final ArrayList<RpslObject> candidates = Lists.newArrayList(person);
+        when(rpslObjectDao.getByKeys(ObjectType.PERSON, person.getValuesForAttribute(AttributeType.MNT_BY))).thenReturn(Lists.<RpslObject>newArrayList());
+
+        when(credentialValidators.authenticate(update, updateContext, candidates)).thenReturn(candidates);
+
+        final List<RpslObject> result = subject.authenticate(update, updateContext);
+
+        Assert.assertNotNull(result);
+        Assert.assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void authenticate_create_person_without_mntby_and_update_without_mntby_succeeds() {
+        final RpslObject person = RpslObject.parse(""+
+                "person:         Ernest Byaruhanga\n" +
+                "address:        P O Box 9104, Kampala, Uganda\n" +
+                "phone:          +256 75 6000003\n" +
+                "fax-no:         +256 75 6789979\n" +
+                "nic-hdl:        TEST-NIC\n" +
+                "e-mail:         eb@bind.org\n" +
+                "changed:        eee@bbb.cd\n" +
+                "source:         TEST");
+
+        final RpslObject personUpdated = RpslObject.parse(""+
+                "person:         Ernest Byaruhanga\n" +
+                "address:        P O Box 9104, Kampala, Uganda\n" +
+                "phone:          +256 75 2154545\n" +
+                "fax-no:         +256 75 1111111\n" +
+                "nic-hdl:        TEST-NIC\n" +
+                "e-mail:         eb2@bind.org\n" +
+                "changed:        eee2@bbb.cd\n" +
+                "source:         TEST");
+
+        when(update.getType()).thenReturn(person.getType());
+        when(update.getReferenceObject()).thenReturn(person);
+        when(update.getUpdatedObject()).thenReturn(personUpdated);
+        when(update.getAction()).thenReturn(Action.MODIFY);
+
+        final ArrayList<RpslObject> candidates = Lists.newArrayList(person);
+        when(rpslObjectDao.getByKeys(ObjectType.PERSON, person.getValuesForAttribute(AttributeType.MNT_BY))).thenReturn(Lists.<RpslObject>newArrayList());
+
+        when(credentialValidators.authenticate(update, updateContext, candidates)).thenReturn(candidates);
+
+        final List<RpslObject> result = subject.authenticate(update, updateContext);
+
+        Assert.assertNotNull(result);
+        Assert.assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void authenticate_create_person_without_mntby_and_update_with_mntby_succeeds() {
+        final RpslObject person = RpslObject.parse(""+
+                "person:         Ernest Byaruhanga\n" +
+                "address:        P O Box 9104, Kampala, Uganda\n" +
+                "phone:          +256 75 6000003\n" +
+                "fax-no:         +256 75 6789979\n" +
+                "nic-hdl:        TEST-NIC\n" +
+                "e-mail:         eb@bind.org\n" +
+                "changed:        eee@bbb.cd\n" +
+                "source:         TEST");
+
+        final RpslObject personUpdated = RpslObject.parse(""+
+                "person:         Ernest Byaruhanga\n" +
+                "address:        P O Box 9104, Kampala, Uganda\n" +
+                "phone:          +256 75 2154545\n" +
+                "fax-no:         +256 75 1111111\n" +
+                "nic-hdl:        TEST-NIC\n" +
+                "e-mail:         eb2@bind.org\n" +
+                "changed:        eee2@bbb.cd\n" +
+                "mnt-by:         DEV1-MNT\n" +
+                "source:         TEST");
+
+        final RpslObject maintainer = RpslObject.parse("mntner:   DEV1-MNT\n");
+
+        when(update.getType()).thenReturn(person.getType());
+        when(update.getReferenceObject()).thenReturn(person);
+        when(update.getUpdatedObject()).thenReturn(personUpdated);
+        when(update.getAction()).thenReturn(Action.MODIFY);
+
+        final ArrayList<RpslObject> candidates = Lists.newArrayList(maintainer);
+        Set<CIString> keys = new HashSet<CIString>();
+        keys.add(CIString.ciString("DEV1-MNT"));
+        when(rpslObjectDao.getByKeys(ObjectType.MNTNER, keys)).thenReturn(candidates);
+
+        final ArrayList<RpslObject> candidatesAuth = Lists.newArrayList(maintainer);
+        when(credentialValidators.authenticate(update, updateContext, candidates)).thenReturn(candidatesAuth);
+
+        final List<RpslObject> result = subject.authenticate(update, updateContext);
+
+        Assert.assertNotNull(result);
+        Assert.assertFalse(result.isEmpty());
+        Assert.assertEquals(1, result.size());
     }
 }

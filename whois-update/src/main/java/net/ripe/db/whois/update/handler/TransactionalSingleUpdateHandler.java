@@ -98,9 +98,7 @@ class TransactionalSingleUpdateHandler implements SingleUpdateHandler {
         preparedUpdate = new PreparedUpdate(update, originalObject, objectWithResolvedKeys, action, overrideOptions);
 
         loggerContext.logPreparedUpdate(preparedUpdate);
-        if (whoisRules.needsAuthentication(preparedUpdate.getType().getName())) {
-            authenticator.authenticate(origin, preparedUpdate, updateContext);
-        }
+        authenticator.authenticate(origin, preparedUpdate, updateContext);
         final boolean businessRulesOk = updateObjectHandler.validateBusinessRules(preparedUpdate, updateContext);
         final boolean pendingAuthentication = UpdateStatus.PENDING_AUTHENTICATION.equals(updateContext.getStatus(preparedUpdate));
 
