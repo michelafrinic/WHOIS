@@ -447,15 +447,6 @@ public class RpslObjectTest {
     }
 
     @Test
-    public void cleanvalue_comparator_same_order_different_key() {
-        final RpslObject object1 = RpslObject.parse("mntner: DEV-MNT\nmnt-by:DEV-MNT1,DEV-MNT2,DEV-MNT3");
-        // limerick replaces poem in AFRINIC WHOIS
-        final RpslObject object2 = RpslObject.parse("limerick: dev-mnt\nmnt-by:DEV-MNT1,DEV-MNT2,DEV-MNT3");
-
-        assertThat(object1, not(is(object2)));
-    }
-
-    @Test
     public void cleanvalue_comparator_different_order_same_attributes() {
         final RpslObject object1 = RpslObject.parse("mntner: DEV-MNT\nmnt-by:DEV-MNT1\nnic-hdl:NIC-RIPE\nmnt-by:DEV-MNT2,DEV-MNT3");
         final RpslObject object2 = RpslObject.parse("mntner: DEV-MNT\nnic-hdl:NIC-RIPE\nmnt-by:DEV-MNT1,DEV-MNT2,DEV-MNT3");

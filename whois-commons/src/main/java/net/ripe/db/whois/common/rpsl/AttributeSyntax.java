@@ -437,21 +437,6 @@ interface AttributeSyntax extends Documented {
 
     AttributeSyntax PERSON_ROLE_NAME_SYNTAX = new PersonRoleSyntax();
 
-    AttributeSyntax POEM_SYNTAX = new AttributeSyntaxRegexp(80,
-            Pattern.compile("(?i)^POEM-[A-Z0-9][A-Z0-9_-]*$"), "" +
-            //"POEM-<string>\n" +/*-AFRINIC-*/
-            "LIM-<string>\n" +/*-AFRINIC-*/
-            "\n" +
-            "<string> can include alphanumeric characters, and \"_\" and\n" +
-            "\"-\" characters.\n");
-
-    AttributeSyntax POETIC_FORM_SYNTAX = new AttributeSyntaxRegexp(80,
-            Pattern.compile("(?i)^FORM-[A-Z0-9][A-Z0-9_-]*$"), "" +
-            "FORM-<string>\n" +
-            "\n" +
-            "<string> can include alphanumeric characters, and \"_\" and\n" +
-            "\"-\" characters.\n");
-
     AttributeSyntax PINGABLE_SYNTAX = new RoutePrefixSyntax();
     AttributeSyntax PHONE_SYNTAX = new AttributeSyntaxRegexp(30,
             Pattern.compile("" +

@@ -75,7 +75,6 @@ public enum AttributeType implements Documented {
             .references(ObjectType.KEY_CERT)),
 
     AUTHOR(new Builder("author", "ah")
-            //.doc("References a poem author.")/*-AFRINIC-*/
             .doc("References a limerick author.")/*-AFRINIC-*/
             .syntax(NIC_HANDLE_SYNTAX)
             .references(ObjectType.PERSON, ObjectType.ROLE)),
@@ -613,7 +612,6 @@ public enum AttributeType implements Documented {
             .references(ObjectType.PERSON, ObjectType.ROLE)),
 
     TEXT(new Builder("text", "tx")
-            //.doc("Text of the poem. Must be humorous, but not malicious or insulting.")/*-AFRINIC-*/
             .doc("Text of the limerick. Must be humorous, but not malicious or insulting.")/*-AFRINIC-*/
             .syntax(FREE_FORM_SYNTAX)),
 

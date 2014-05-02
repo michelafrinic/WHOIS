@@ -137,42 +137,7 @@ public class JdbcRpslObjectDaoTest extends AbstractDaoTest {
         subject.getByKey(ObjectType.MNTNER, "nonexistent");
     }
 
-    /*
-     * Poetic Form
-     */
-    /*
-    @Test
-    public void successfulPoeticFormQuery() {
-        databaseHelper.addObject("poetic-form:FORM-SONNET-INDONESIAN");
 
-        RpslObject result = subject.getByKey(ObjectType.POETIC_FORM, "FORM-SONNET-INDONESIAN");
-        assertThat(result.getType(), is(ObjectType.POETIC_FORM));
-        assertThat(result.getKey().toString(), is("FORM-SONNET-INDONESIAN"));
-    }
-
-    @Test(expected = EmptyResultDataAccessException.class)
-    public void nonexistentPoeticFormLookup() {
-        subject.getByKey(ObjectType.POETIC_FORM, "nonexistent");
-    }
-    *//*-AFRINIC-*/
-    /*
-     * Poem
-     */
-    /*
-    @Test
-    public void successfulPoemQuery() {
-        databaseHelper.addObject("poem:POEM-MELAYU");
-
-        RpslObject result = subject.getByKey(ObjectType.POEM, "POEM-MELAYU");
-        assertThat(result.getType(), is(ObjectType.POEM));
-        assertThat(result.getKey().toString(), is("POEM-MELAYU"));
-    }
-
-    @Test(expected = EmptyResultDataAccessException.class)
-    public void nonexistentPoemLookup() {
-        subject.getByKey(ObjectType.POEM, "nonexistent");
-    }
-    *//*-AFRINIC-*/
     /*
      * Key-cert
      */

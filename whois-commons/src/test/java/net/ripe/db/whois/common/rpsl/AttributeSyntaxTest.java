@@ -1023,33 +1023,6 @@ public class AttributeSyntaxTest {
         verifySuccess(ObjectType.PERSON, AttributeType.PERSON, "Martin . Fowler");
     }
 
-    /*
-    @Test
-    public void poem() {
-        verifyFailure(ObjectType.POEM, AttributeType.POEM, "poem");
-        verifyFailure(ObjectType.POEM, AttributeType.POEM, "poem-");
-        verifyFailure(ObjectType.POEM, AttributeType.POEM, "poem poem");
-        verifyFailure(ObjectType.POEM, AttributeType.POEM, "POEM-POEM-POEM-POEM-POEM-POEM-POEM-POEM-POEM-POEM-POEM-POEM-POEM-POEM-POEM-POEM-POEM");
-
-        verifySuccess(ObjectType.POEM, AttributeType.POEM, "poem-poem");
-        verifySuccess(ObjectType.POEM, AttributeType.POEM, "POEM-POEM");
-        verifySuccess(ObjectType.POEM, AttributeType.POEM, "POEM-POEM-POEM");
-        verifySuccess(ObjectType.POEM, AttributeType.POEM, "POEM-POEM-A1-B2-C3");
-    }
-
-    @Test
-    public void poeticForm() {
-        verifyFailure(ObjectType.POETIC_FORM, AttributeType.POETIC_FORM, "form");
-        verifyFailure(ObjectType.POETIC_FORM, AttributeType.POETIC_FORM, "form-");
-        verifyFailure(ObjectType.POETIC_FORM, AttributeType.POETIC_FORM, "form form");
-        verifyFailure(ObjectType.POETIC_FORM, AttributeType.POETIC_FORM, "FORM-FORM-FORM-FORM-FORM-FORM-FORM-FORM-FORM-FORM-FORM-FORM-FORM-FORM-FORM-FORM-FORM");
-
-        verifySuccess(ObjectType.POETIC_FORM, AttributeType.POETIC_FORM, "form-form");
-        verifySuccess(ObjectType.POETIC_FORM, AttributeType.POETIC_FORM, "FORM-FORM");
-        verifySuccess(ObjectType.POETIC_FORM, AttributeType.POETIC_FORM, "FORM-FORM-FORM");
-        verifySuccess(ObjectType.POETIC_FORM, AttributeType.POETIC_FORM, "FORM-FORM-A1-B2-C3");
-    }
-    *//*-AFRINIC-*/
 
     @Test
     public void remarks() {
@@ -1203,20 +1176,6 @@ public class AttributeSyntaxTest {
         verifySuccess(ObjectType.IRT, AttributeType.SIGNATURE, "X509-2606");
         verifySuccess(ObjectType.IRT, AttributeType.SIGNATURE, "AUTO-123");
     }
-
-    /*
-    @Test
-    public void text() {
-        verifySuccess(ObjectType.POEM, AttributeType.TEXT, "");
-
-        StringBuilder builder = new StringBuilder();
-        for (char i = 0; i < Character.MAX_VALUE; i++) {
-            builder.append(i);
-        }
-
-        verifySuccess(ObjectType.POEM, AttributeType.TEXT, builder.toString());
-    }
-    *//*-AFRINIC-*/
 
     @Test
     public void techc() {

@@ -382,10 +382,6 @@ public final class UpdateMessages {
         return new Message(Type.ERROR, "Adding or removing a RIPE NCC maintainer requires administrative authorisation");
     }
 
-    public static Message poemRequiresPublicMaintainer() {
-        return new Message(Type.ERROR, "Poem must be maintained by 'LIM-MNT', which has a public password");
-    }
-
     public static Message tooManyPasswordsSpecified() {
         return new Message(Type.ERROR, "Too many passwords specified");
     }
