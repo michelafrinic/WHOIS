@@ -28,10 +28,8 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AggregatedByLirStatusValidatorTest {
-    @Test
-    public void thisDummyTestIsToBeDeletedWhenWeHaveTheCorrectInformationAboutThisStatus() {}
 
-    /*@Mock UpdateContext updateContext;
+    @Mock UpdateContext updateContext;
     @Mock PreparedUpdate update;
 
     @Mock Ipv6Tree ipv6Tree;
@@ -48,6 +46,70 @@ public class AggregatedByLirStatusValidatorTest {
                 "source:         TEST"));
     }
 
+    @Test
+    public void validate_assigned_pa_create_does_not_require_assignment_size() {
+        final RpslObject object = RpslObject.parse("" +
+                "inet6num:       2c0f::fffa/32\n" +
+                "netname:        POTC\n" +
+                "descr:          POTC\n" +
+                "country:        MU\n" +
+                "org:            org-qq1-afrinic\n" +
+                "admin-c:        POTC1\n" +
+                "tech-c:         POTC1\n" +
+                "status:         ASSIGNED PA\n" +
+                "mnt-by:         afrinic-hm-mnt\n" +
+                "mnt-lower:      whoistest-mnt\n" +
+                "changed:        hostmaster@afrinic.africa \n" +
+                "source:         TEST");
+
+        when(update.getUpdatedObject()).thenReturn(object);
+        when(update.getAction()).thenReturn(Action.CREATE);
+        subject.validate(update, updateContext);
+
+        // check the following method is never called
+        verify(updateContext, never()).addMessage(update, ValidationMessages.missingConditionalRequiredAttribute(AttributeType.ASSIGNMENT_SIZE));
+    }
+
+    @Test
+    public void validate_assigned_pa_modify_does_not_require_assignment_size() {
+        final RpslObject refObject = RpslObject.parse("" +
+                "inet6num:       2c0f::fffa/32\n" +
+                "netname:        POTC\n" +
+                "descr:          POTC\n" +
+                "country:        MU\n" +
+                "org:            org-qq1-afrinic\n" +
+                "admin-c:        POTC1\n" +
+                "tech-c:         POTC1\n" +
+                "status:         ASSIGNED PA\n" +
+                "mnt-by:         afrinic-hm-mnt\n" +
+                "mnt-lower:      whoistest-mnt\n" +
+                "changed:        hostmaster@afrinic.africa \n" +
+                "source:         TEST");
+
+        final RpslObject updObject = RpslObject.parse("" +
+                "inet6num:       2c0f::fffa/32\n" +
+                "netname:        POTC\n" +
+                "descr:          POTC\n" +
+                "country:        MU\n" +
+                "org:            org-qq1-afrinic\n" +
+                "admin-c:        POTC1\n" +
+                "tech-c:         POTC1\n" +
+                "status:         ASSIGNED PA\n" +
+                "mnt-by:         afrinic-hm-mnt\n" +
+                "mnt-lower:      whoistest-mnt\n" +
+                "changed:        michel@afrinic.africa \n" +
+                "source:         TEST");
+
+        when(update.getReferenceObject()).thenReturn(refObject);
+        when(update.getUpdatedObject()).thenReturn(updObject);
+        when(update.getAction()).thenReturn(Action.MODIFY);
+        subject.validate(update, updateContext);
+
+        // check the following method is never called
+        verify(updateContext, never()).addMessage(update, ValidationMessages.missingConditionalRequiredAttribute(AttributeType.ASSIGNMENT_SIZE));
+    }
+
+/*
     @Test
     public void getActions() {
         assertThat(subject.getActions(), contains(Action.CREATE, Action.MODIFY));

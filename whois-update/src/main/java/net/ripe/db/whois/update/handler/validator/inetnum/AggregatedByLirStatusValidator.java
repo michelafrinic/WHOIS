@@ -48,8 +48,6 @@ public class AggregatedByLirStatusValidator implements BusinessRuleValidator {
     public void validate(final PreparedUpdate update, final UpdateContext updateContext) {
         if (update.getAction().equals(Action.CREATE)) {
             validateCreate(update, updateContext);
-        } else {
-            validateModify(update, updateContext);
         }
     }
 
@@ -59,7 +57,6 @@ public class AggregatedByLirStatusValidator implements BusinessRuleValidator {
 
         final Inet6numStatus status = Inet6numStatus.getStatusFor(object.getValueForAttribute(AttributeType.STATUS));
         if (status.equals(Inet6numStatus.AGGREGATED_BY_LIR)) {
-            validateRequiredAssignmentSize(update, updateContext, object, ipv6Resource);
             validTotalNrAggregatedByLirInHierarchy(update, updateContext, ipv6Resource);
         } else {
             for (final RpslAttribute attribute : object.findAttributes(AttributeType.ASSIGNMENT_SIZE)) {
@@ -68,26 +65,6 @@ public class AggregatedByLirStatusValidator implements BusinessRuleValidator {
         }
 
         validatePrefixLengthForParent(update, updateContext, ipv6Resource);
-    }
-
-    private void validateRequiredAssignmentSize(final PreparedUpdate update, final UpdateContext updateContext, final RpslObject object, final Ipv6Resource ipv6Resource) {
-        if (object.containsAttribute(AttributeType.ASSIGNMENT_SIZE)) {
-            final int assignmentSize = object.getValueForAttribute(AttributeType.ASSIGNMENT_SIZE).toInt();
-            if (assignmentSize > MAX_ASSIGNMENT_SIZE) {
-                updateContext.addMessage(update, UpdateMessages.assignmentSizeTooLarge(MAX_ASSIGNMENT_SIZE));
-            } else if (assignmentSize <= ipv6Resource.getPrefixLength()) {
-                updateContext.addMessage(update, UpdateMessages.assignmentSizeTooSmall(ipv6Resource.getPrefixLength()));
-            } else {
-                for (final Ipv6Entry child : ipv6Tree.findFirstMoreSpecific(ipv6Resource)) {
-                    final Ipv6Resource childIpv6Resource = child.getKey();
-                    if (childIpv6Resource.getPrefixLength() != assignmentSize) {
-                        updateContext.addMessage(update, UpdateMessages.invalidChildPrefixLength());
-                    }
-                }
-            }
-        } else {
-            updateContext.addMessage(update, ValidationMessages.missingConditionalRequiredAttribute(AttributeType.ASSIGNMENT_SIZE));
-        }
     }
 
     private void validatePrefixLengthForParent(final PreparedUpdate update, final UpdateContext updateContext, final Ipv6Resource ipv6Resource) {
@@ -139,22 +116,5 @@ public class AggregatedByLirStatusValidator implements BusinessRuleValidator {
         final RpslObject object = rpslObjectDao.getById(entry.getObjectId());
         final Inet6numStatus status = Inet6numStatus.getStatusFor(object.getValueForAttribute(AttributeType.STATUS));
         return Inet6numStatus.AGGREGATED_BY_LIR.equals(status);
-    }
-
-    private void validateModify(final PreparedUpdate update, final UpdateContext updateContext) {
-        final RpslAttribute updatedStatus = update.getUpdatedObject().findAttribute(AttributeType.STATUS);
-
-        final Inet6numStatus inet6numStatus = Inet6numStatus.getStatusFor(updatedStatus.getCleanValue());
-        if (inet6numStatus.equals(Inet6numStatus.AGGREGATED_BY_LIR) && assignmentSizeHasChanged(update)) {
-            updateContext.addMessage(update, UpdateMessages.cantChangeAssignmentSize());
-        }
-    }
-
-    private boolean assignmentSizeHasChanged(final PreparedUpdate update) {
-        final List<RpslAttribute> originalAssignmentSize = update.getReferenceObject().findAttributes(AttributeType.ASSIGNMENT_SIZE);
-        final List<RpslAttribute> updatedAssignmentSize = update.getUpdatedObject().findAttributes(AttributeType.ASSIGNMENT_SIZE);
-
-        return !(originalAssignmentSize.size() == updatedAssignmentSize.size() &&
-                Sets.difference(Sets.newLinkedHashSet(originalAssignmentSize), Sets.newLinkedHashSet(updatedAssignmentSize)).size() == 0);
     }
 }
