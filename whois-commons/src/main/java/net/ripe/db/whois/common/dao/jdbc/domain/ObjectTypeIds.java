@@ -27,9 +27,6 @@ public class ObjectTypeIds {
         BY_OBJECT_TYPE.put(ObjectType.ORGANISATION, 18);
         BY_OBJECT_TYPE.put(ObjectType.PEERING_SET, 15);
         BY_OBJECT_TYPE.put(ObjectType.PERSON, 10);
-        BY_OBJECT_TYPE.put(ObjectType.LIMERICK, 20);/*-AFRINIC-*/
-        //BY_OBJECT_TYPE.put(ObjectType.POEM, 20);/*-AFRINIC-*/
-        //BY_OBJECT_TYPE.put(ObjectType.POETIC_FORM, 21);/*-AFRINIC-*/
         BY_OBJECT_TYPE.put(ObjectType.ROLE, 11);
         BY_OBJECT_TYPE.put(ObjectType.ROUTE, 12);
         BY_OBJECT_TYPE.put(ObjectType.ROUTE6, 19);

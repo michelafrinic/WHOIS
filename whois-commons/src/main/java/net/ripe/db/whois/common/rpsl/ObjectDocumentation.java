@@ -91,18 +91,6 @@ class ObjectDocumentation {
                 "      referenced.  Once the object is created, the value of the\n" +
                 "      \"person:\" attribute cannot be changed.\n");
 
-        /*-AFRINIC-*/
-        DOCUMENTATION.put(ObjectType.LIMERICK, "" +
-                "      The limerick object represents a humorous poem that has five\n" +
-                "      lines and the rhyme scheme \"aabba\".\n");
-        /*
-        DOCUMENTATION.put(ObjectType.POEM, "" +
-                "      A poem object contains poems that are submitted by users.\n");
-
-        DOCUMENTATION.put(ObjectType.POETIC_FORM, "" +
-                "      A poetic-form object defines the supported poem types. \n");
-        *//*-AFRINIC-*/
-
         DOCUMENTATION.put(ObjectType.ROLE, "" +
                 "      The role class is similar to the person class.  However, instead\n" +
                 "      of describing a human being, it describes a role performed by\n" +

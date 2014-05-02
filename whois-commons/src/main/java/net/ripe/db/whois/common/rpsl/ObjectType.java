@@ -18,13 +18,10 @@ public enum ObjectType {
     INET_RTR("inet-rtr", "ir"),
     IRT("irt", "it"),
     KEY_CERT("key-cert", "kc"),
-    LIMERICK("limerick", "li"),/*-AFRINIC-*/
     MNTNER("mntner", "mt"),
     ORGANISATION("organisation", "oa"),
     PEERING_SET("peering-set", "ps"),
     PERSON("person", "pn"),
-    //POEM("poem", "po"),/*-AFRINIC-*/
-    //POETIC_FORM("poetic-form", "pf"),/*-AFRINIC-*/
     ROLE("role", "ro"),
     ROUTE("route", "rt"),
     ROUTE6("route6", "r6"),

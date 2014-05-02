@@ -98,9 +98,6 @@ public final class IndexStrategies {
                 new Unindexed(AttributeType.PHONE),
                 new IndexWithReference(AttributeType.PING_HDL, "ping_hdl", "pe_ro_id"),
                 new Unindexed(AttributeType.PINGABLE),
-                new IndexWithValue(AttributeType.LIMERICK, "limerick", "limerick"),/*-AFRINIC-*/
-                //new IndexWithValue(AttributeType.POEM, "poem", "poem"),/*-AFRINIC-*/
-                //new IndexWithValue(AttributeType.POETIC_FORM, "poetic_form", "poetic_form"),/*-AFRINIC-*/
                 new Unindexed(AttributeType.REFER),
                 new IndexWithReference(AttributeType.REFERRAL_BY, "referral_by", "mnt_id"),
                 new IndexWithValue(AttributeType.REF_NFY, "ref_nfy", "ref_nfy"),

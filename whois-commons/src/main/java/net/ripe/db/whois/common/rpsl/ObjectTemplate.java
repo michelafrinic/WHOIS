@@ -230,21 +230,6 @@ public class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                /*-AFRINIC-*/
-                new ObjectTemplate(ObjectType.LIMERICK, 37,
-                        new AttributeTemplate(LIMERICK, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
-                        new AttributeTemplate(DESCR, OPTIONAL, MULTIPLE),
-                        new AttributeTemplate(TEXT, MANDATORY, MULTIPLE),
-                        new AttributeTemplate(ORG, OPTIONAL, MULTIPLE, INVERSE_KEY),
-                        new AttributeTemplate(ADMIN_C, MANDATORY, MULTIPLE, INVERSE_KEY),
-                        new AttributeTemplate(AUTHOR, MANDATORY, MULTIPLE, INVERSE_KEY),
-                        new AttributeTemplate(REMARKS, OPTIONAL, MULTIPLE),
-                        new AttributeTemplate(NOTIFY, OPTIONAL, MULTIPLE, INVERSE_KEY),
-                        //new AttributeTemplate(MNT_BY, MANDATORY, SINGLE, INVERSE_KEY),/*-AFRINIC-*/
-                        new AttributeTemplate(MNT_BY, MANDATORY, MULTIPLE, INVERSE_KEY),/*-AFRINIC-*/
-                        new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
-                        new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
-
                 new ObjectTemplate(ObjectType.MNTNER, 40,
                         new AttributeTemplate(MNTNER, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(DESCR, MANDATORY, MULTIPLE),

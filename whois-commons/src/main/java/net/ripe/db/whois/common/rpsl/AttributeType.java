@@ -481,11 +481,6 @@ public enum AttributeType implements Documented {
             .syntax(ASCII_SYNTAX)),/*-AFRINIC-*/
 
     /*-AFRINIC-*/
-    LIMERICK(new Builder("limerick", "li")
-            .doc("No longer accepted as valid syntax.")
-            .syntax(POEM_SYNTAX)),
-
-    /*-AFRINIC-*/
     PARENT(new Builder("parent", "pr")
             .doc("Generated at query time to show the parent object.\n" +
                     "\n" +
@@ -525,16 +520,6 @@ public enum AttributeType implements Documented {
                     "networks. This node can be used as a destination address for diagnostic tests. " +
                     "The IP address must be within the address range of the prefix containing this attribute.")
             .syntax(PINGABLE_SYNTAX)),
-
-    /*
-    POEM(new Builder("poem", "po")
-            .doc("Specifies the title of the poem.")
-            .syntax(POEM_SYNTAX)),
-
-    POETIC_FORM(new Builder("poetic-form", "pf")
-            .doc("Specifies the poem type.")
-            .syntax(POETIC_FORM_SYNTAX)),
-    *//*-AFRINIC-*/
 
     REFERRAL_BY(new Builder("referral-by", "rb")
             .doc("This attribute is required in the maintainer object. It may never be altered after the addition " +

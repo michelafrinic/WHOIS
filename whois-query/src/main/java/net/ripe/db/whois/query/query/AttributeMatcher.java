@@ -24,9 +24,6 @@ abstract class AttributeMatcher { // TODO [AK] Figure out what can be delegated 
     static final AttributeMatcher NIC_HANDLE_MATCHER = new RegExpMatcher("^[A-Z0-9-]+$");
     static final AttributeMatcher ORGANISATION_MATCHER = new RegExpMatcher("^ORG-([A-Z]{2,4}([1-9][0-9]{0,5})?(-[A-Z]([A-Z0-9_-]{0,7}[A-Z0-9])))$");
     static final AttributeMatcher PEERING_SET_MATCHER = new RegExpMatcher("(^|.*:)PRNG-[A-Z0-9_-]*[A-Z0-9](:.*|$)");
-    static final AttributeMatcher LIMERICK_MATCHER = new RegExpMatcher("^LIMERICK-[A-Z0-9][A-Z0-9_-]*$");/*-AFRINIC-*/
-    //static final AttributeMatcher LIMERICK_MATCHER = new RegExpMatcher("^POEM-[A-Z0-9][A-Z0-9_-]*$");/*-AFRINIC-*/
-    //static final AttributeMatcher POETIC_FORM_MATCHER = new RegExpMatcher("^FORM-[A-Z0-9][A-Z0-9_-]*$");
     static final AttributeMatcher ROUTE_SET_MATCHER = new RegExpMatcher("(^|.*:)RS-[A-Z0-9_-]*[A-Z0-9](:.*|$)");
     static final AttributeMatcher RTR_SET_MATCHER = new RegExpMatcher("(^|.*:)RTRS-[A-Z0-9_-]*[A-Z0-9](:.*|$)");
 
@@ -103,9 +100,6 @@ abstract class AttributeMatcher { // TODO [AK] Figure out what can be delegated 
         attributeMatchers.put(AttributeType.ORGANISATION, Sets.newHashSet(AttributeMatcher.ORGANISATION_MATCHER));
         attributeMatchers.put(AttributeType.PEERING_SET, Sets.newHashSet(AttributeMatcher.PEERING_SET_MATCHER));
         attributeMatchers.put(AttributeType.PERSON, Sets.newHashSet(AttributeMatcher.ANYTHING_CONTAINING_ALPHA_MATCHER));
-        attributeMatchers.put(AttributeType.LIMERICK, Sets.newHashSet(AttributeMatcher.LIMERICK_MATCHER));/*-AFRINIC-*/
-        //attributeMatchers.put(AttributeType.POEM, Sets.newHashSet(AttributeMatcher.LIMERICK_MATCHER));/*-AFRINIC-*/
-        //attributeMatchers.put(AttributeType.POETIC_FORM, Sets.newHashSet(AttributeMatcher.POETIC_FORM_MATCHER));/*-AFRINIC-*/
         attributeMatchers.put(AttributeType.ROLE, Sets.newHashSet(AttributeMatcher.ANYTHING_CONTAINING_ALPHA_MATCHER));
         attributeMatchers.put(AttributeType.ROUTE, Sets.newHashSet(AttributeMatcher.IPV4_MATCHER, AttributeMatcher.ROUTE4_MATCHER));
         attributeMatchers.put(AttributeType.ROUTE6, Sets.newHashSet(AttributeMatcher.IPV6_MATCHER, AttributeMatcher.ROUTE6_MATCHER));
