@@ -14,18 +14,14 @@ import static net.ripe.db.whois.common.domain.CIString.ciString;
 import static net.ripe.db.whois.common.domain.attrs.OrgType.*;
 
 public enum Inet6numStatus implements InetStatus {
+    ALLOCATED_UNSPECIFIED("ALLOCATED UNSPECIFIED", IANA, RIR, LIR),
     ALLOCATED_BY_RIR("ALLOCATED-BY-RIR", IANA, RIR, LIR),
-    //ALLOCATED_BY_LIR("ALLOCATED-BY-LIR", LIR, OTHER),/*-AFRINIC-*/
-    //AGGREGATED_BY_LIR("AGGREGATED-BY-LIR", LIR, OTHER),/*-AFRINIC-*/
-    //ASSIGNED_ANYCAST("ASSIGNED ANYCAST", LIR, OTHER),/*-AFRINIC-*/
-    //ASSIGNED("ASSIGNED", LIR, OTHER),/*-AFRINIC-*/
-    ALLOCATED_BY_LIR("SUB-ALLOCATED PA", LIR, OTHER),/*-AFRINIC-*/
     AGGREGATED_BY_LIR("ASSIGNED PA", LIR, OTHER),/*-AFRINIC-*/
     ASSIGNED_PI("ASSIGNED PI", LIR, OTHER);
 
     private final CIString literalStatus;
     private final Set<OrgType> allowedOrgTypes;
-    private static List<Inet6numStatus> RS_MNTNER_STATUSES = Lists.newArrayList(ASSIGNED_PI, /*ASSIGNED_ANYCAST,*//*-AFRINIC-*/ ALLOCATED_BY_RIR);
+    private static List<Inet6numStatus> RS_MNTNER_STATUSES = Lists.newArrayList(ASSIGNED_PI, ALLOCATED_BY_RIR);
     private static List<Inet6numStatus> ALLOC_MNTNER_STATUSES = Lists.newArrayList(ALLOCATED_BY_RIR);
 
     private static final Set<Inet6numStatus> NEEDS_ORG_REFERENCE;
@@ -33,14 +29,12 @@ public enum Inet6numStatus implements InetStatus {
 
     static {
         PARENT_STATUS = Maps.newHashMap();
-        PARENT_STATUS.put(ALLOCATED_BY_RIR, Lists.<InetStatus>newArrayList(ALLOCATED_BY_RIR));
-        PARENT_STATUS.put(ALLOCATED_BY_LIR, Lists.<InetStatus>newArrayList(ALLOCATED_BY_RIR, ALLOCATED_BY_LIR));
-        PARENT_STATUS.put(AGGREGATED_BY_LIR, Lists.<InetStatus>newArrayList(ALLOCATED_BY_RIR, ALLOCATED_BY_LIR, AGGREGATED_BY_LIR));
-        //PARENT_STATUS.put(ASSIGNED, Lists.<InetStatus>newArrayList(ALLOCATED_BY_RIR, ALLOCATED_BY_LIR, AGGREGATED_BY_LIR));/*-AFRINIC-*/
-        //PARENT_STATUS.put(ASSIGNED_ANYCAST, Lists.<InetStatus>newArrayList(ALLOCATED_BY_RIR));/*-AFRINIC-*/
-        PARENT_STATUS.put(ASSIGNED_PI, Lists.<InetStatus>newArrayList(ALLOCATED_BY_RIR));
+        PARENT_STATUS.put(ALLOCATED_UNSPECIFIED, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED));
+        PARENT_STATUS.put(ALLOCATED_BY_RIR, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED));
+        PARENT_STATUS.put(AGGREGATED_BY_LIR, Lists.<InetStatus>newArrayList(ALLOCATED_BY_RIR));
+        PARENT_STATUS.put(ASSIGNED_PI, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED));
 
-        NEEDS_ORG_REFERENCE = Sets.newHashSet(/*ASSIGNED_ANYCAST,*//*-AFRINIC-*/ ALLOCATED_BY_RIR, ASSIGNED_PI);
+        NEEDS_ORG_REFERENCE = Sets.newHashSet(ALLOCATED_BY_RIR, ASSIGNED_PI);
     }
 
     private Inet6numStatus(final String literalStatus, final OrgType... orgType) {
