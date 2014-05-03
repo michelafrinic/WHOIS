@@ -57,4 +57,18 @@ public class MaintenanceModeJmx extends JmxBase {
             }
         });
     }
+
+    @ManagedOperation(description = "Sets hostmaster range (ipranges.hostmaster)")
+    @ManagedOperationParameters({
+            @ManagedOperationParameter(name = "ranges", description = "Comma-separated list of IP prefixes/ranges (e.g. '10/8,::1/64)"),
+    })
+    public void setHostmasterIpRanges(final String ranges) {
+        invokeOperation("Set hostmaster ranges", ranges, new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                ipRanges.setHostmaster(StringUtils.split(ranges, ','));
+                return null;
+            }
+        });
+    }
 }

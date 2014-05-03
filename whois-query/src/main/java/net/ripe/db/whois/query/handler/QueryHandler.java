@@ -110,6 +110,11 @@ public class QueryHandler {
                     }
 
                     @Override
+                    public InetAddress getRemoteAddress() {
+                        return remoteAddress;
+                    }
+
+                    @Override
                     public void handle(final ResponseObject responseObject) {
                         if (responseObject instanceof RpslObject) {
                             if (useAcl && accessControlListManager.requiresAcl((RpslObject) responseObject, sourceContext.getCurrentSource())) {

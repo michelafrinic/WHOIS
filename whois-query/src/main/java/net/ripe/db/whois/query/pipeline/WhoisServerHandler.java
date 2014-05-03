@@ -9,6 +9,8 @@ import net.ripe.db.whois.query.handler.QueryHandler;
 import net.ripe.db.whois.query.query.Query;
 import org.jboss.netty.channel.*;
 
+import java.net.InetAddress;
+
 public class WhoisServerHandler extends SimpleChannelUpstreamHandler {
     private final QueryHandler queryHandler;
     private boolean closed;
@@ -25,6 +27,11 @@ public class WhoisServerHandler extends SimpleChannelUpstreamHandler {
             @Override
             public String getApi() {
                 return "QRY";
+            }
+
+            @Override
+            public InetAddress getRemoteAddress() {
+                return null;
             }
 
             @Override

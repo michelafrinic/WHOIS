@@ -17,6 +17,7 @@ import net.ripe.db.whois.query.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.net.InetAddress;
 import java.util.Set;
 
 @Component
@@ -61,8 +62,9 @@ public class SearchQueryExecutor implements QueryExecutor {
             try {
                 sourceContext.setCurrent(source);
                 final Iterable<? extends ResponseObject> searchResults = rpslObjectSearcher.search(query);
+                final InetAddress remoteAddress = responseHandler.getRemoteAddress();
 
-                for (final ResponseObject responseObject : rpslResponseDecorator.getResponse(query, searchResults)) {
+                for (final ResponseObject responseObject : rpslResponseDecorator.getResponse(query, searchResults, remoteAddress)) {
 
                     // TODO: [AH] make sure responseHandler implementation can handle executionHandler worker threads pushing data (think of suspend-on-write, buffer overflow, slow connections, etc...)
                     responseHandler.handle(responseObject);

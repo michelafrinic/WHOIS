@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.query.domain.ResponseHandler;
 
+import java.net.InetAddress;
 import java.util.List;
 
 public class CaptureResponseHandler implements ResponseHandler {
@@ -12,6 +13,11 @@ public class CaptureResponseHandler implements ResponseHandler {
     @Override
     public String getApi() {
         return "CAPTURE";
+    }
+
+    @Override
+    public InetAddress getRemoteAddress() {
+        return null;
     }
 
     @Override

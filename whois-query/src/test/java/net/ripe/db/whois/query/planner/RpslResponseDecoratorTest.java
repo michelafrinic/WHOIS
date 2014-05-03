@@ -6,7 +6,9 @@ import com.google.common.collect.Maps;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.domain.IpRanges;
 import net.ripe.db.whois.common.domain.ResponseObject;
+import net.ripe.db.whois.common.etree.Interval;
 import net.ripe.db.whois.common.rpsl.DummifierLegacy;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
@@ -28,6 +30,7 @@ import org.mockito.stubbing.Answer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -50,16 +53,19 @@ public class RpslResponseDecoratorTest {
     @Mock DummifyFunction dummifyFunction;
     @Mock FilterTagsDecorator filterTagsDecorator;
     @Mock FilterPlaceholdersDecorator filterPlaceholdersDecorator;
+    @Mock
+    IpRanges ipRanges;
 
     RpslResponseDecorator subject;
 
     @Before
     public void setup() {
-        subject = new RpslResponseDecorator(rpslObjectDaoMock, filterPersonalDecorator, sourceContext, null, null, abuseCFinder, dummifyFunction, filterTagsDecorator, filterPlaceholdersDecorator, decorator);
+        subject = new RpslResponseDecorator(rpslObjectDaoMock, filterPersonalDecorator, sourceContext, null, null, abuseCFinder, dummifyFunction, filterTagsDecorator, filterPlaceholdersDecorator, ipRanges, decorator);
         when(sourceContext.getWhoisSlaveSource()).thenReturn(Source.slave("RIPE"));
         when(sourceContext.getCurrentSource()).thenReturn(Source.slave("RIPE"));
         when(sourceContext.isAcl()).thenReturn(true);
         when(sourceContext.isMain()).thenReturn(true);
+        when(ipRanges.isHostmaster(any(Interval.class))).thenReturn(false);
         Fixture.mockRpslObjectDaoLoadingBehavior(rpslObjectDaoMock);
 
         when(filterPersonalDecorator.decorate(any(Query.class), any(Iterable.class))).thenAnswer(new Answer<Object>() {
@@ -394,7 +400,7 @@ public class RpslResponseDecoratorTest {
     }
 
     private String execute(final String query, final ResponseObject... responseObjects) {
-        return getResponseTextAsString(subject.getResponse(Query.parse(query), Lists.newArrayList(responseObjects)));
+        return getResponseTextAsString(subject.getResponse(Query.parse(query), Lists.newArrayList(responseObjects), InetAddress.getLoopbackAddress()));
     }
 
     private String getResponseTextAsString(final Iterable<? extends ResponseObject> responseObjects) {
@@ -458,5 +464,27 @@ public class RpslResponseDecoratorTest {
         assertThat(response, is(""));
 
         verify(dummifyFunction, atLeastOnce()).apply(any(ResponseObject.class));
+    }
+
+    @Test
+    public void no_filter_mntner_md5_for_hostmaster() {
+        when(ipRanges.isHostmaster(any(Interval.class))).thenReturn(true);
+        String mntnerStr = "" +
+                "mntner:         ALIOUNE-MNT\n" +
+                "descr:          Technical contact of LIR\n" +
+                "admin-c:        SS12342-AFRINIC\n" +
+                "tech-c:         ABT2-AFRINIC\n" +
+                "upd-to:         alioune@sotelma.ml\n" +
+                "mnt-nfy:        alioune@sotelma.ml\n" +
+                "auth:           MD5-PW THIS-IS-THE-MD5-HASH-OF-THE-PASSWORD\n" +
+                "notify:         alioune@sotelma.ml\n" +
+                "mnt-by:         ALIOUNE-MNT\n" +
+                "changed:        hostmaster@afrinic.net 20060307\n" +
+                "source:         AFRINIC\n";
+
+        RpslObject mntner = RpslObject.parse(mntnerStr);
+
+        String result = execute("-G -B -T mntner ALIOUNE-MNT", mntner);
+        assertEquals(result, mntnerStr + "\n");
     }
 }

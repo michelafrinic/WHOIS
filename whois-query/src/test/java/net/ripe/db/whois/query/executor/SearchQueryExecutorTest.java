@@ -20,6 +20,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
+import java.net.InetAddress;
 import java.util.Collections;
 
 import static net.ripe.db.whois.common.domain.CIString.ciSet;
@@ -41,7 +42,7 @@ public class SearchQueryExecutorTest {
     @Before
     public void setUp() throws Exception {
         when(rpslObjectSearcher.search(any(Query.class))).thenReturn((Iterable)Collections.emptyList());
-        when(rpslResponseDecorator.getResponse(any(Query.class), any(Iterable.class))).thenAnswer(new Answer<Object>() {
+        when(rpslResponseDecorator.getResponse(any(Query.class), any(Iterable.class), any(InetAddress.class))).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 return invocationOnMock.getArguments()[1];
@@ -198,7 +199,7 @@ public class SearchQueryExecutorTest {
         final CaptureResponseHandler responseHandler = new CaptureResponseHandler();
         subject.execute(query, responseHandler);
         verify(rpslObjectSearcher).search(query);
-        verify(rpslResponseDecorator).getResponse(eq(query), any(Iterable.class));
+        verify(rpslResponseDecorator).getResponse(eq(query), any(Iterable.class), any(InetAddress.class));
 
         assertThat(responseHandler.getResponseObjects(), contains((ResponseObject) new MessageObject(QueryMessages.noResults("RIPE").toString())));
     }

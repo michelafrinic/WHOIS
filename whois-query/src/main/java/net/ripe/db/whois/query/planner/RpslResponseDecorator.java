@@ -5,6 +5,8 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
+import net.ripe.db.whois.common.domain.IpInterval;
+import net.ripe.db.whois.common.domain.IpRanges;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.iptree.Ipv4Tree;
 import net.ripe.db.whois.common.iptree.Ipv6Tree;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
+import java.net.InetAddress;
 import java.util.Collections;
 import java.util.Set;
 
@@ -51,6 +54,7 @@ public class RpslResponseDecorator {
     private final FilterTagsDecorator filterTagsDecorator;
     private final FilterPlaceholdersDecorator filterPlaceholdersDecorator;
     private final Set<PrimaryObjectDecorator> decorators;
+    private final IpRanges ipRanges;
 
     @Autowired
     public RpslResponseDecorator(final RpslObjectDao rpslObjectDao,
@@ -62,6 +66,7 @@ public class RpslResponseDecorator {
                                  final DummifyFunction dummifyFunction,
                                  final FilterTagsDecorator filterTagsDecorator,
                                  final FilterPlaceholdersDecorator filterPlaceholdersDecorator,
+                                 final IpRanges ipRanges,
                                  final PrimaryObjectDecorator... decorators) {
         this.rpslObjectDao = rpslObjectDao;
         this.filterPersonalDecorator = filterPersonalDecorator;
@@ -74,9 +79,10 @@ public class RpslResponseDecorator {
         this.parentFunction = new ParentFunction(ipv4Tree, ipv6Tree);/*-AFRINIC-*/
         this.briefAbuseCFunction = new BriefAbuseCFunction(abuseCFinder);
         this.decorators = Sets.newHashSet(decorators);
+        this.ipRanges = ipRanges;
     }
 
-    public Iterable<? extends ResponseObject> getResponse(final Query query, Iterable<? extends ResponseObject> result) {
+    public Iterable<? extends ResponseObject> getResponse(final Query query, Iterable<? extends ResponseObject> result, final InetAddress remoteAddress) {
         result = filterPlaceholdersDecorator.decorate(query, result);
         result = dummify(result);
 
@@ -86,9 +92,10 @@ public class RpslResponseDecorator {
 
         result = applyAbuseC(query, result);
         result = applyValidSyntax(query, result);
-        //result = filterEmail(query, result); /*--AFRINIC--*/
-        result = applyParent(query, result);  /*--AFRINIC--*/
-        result = filterAuth(result);
+        result = applyParent(query, result);
+        if(ipRanges != null && !ipRanges.isHostmaster(IpInterval.asIpInterval(remoteAddress))) {
+            result = filterAuth(result);
+        }
 
         result = applyOutputFilters(query, result);
 

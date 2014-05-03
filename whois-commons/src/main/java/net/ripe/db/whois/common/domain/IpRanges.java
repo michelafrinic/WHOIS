@@ -14,6 +14,7 @@ public class IpRanges {
     private static final Logger LOGGER = LoggerFactory.getLogger(IpRanges.class);
 
     private Set<Interval> trusted;
+    private Set<Interval> hostmaster;
     private Set<Interval> loadbalancers;
 
     @Value("${ipranges.trusted}")
@@ -22,8 +23,17 @@ public class IpRanges {
         LOGGER.info("Trusted ranges: {}", this.trusted);
     }
 
+    @Value("${ipranges.hostmaster}")
+    public void setHostmaster(final String... hostmaster) {
+        this.hostmaster = getIntervals(hostmaster);
+        LOGGER.info("Hostmaster ranges: {}", this.hostmaster);
+    }
+
     public boolean isTrusted(final Interval ipResource) {
         return contains(ipResource, trusted);
+    }
+    public boolean isHostmaster(final Interval ipResource) {
+        return contains(ipResource, hostmaster);
     }
 
     @Value("${ipranges.loadbalancer}")
