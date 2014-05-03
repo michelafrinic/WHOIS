@@ -48,15 +48,15 @@ public class RelatedIrtDecoratorTest {
         assertThat(subject.appliesToQuery(Query.parse("-c -T inetnum 10.0.0.0")), is(true));
     }
 
-    /*@Test
+    @Test
     public void decorate_not_supported() {
-        final RpslObject rpslObject = RpslObject.parse("limerick:RIPE");
+        final RpslObject rpslObject = RpslObject.parse("person:RIPE\nnic-hdl:TEST-NIC");
         final Collection<RpslObjectInfo> infos = subject.decorate(Query.parse("RIPE"), rpslObject);
 
         verify(hierarchyLookupIpv4, times(1)).supports(rpslObject);
         verify(hierarchyLookupIpv6, times(1)).supports(rpslObject);
         assertThat(infos, hasSize(0));
-    }*/
+    }
 
     @Test
     public void decorate_inetnum() {
