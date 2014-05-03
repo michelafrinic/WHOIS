@@ -413,7 +413,7 @@ public class StatusValidatorTest {
     }
 
     @Test
-    public void correct_parent_status_ipv6() {
+    public void incorrect_parent_status_ipv6_2() {
         when(update.getType()).thenReturn(ObjectType.INET6NUM);
         when(authenticationSubject.hasPrincipal(Principal.RS_MAINTAINER)).thenReturn(true);
         when(maintainers.getRsMaintainers()).thenReturn(CIString.ciSet("RIPE-NCC-HM-MNT"));
@@ -424,6 +424,25 @@ public class StatusValidatorTest {
         Ipv6Entry parentEntry = new Ipv6Entry(Ipv6Resource.parse("2001::/24"), 1);
         when(ipv6Tree.findFirstLessSpecific(any(Ipv6Resource.class))).thenReturn(Lists.<Ipv6Entry>newArrayList(parentEntry));
         final RpslObject parent = RpslObject.parse("inet6num: 2001::/24\nstatus: ALLOCATED-BY-RIR");
+        when(objectDao.getById(1)).thenReturn(parent);
+
+        subject.validate(update, updateContext);
+
+        verify(updateContext).addMessage(update, UpdateMessages.incorrectParentStatus(ObjectType.INET6NUM, "ALLOCATED-BY-RIR"));
+    }
+
+    @Test
+    public void correct_parent_status_ipv6() {
+        when(update.getType()).thenReturn(ObjectType.INET6NUM);
+        when(authenticationSubject.hasPrincipal(Principal.RS_MAINTAINER)).thenReturn(true);
+        when(maintainers.getRsMaintainers()).thenReturn(CIString.ciSet("RIPE-NCC-HM-MNT"));
+        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inet6num: 2001::/48\nstatus: ASSIGNED PI\nmnt-by: RIPE-NCC-HM-MNT\n"));
+
+        when(ipv6Tree.findFirstMoreSpecific(any(Ipv6Resource.class))).thenReturn(Lists.<Ipv6Entry>newArrayList());
+
+        Ipv6Entry parentEntry = new Ipv6Entry(Ipv6Resource.parse("2001::/24"), 1);
+        when(ipv6Tree.findFirstLessSpecific(any(Ipv6Resource.class))).thenReturn(Lists.<Ipv6Entry>newArrayList(parentEntry));
+        final RpslObject parent = RpslObject.parse("inet6num: 2001::/24\nstatus: ALLOCATED UNSPECIFIED");
         when(objectDao.getById(1)).thenReturn(parent);
 
         subject.validate(update, updateContext);
