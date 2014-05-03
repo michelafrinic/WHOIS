@@ -16,7 +16,7 @@ import static net.ripe.db.whois.common.domain.attrs.OrgType.*;
 public enum Inet6numStatus implements InetStatus {
     ALLOCATED_UNSPECIFIED("ALLOCATED UNSPECIFIED", IANA, RIR, LIR),
     ALLOCATED_BY_RIR("ALLOCATED-BY-RIR", IANA, RIR, LIR),
-    AGGREGATED_BY_LIR("ASSIGNED PA", LIR, OTHER),/*-AFRINIC-*/
+    ASSIGNED_PA("ASSIGNED PA", LIR, OTHER),
     ASSIGNED_PI("ASSIGNED PI", LIR, OTHER);
 
     private final CIString literalStatus;
@@ -31,7 +31,7 @@ public enum Inet6numStatus implements InetStatus {
         PARENT_STATUS = Maps.newHashMap();
         PARENT_STATUS.put(ALLOCATED_UNSPECIFIED, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED));
         PARENT_STATUS.put(ALLOCATED_BY_RIR, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED));
-        PARENT_STATUS.put(AGGREGATED_BY_LIR, Lists.<InetStatus>newArrayList(ALLOCATED_BY_RIR));
+        PARENT_STATUS.put(ASSIGNED_PA, Lists.<InetStatus>newArrayList(ALLOCATED_BY_RIR));
         PARENT_STATUS.put(ASSIGNED_PI, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED));
 
         NEEDS_ORG_REFERENCE = Sets.newHashSet(ALLOCATED_BY_RIR, ASSIGNED_PI);

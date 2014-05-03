@@ -308,7 +308,7 @@ public final class UpdateMessages {
     }
 
     public static Message attributeAssignmentSizeNotAllowed() {
-        return new Message(Type.ERROR, "\"assignment-size:\" attribute only allowed with status %s", Inet6numStatus.AGGREGATED_BY_LIR.getLiteralStatus());
+        return new Message(Type.ERROR, "\"assignment-size:\" attribute only allowed with status %s", Inet6numStatus.ASSIGNED_PA.getLiteralStatus());
     }
 
     public static Message assignmentSizeTooSmall(final int prefixLength) {
@@ -319,8 +319,8 @@ public final class UpdateMessages {
         return new Message(Type.ERROR, "\"assignment-size:\" value must not be greater than the maximum prefix size %s", prefixLength);
     }
 
-    public static Message tooManyAggregatedByLirInHierarchy() {
-        return new Message(Type.ERROR, "Only two levels of hierarchy allowed with status AGGREGATED-BY-LIR");
+    public static Message tooManyAssignedPAInHierarchy() {
+        return new Message(Type.ERROR, "Only two levels of hierarchy allowed with status ASSIGNED PA");
     }
 
     public static Message statusRequiresAuthorization(final CharSequence currentStatus) {

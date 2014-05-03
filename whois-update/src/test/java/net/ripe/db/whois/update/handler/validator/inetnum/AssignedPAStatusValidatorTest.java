@@ -1,19 +1,16 @@
 package net.ripe.db.whois.update.handler.validator.inetnum;
 
 import com.google.common.collect.Lists;
-import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.domain.Ipv6Resource;
 import net.ripe.db.whois.common.iptree.Ipv6Entry;
 import net.ripe.db.whois.common.iptree.Ipv6Tree;
 import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.ValidationMessages;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
-import net.ripe.db.whois.update.domain.UpdateMessages;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,20 +18,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AggregatedByLirStatusValidatorTest {
+public class AssignedPAStatusValidatorTest {
 
     @Mock UpdateContext updateContext;
     @Mock PreparedUpdate update;
 
     @Mock Ipv6Tree ipv6Tree;
     @Mock RpslObjectDao rpslObjectDao;
-    @InjectMocks AggregatedByLirStatusValidator subject;
+    @InjectMocks AssignedPAStatusValidator subject;
 
     @Before
     public void setUp() throws Exception {
