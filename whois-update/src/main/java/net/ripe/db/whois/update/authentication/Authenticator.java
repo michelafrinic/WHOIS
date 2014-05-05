@@ -10,6 +10,7 @@ import net.ripe.db.whois.common.domain.*;
 import net.ripe.db.whois.common.profiles.WhoisProfile;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.update.authentication.credential.PgpCredentialValidator;
 import net.ripe.db.whois.update.authentication.strategy.AuthenticationFailedException;
 import net.ripe.db.whois.update.authentication.strategy.AuthenticationStrategy;
 import net.ripe.db.whois.update.domain.*;
@@ -18,6 +19,7 @@ import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 
@@ -33,13 +35,28 @@ public class Authenticator {
     private final List<AuthenticationStrategy> authenticationStrategies;
     private final Map<CIString, Set<Principal>> principalsMap;
     private final Map<ObjectType, Set<String>> typesWithPendingAuthenticationSupport;
+    Collection<PgpCredential> pgpOverrideKeys = new ArrayList<PgpCredential>();
+
+    private final PgpCredentialValidator pgpCredentialValidator;
+
+    @Value("${override.keys}")
+    public void setOverrideKeys(final String... keys) {
+        if (keys != null){
+            for (String key : keys){
+                pgpOverrideKeys.add(PgpCredential.createKnownCredential(key));
+            }
+        }
+        LOGGER.info("Override keys: <{}>", keys);
+
+    }
 
     @Autowired
-    public Authenticator(final IpRanges ipRanges, final UserDao userDao, final Maintainers maintainers, final LoggerContext loggerContext, final AuthenticationStrategy[] authenticationStrategies) {
+    public Authenticator(final IpRanges ipRanges, final UserDao userDao, final Maintainers maintainers, final LoggerContext loggerContext, final AuthenticationStrategy[] authenticationStrategies, final PgpCredentialValidator pgpCredentialValidator) {
         this.ipRanges = ipRanges;
         this.userDao = userDao;
         this.loggerContext = loggerContext;
         this.authenticationStrategies = Lists.newArrayList(authenticationStrategies);
+        this.pgpCredentialValidator = pgpCredentialValidator;
 
         final Map<CIString, Set<Principal>> tempPrincipalsMap = Maps.newHashMap();
         addMaintainers(tempPrincipalsMap, maintainers.getPowerMaintainers(), Principal.POWER_MAINTAINER);
@@ -84,8 +101,8 @@ public class Authenticator {
 
     public void authenticate(final Origin origin, final PreparedUpdate update, final UpdateContext updateContext) {
         final Subject subject;
-
-        if (origin.isDefaultOverride()) {
+        //TODO refactor
+        if ( origin.isDefaultOverride() || performPgpOverrideAuthentication(origin,update, updateContext) ) {
             subject = new Subject(Principal.OVERRIDE_MAINTAINER);
         } else if (update.isOverride()) {
             subject = performOverrideAuthentication(origin, update, updateContext);
@@ -94,6 +111,22 @@ public class Authenticator {
         }
 
         updateContext.subject(update, subject);
+    }
+
+    private boolean performPgpOverrideAuthentication(final Origin origin,final PreparedUpdate update, final UpdateContext updateContext){
+        final Set<Message> authenticationMessages = Sets.newLinkedHashSet();
+
+        Collection<PgpCredential> offeredCredentials = new ArrayList<PgpCredential>();
+        offeredCredentials.addAll(update.getCredentials().ofType(PgpCredential.class));
+
+        for (PgpCredential pgpOverrideKey : pgpOverrideKeys){
+            if (pgpCredentialValidator.hasValidCredential(update,updateContext,offeredCredentials,pgpOverrideKey)){
+                updateContext.addMessage(update, UpdateMessages.overrideAuthenticationUsed());
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private Subject performOverrideAuthentication(final Origin origin, final PreparedUpdate update, final UpdateContext updateContext) {

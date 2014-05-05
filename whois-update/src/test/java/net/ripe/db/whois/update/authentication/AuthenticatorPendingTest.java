@@ -5,6 +5,7 @@ import net.ripe.db.whois.common.dao.UserDao;
 import net.ripe.db.whois.common.domain.IpRanges;
 import net.ripe.db.whois.common.domain.Maintainers;
 import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.update.authentication.credential.PgpCredentialValidator;
 import net.ripe.db.whois.update.authentication.strategy.AuthenticationStrategy;
 import net.ripe.db.whois.update.domain.*;
 import net.ripe.db.whois.update.log.LoggerContext;
@@ -33,7 +34,8 @@ public class AuthenticatorPendingTest {
     @Mock Maintainers maintainers;
     @Mock LoggerContext loggerContext;
     @Mock Subject authSubject;
-
+    @Mock
+    PgpCredentialValidator pgpCredentialValidator;
     Authenticator subject;
 
     @Before
@@ -48,7 +50,7 @@ public class AuthenticatorPendingTest {
         when(authStrategyPending2.getTypesWithPendingAuthenticationSupport()).thenReturn(delayedAuthenticationTypes);
         when(updateContext.getSubject(update)).thenReturn(authSubject);
 
-        subject = new Authenticator(ipRanges, userDao, maintainers, loggerContext, new AuthenticationStrategy[]{authStrategyPending1, authStrategyPending2});
+        subject = new Authenticator(ipRanges, userDao, maintainers, loggerContext, new AuthenticationStrategy[]{authStrategyPending1, authStrategyPending2},pgpCredentialValidator);
     }
 
     @Test

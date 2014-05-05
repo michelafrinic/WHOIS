@@ -71,8 +71,7 @@ class MntByAuthentication extends AuthenticationStrategyBase {
             if (update.getAction().equals(Action.CREATE)) {
                 return Collections.emptyList();
             }
-
-            if (update.getAction().equals(Action.MODIFY)) {
+            else if (update.getAction().equals(Action.MODIFY)) {
                 authenticationObject = update.getUpdatedObject();
                 keys = authenticationObject.getValuesForAttribute(AttributeType.MNT_BY);
 
@@ -80,8 +79,7 @@ class MntByAuthentication extends AuthenticationStrategyBase {
                     return Collections.emptyList();
                 }
             }
-
-            if (update.getAction().equals(Action.DELETE)) {
+            else if (update.getAction().equals(Action.DELETE)) {
                 return Collections.emptyList();
             }
         }

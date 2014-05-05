@@ -11,6 +11,7 @@ import net.ripe.db.whois.common.domain.User;
 import net.ripe.db.whois.common.etree.Interval;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.update.authentication.credential.PgpCredentialValidator;
 import net.ripe.db.whois.update.authentication.strategy.AuthenticationFailedException;
 import net.ripe.db.whois.update.authentication.strategy.AuthenticationStrategy;
 import net.ripe.db.whois.update.domain.*;
@@ -20,10 +21,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.dao.EmptyResultDataAccessException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -47,6 +50,8 @@ public class AuthenticatorPrincipalTest {
     @Mock AuthenticationStrategy authenticationStrategy2;
     @Mock Maintainers maintainers;
     @Mock LoggerContext loggerContext;
+    @Mock
+    PgpCredentialValidator pgpCredentialValidator;
 
     Authenticator subject;
     ArgumentCaptor<Subject> subjectCapture;
@@ -62,7 +67,7 @@ public class AuthenticatorPrincipalTest {
         when(update.getCredentials()).thenReturn(new Credentials());
 
         subjectCapture = ArgumentCaptor.forClass(Subject.class);
-        subject = new Authenticator(ipRanges, userDao, maintainers, loggerContext, new AuthenticationStrategy[]{authenticationStrategy1, authenticationStrategy2});
+        subject = new Authenticator(ipRanges, userDao, maintainers, loggerContext, new AuthenticationStrategy[]{authenticationStrategy1, authenticationStrategy2},pgpCredentialValidator);
     }
 
     @Test
@@ -280,6 +285,35 @@ public class AuthenticatorPrincipalTest {
     }
 
     @Test
+    public void authenticate_pgp_override() {
+        final HashSet<Credential> credentialSet = Sets.newHashSet();
+        credentialSet.add(getOfferredPgpKey());
+
+
+        when(origin.getFrom()).thenReturn("127.0.0.1");
+        when(origin.allowAdminOperations()).thenReturn(true);
+        when(ipRanges.isTrusted(any(Interval.class))).thenReturn(true);
+        //when(update.isOverride()).thenReturn(true);
+        when(update.getCredentials()).thenReturn(new Credentials(credentialSet));
+
+        Collection<PgpCredential> offeredCredentials = new ArrayList<PgpCredential>();
+        offeredCredentials.add(PgpCredential.createKnownCredential("PGPKEY-79D36007"));
+
+        //when(pgpCredentialValidator.hasValidCredential(update, updateContext, offeredCredentials, PgpCredential.createKnownCredential("PGPKEY-79D36007"))).thenReturn(true);
+
+        when(pgpCredentialValidator.hasValidCredential(any(PreparedUpdate.class), any(UpdateContext.class), anyCollection(), any(PgpCredential.class))).thenReturn(true);
+        /*when(userDao.getOverrideUser("user")).thenReturn(User.createWithPlainTextPassword("user", "password"));
+        when(userDao.getOverrideUser("dbase1")).thenReturn(User.createWithPlainTextPassword("dbase", "password"));
+        when(userDao.getOverrideUser("dbase2")).thenReturn(User.createWithPlainTextPassword("dbase", "password"));*/
+
+
+        subject.setOverrideKeys("PGPKEY-79D36007");
+        subject.authenticate(origin, update, updateContext);
+
+        verifySubject(updateContext, new Subject(Principal.OVERRIDE_MAINTAINER));
+    }
+
+    @Test
     public void authenticate_maintenance_job() {
         Origin origin = new Origin() {
             @Override
@@ -356,6 +390,33 @@ public class AuthenticatorPrincipalTest {
         if (!capturedSubject.getFailedAuthentications().isEmpty()) {
             verify(updateContext, atLeastOnce()).status(any(Update.class), eq(UpdateStatus.FAILED_AUTHENTICATION));
         }
+    }
+
+    private PgpCredential getOfferredPgpKey(){
+        return  PgpCredential.createOfferedCredential("-----BEGIN PGP SIGNED MESSAGE-----\n" +
+                "Hash: SHA1\n" +
+                "\n" +
+                "person:         Ting Tong\n" +
+                "nic-hdl:        TT42-AFRINIC\n" +
+                "address:        XXXYnWYYTB Raffles Tower\n" +
+                "address:        Ebene\n" +
+                "address:        Afrinic\n" +
+                "mnt-by:         AG_TEST_MNT\n" +
+                "e-mail:         avinash@afrinic.net\n" +
+                "phone:          +230 5 123 2345\n" +
+                "changed:        avinash@afrinic.net 20130218\n" +
+                "source:         AFRINIC\n" +
+                "-----BEGIN PGP SIGNATURE-----\n" +
+                "Version: GnuPG/MacGPG2 v2.0.12 (Darwin)\n" +
+                "\n" +
+                "iQEcBAEBAgAGBQJTZM4mAAoJEAfdGvd502AHTQ0IAIi3IjXysov0Q8K1CsfUz8ZM\n" +
+                "q+H7hwIgGsP7HwnYilLGxaWbp0XjcPuXmFjLGwp3C83rKfSy8lcv0bTgTkjykzmV\n" +
+                "1xb1CjrOQSQ0JPXhxzfYUcggL+ilFWsxrLQfwHSjZnw1UC7GcwPeUOTNWm4KB2Lo\n" +
+                "VBjdxVZ9hldmXktypovSXVFJtV/VeGVP8sDBXhHx23jDLMYTRUQpyaTNC5wEW/1Y\n" +
+                "4Le2VDLiCXouJFV1sc+f4LPFLT29kZu7EWM2lBjoNGVEu0SrimCKtXnSAuKuBvHy\n" +
+                "MrkHgjN8jk9fxu4QrlH6h60AJ6r7hmjqtJttfVecx+PrRbGcEjXuSk67O6XYgGc=\n" +
+                "=Wvy0\n" +
+                "-----END PGP SIGNATURE-----\n");
     }
 }
 
