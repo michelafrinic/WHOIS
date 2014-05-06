@@ -1,6 +1,7 @@
 package net.ripe.db.whois.update.handler.validator.domain;
 
 import com.google.common.collect.Lists;
+import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.domain.Ipv4Resource;
 import net.ripe.db.whois.common.domain.Ipv6Resource;
 import net.ripe.db.whois.common.iptree.Ipv4DomainTree;
@@ -82,7 +83,7 @@ public class IpDomainUniqueHierarchyValidatorTest {
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("" +
                 "domain: 200.193.193.in-addr.arpa"));
 
-        final Ipv4Resource lessSpecific = Ipv4Resource.parse("193/8");
+        final Ipv4Resource lessSpecific = Ipv4Resource.parse("193.0/16");
 
         when(ipv4DomainTree.findFirstLessSpecific(Ipv4Resource.parse("193.193.200.0/24"))).thenReturn(Lists.newArrayList(new Ipv4Entry(lessSpecific, 1)));
 
@@ -104,6 +105,21 @@ public class IpDomainUniqueHierarchyValidatorTest {
         subject.validate(update, updateContext);
 
         verify(updateContext).addMessage(update, UpdateMessages.moreSpecificDomainFound(moreSpecific.toString()));
+        verifyZeroInteractions(ipv6DomainTree);
+    }
+
+    @Test
+    public void validate_ipv4_domain_less_specific_slash8_success() {
+        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("" +
+                "domain: 140.192.196.in-addr.arpa"));
+
+        final Ipv4Resource lessSpecific = Ipv4Resource.parse("196.0.0.0/8");
+
+        when(ipv4DomainTree.findFirstLessSpecific(Ipv4Resource.parse("196.192.140.0/24"))).thenReturn(Lists.newArrayList(new Ipv4Entry(lessSpecific, 1)));
+
+        subject.validate(update, updateContext);
+
+        verify(updateContext, never()).addMessage(any(PreparedUpdate.class), any(Message.class));
         verifyZeroInteractions(ipv6DomainTree);
     }
 }

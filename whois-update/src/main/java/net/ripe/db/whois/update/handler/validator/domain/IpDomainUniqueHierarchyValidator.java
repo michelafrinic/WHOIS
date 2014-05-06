@@ -5,10 +5,7 @@ import net.ripe.db.whois.common.domain.IpInterval;
 import net.ripe.db.whois.common.domain.Ipv4Resource;
 import net.ripe.db.whois.common.domain.Ipv6Resource;
 import net.ripe.db.whois.common.domain.attrs.Domain;
-import net.ripe.db.whois.common.iptree.IpEntry;
-import net.ripe.db.whois.common.iptree.IpTree;
-import net.ripe.db.whois.common.iptree.Ipv4DomainTree;
-import net.ripe.db.whois.common.iptree.Ipv6DomainTree;
+import net.ripe.db.whois.common.iptree.*;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
@@ -54,7 +51,16 @@ public class IpDomainUniqueHierarchyValidator implements BusinessRuleValidator {
 
         final List<IpEntry> lessSpecific = ipTree.findFirstLessSpecific(reverseIp);
         if (!lessSpecific.isEmpty()) {
-            updateContext.addMessage(update, UpdateMessages.lessSpecificDomainFound(lessSpecific.get(0).getKey().toString()));
+            IpEntry ipEntry = lessSpecific.get(0);
+
+            if(domain.getType() == Domain.Type.INADDR) {
+                Ipv4Entry entry = (Ipv4Entry) ipEntry;
+                if(entry.getKey().getPrefixLength() == 8) {
+                    return;
+                }
+            }
+
+            updateContext.addMessage(update, UpdateMessages.lessSpecificDomainFound(ipEntry.getKey().toString()));
             return;
         }
 
