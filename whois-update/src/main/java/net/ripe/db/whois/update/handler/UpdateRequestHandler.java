@@ -3,7 +3,6 @@ package net.ripe.db.whois.update.handler;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.source.SourceContext;
-import net.ripe.db.whois.update.dns.DnsChecker;
 import net.ripe.db.whois.update.domain.*;
 import net.ripe.db.whois.update.handler.response.ResponseFactory;
 import net.ripe.db.whois.update.log.LogCallback;
@@ -27,17 +26,15 @@ public class UpdateRequestHandler {
     private final ResponseFactory responseFactory;
     private final SingleUpdateHandler singleUpdateHandler;
     private final LoggerContext loggerContext;
-    private final DnsChecker dnsChecker;
     private final UpdateNotifier updateNotifier;
     private final UpdateLog updateLog;
 
     @Autowired
-    public UpdateRequestHandler(final SourceContext sourceContext, final ResponseFactory responseFactory, final SingleUpdateHandler singleUpdateHandler, final LoggerContext loggerContext, final DnsChecker dnsChecker, final UpdateNotifier updateNotifier, final UpdateLog updateLog) {
+    public UpdateRequestHandler(final SourceContext sourceContext, final ResponseFactory responseFactory, final SingleUpdateHandler singleUpdateHandler, final LoggerContext loggerContext, final UpdateNotifier updateNotifier, final UpdateLog updateLog) {
         this.sourceContext = sourceContext;
         this.responseFactory = responseFactory;
         this.singleUpdateHandler = singleUpdateHandler;
         this.loggerContext = loggerContext;
-        this.dnsChecker = dnsChecker;
         this.updateNotifier = updateNotifier;
         this.updateLog = updateLog;
     }
@@ -82,8 +79,6 @@ public class UpdateRequestHandler {
     }
 
     private UpdateResponse handleUpdates(final UpdateRequest updateRequest, final UpdateContext updateContext) {
-        dnsChecker.checkAll(updateRequest, updateContext);
-
         processUpdateQueue(updateRequest, updateContext);
 
         // Create update response before sending notifications, so in case of an exception
@@ -121,7 +116,6 @@ public class UpdateRequestHandler {
 
                 try {
                     loggerContext.logUpdateStarted(update);
-                    dnsChecker.check(update, updateContext);
                     singleUpdateHandler.handle(updateRequest.getOrigin(), updateRequest.getKeyword(), update, updateContext);
                     loggerContext.logUpdateCompleted(update);
                 } catch (UpdateAbortedException e) {

@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.source.SourceContext;
-import net.ripe.db.whois.update.dns.DnsChecker;
 import net.ripe.db.whois.update.domain.*;
 import net.ripe.db.whois.update.handler.response.ResponseFactory;
 import net.ripe.db.whois.update.log.LoggerContext;
@@ -36,7 +35,6 @@ public class UpdateRequestHandlerTest {
     @Mock ResponseFactory responseFactory;
     @Mock SingleUpdateHandler singleUpdateHandler;
     @Mock LoggerContext loggerContext;
-    @Mock DnsChecker dnsChecker;
     @Mock UpdateNotifier updateNotifier;
     @Mock UpdateLog updateLog;
 
@@ -70,7 +68,6 @@ public class UpdateRequestHandlerTest {
 
         verify(sourceContext).setCurrentSourceToWhoisMaster();
         verify(sourceContext).removeCurrentSource();
-        verify(dnsChecker).check(update, updateContext);
         verify(singleUpdateHandler).handle(origin, Keyword.NONE, update, updateContext);
         verifyZeroInteractions(updateNotifier);
     }
@@ -91,7 +88,6 @@ public class UpdateRequestHandlerTest {
 
         verify(sourceContext).setCurrentSourceToWhoisMaster();
         verify(sourceContext).removeCurrentSource();
-        verify(dnsChecker).check(update, updateContext);
         verify(singleUpdateHandler).handle(origin, Keyword.NONE, update, updateContext);
         verify(updateNotifier).sendNotifications(updateRequest, updateContext);
     }
@@ -112,8 +108,6 @@ public class UpdateRequestHandlerTest {
 
         verify(sourceContext).setCurrentSourceToWhoisMaster();
         verify(sourceContext).removeCurrentSource();
-        verify(dnsChecker).check(update, updateContext);
-        verify(dnsChecker).checkAll(updateRequest, updateContext);
         verify(singleUpdateHandler).handle(origin, Keyword.NONE, update, updateContext);
     }
 
@@ -134,8 +128,6 @@ public class UpdateRequestHandlerTest {
 
         verify(sourceContext).setCurrentSourceToWhoisMaster();
         verify(sourceContext).removeCurrentSource();
-        verify(dnsChecker).check(update, updateContext);
-        verify(dnsChecker).checkAll(updateRequest, updateContext);
         verify(singleUpdateHandler).handle(origin, Keyword.NONE, update, updateContext);
     }
 
