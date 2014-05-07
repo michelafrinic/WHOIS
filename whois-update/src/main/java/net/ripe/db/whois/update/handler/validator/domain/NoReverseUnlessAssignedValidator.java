@@ -60,16 +60,15 @@ public class NoReverseUnlessAssignedValidator implements BusinessRuleValidator {
         if (domain.getType() == Domain.Type.INADDR) {
             parentInetnum = ipv4Tree.findExactOrFirstLessSpecific(Ipv4Resource.parse(reverseIp.toString()));
             validateMoreSpecificFound(update, updateContext, parentInetnum.get(0).getKey(), ipv4Tree);
+            Validate.notEmpty(parentInetnum, "Should always have a parent");
         } else {
             parentInet6num = ipv6Tree.findExactOrFirstLessSpecific(Ipv6Resource.parse(reverseIp.toString()));
             validateMoreSpecificFound(update, updateContext, parentInet6num.get(0).getKey(), ipv6Tree);
+            Validate.notEmpty(parentInet6num, "Should always have a parent");
         }
     }
 
     private void validateMoreSpecificFound(final PreparedUpdate update, final UpdateContext updateContext, final IpInterval parentInetnumIpInterval, final IpTree ipTree) {
-        //final List<IpEntry> parentInetnum = ipTree.findExactOrFirstLessSpecific(reverseIp);
-        //Validate.notEmpty(parentInetnum, "Should always have a parent");
-
         List<RpslObjectInfo> rpslObjectInfoList = objectDao.findByAttribute(AttributeType.ADDRESS, parentInetnumIpInterval.toString());
         RpslObjectInfo reverseIpInfo = rpslObjectInfoList.get(0);
         RpslObject reverseObject = objectDao.getById(reverseIpInfo.getObjectId());
