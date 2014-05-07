@@ -4,12 +4,11 @@ import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.domain.IpInterval;
+import net.ripe.db.whois.common.domain.Ipv4Resource;
+import net.ripe.db.whois.common.domain.Ipv6Resource;
 import net.ripe.db.whois.common.domain.attrs.Domain;
 import net.ripe.db.whois.common.domain.attrs.InetnumStatus;
-import net.ripe.db.whois.common.iptree.IpEntry;
-import net.ripe.db.whois.common.iptree.IpTree;
-import net.ripe.db.whois.common.iptree.Ipv4Tree;
-import net.ripe.db.whois.common.iptree.Ipv6Tree;
+import net.ripe.db.whois.common.iptree.*;
 import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
@@ -55,26 +54,30 @@ public class NoReverseUnlessAssignedValidator implements BusinessRuleValidator {
         }
 
         final IpInterval reverseIp = domain.getReverseIp();
+        List<Ipv4Entry> parentInetnum = null;
+        List<Ipv6Entry> parentInet6num = null;
 
         if (domain.getType() == Domain.Type.INADDR) {
-            validateMoreSpecificFound(update, updateContext, reverseIp, ipv4Tree);
+            parentInetnum = ipv4Tree.findExactOrFirstLessSpecific(Ipv4Resource.parse(reverseIp.toString()));
+            validateMoreSpecificFound(update, updateContext, parentInetnum.get(0).getKey(), ipv4Tree);
         } else {
-            validateMoreSpecificFound(update, updateContext, reverseIp, ipv6Tree);
+            parentInet6num = ipv6Tree.findExactOrFirstLessSpecific(Ipv6Resource.parse(reverseIp.toString()));
+            validateMoreSpecificFound(update, updateContext, parentInet6num.get(0).getKey(), ipv6Tree);
         }
     }
 
-    private void validateMoreSpecificFound(final PreparedUpdate update, final UpdateContext updateContext, final IpInterval reverseIp, final IpTree ipTree) {
-        final List<IpEntry> parentInetnum = ipTree.findFirstLessSpecific(reverseIp);
-        Validate.notEmpty(parentInetnum, "Should always have a parent");
+    private void validateMoreSpecificFound(final PreparedUpdate update, final UpdateContext updateContext, final IpInterval parentInetnumIpInterval, final IpTree ipTree) {
+        //final List<IpEntry> parentInetnum = ipTree.findExactOrFirstLessSpecific(reverseIp);
+        //Validate.notEmpty(parentInetnum, "Should always have a parent");
 
-        List<RpslObjectInfo> rpslObjectInfoList = objectDao.findByAttribute(AttributeType.ADDRESS, parentInetnum.get(0).toString());
+        List<RpslObjectInfo> rpslObjectInfoList = objectDao.findByAttribute(AttributeType.ADDRESS, parentInetnumIpInterval.toString());
         RpslObjectInfo reverseIpInfo = rpslObjectInfoList.get(0);
         RpslObject reverseObject = objectDao.getById(reverseIpInfo.getObjectId());
 
         final InetnumStatus objectStatus = InetnumStatus.getStatusFor(reverseObject.getValueForAttribute(AttributeType.STATUS));
 
         if (objectStatus.equals(InetnumStatus.ALLOCATED_PA)) {
-            final List<IpEntry> childEntries = ipTree.findFirstMoreSpecific(reverseIp);
+            final List<IpEntry> childEntries = ipTree.findFirstMoreSpecific(Ipv4Resource.parse(parentInetnumIpInterval.toString()));
             if (childEntries.isEmpty()) {
                 updateContext.addMessage(update, UpdateMessages.noMoreSpecificInetnumFound(reverseObject.toString()));
             }
