@@ -360,6 +360,10 @@ public final class UpdateMessages {
         return new Message(Type.ERROR, "Existing more specific domain object found %s", existing);
     }
 
+    public static Message noMoreSpecificInetnumFound(final CharSequence s) {
+        return new Message(Type.ERROR, "No assignment or sub-allocations found for %s", s);
+    }
+
     public static Message hostNameMustEndWith(final CharSequence s) {
         return new Message(Type.ERROR, "Glue records only allowed if hostname ends with %s", s);
     }
