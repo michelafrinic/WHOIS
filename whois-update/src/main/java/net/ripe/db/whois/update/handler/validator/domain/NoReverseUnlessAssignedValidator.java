@@ -70,15 +70,15 @@ public class NoReverseUnlessAssignedValidator implements BusinessRuleValidator {
 
     private void validateMoreSpecificFound(final PreparedUpdate update, final UpdateContext updateContext, final IpInterval parentInetnumIpInterval, final IpTree ipTree) {
         List<RpslObjectInfo> rpslObjectInfoList = objectDao.findByAttribute(AttributeType.ADDRESS, parentInetnumIpInterval.toString());
-        RpslObjectInfo reverseIpInfo = rpslObjectInfoList.get(0);
-        RpslObject reverseObject = objectDao.getById(reverseIpInfo.getObjectId());
+        RpslObjectInfo rpslObjectInfo = rpslObjectInfoList.get(0);
+        RpslObject rpslObject = objectDao.getById(rpslObjectInfo.getObjectId());
 
-        final InetnumStatus objectStatus = InetnumStatus.getStatusFor(reverseObject.getValueForAttribute(AttributeType.STATUS));
+        final InetnumStatus objectStatus = InetnumStatus.getStatusFor(rpslObject.getValueForAttribute(AttributeType.STATUS));
 
         if (objectStatus.equals(InetnumStatus.ALLOCATED_PA)) {
             final List<IpEntry> childEntries = ipTree.findFirstMoreSpecific(Ipv4Resource.parse(parentInetnumIpInterval.toString()));
             if (childEntries.isEmpty()) {
-                updateContext.addMessage(update, UpdateMessages.noMoreSpecificInetnumFound(reverseObject.toString()));
+                updateContext.addMessage(update, UpdateMessages.noMoreSpecificInetnumFound(rpslObject.toString()));
             }
         }
 

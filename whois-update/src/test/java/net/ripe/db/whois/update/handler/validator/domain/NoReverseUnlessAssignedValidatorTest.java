@@ -235,7 +235,7 @@ public class NoReverseUnlessAssignedValidatorTest {
     }
 
     @Test
-    public void validate_allocated_pa_without_children_slash16domain_slash14inetnum() {
+    public void validate_allocated_pa_no_children_slash16domain_slash14inetnum() {
 
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("" +
                 "domain: 2.102.in-addr.arpa"));
@@ -255,6 +255,31 @@ public class NoReverseUnlessAssignedValidatorTest {
         when(objectDao.getById(anyInt())).thenReturn(object);
 
         when(ipv4Tree.findFirstMoreSpecific(Ipv4Resource.parse("102.0.0.0/14"))).thenReturn(new ArrayList<Ipv4Entry>());
+
+        subject.validate(update, updateContext);
+
+        verify(updateContext).addMessage(update, UpdateMessages.noMoreSpecificInetnumFound(object.toString()));
+
+    }
+
+    @Test
+    public void validate_assigned_pa_slash24domain_slash24inetnum() {
+
+        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("" +
+                "domain: 1.5.102.in-addr.arpa"));
+
+        final RpslObject object = RpslObject.parse("inetnum: 102.5.1.0 - 102.5.1.255" +
+                "\nstatus: ASSIGNED PA");
+
+        when(ipv4Tree.findExactOrFirstLessSpecific(Ipv4Resource.parse("102.5.1.0/24"))).thenReturn(Lists.newArrayList(
+                new Ipv4Entry(Ipv4Resource.parse("102.5.1.0 - 102.5.1.255"), 1)
+        ));
+
+        final List<RpslObjectInfo> rpslObjectInfoList = new ArrayList<RpslObjectInfo>();
+        rpslObjectInfoList.add(new RpslObjectInfo(0, ObjectType.INETNUM, "102.5.1.0 - 102.5.1.255"));
+
+        when(objectDao.findByAttribute(any(AttributeType.class), any(String.class))).thenReturn(rpslObjectInfoList);
+        when(objectDao.getById(anyInt())).thenReturn(object);
 
         subject.validate(update, updateContext);
 
