@@ -431,6 +431,43 @@ public class ResponseFactoryTest {
     }
 
     @Test
+    public void notification_success_filter_crypt_auth() {
+        final RpslObject object = RpslObject.parse("" +
+                "mntner: DEV-CRYPT-MNT\n" +
+                "auth: CRYPT-PW apGl30xzHaZxE\n" +
+                "source: RIPE"
+        );
+
+        final Update update = new Update(new Paragraph(object.toString()), Operation.UNSPECIFIED, Lists.<String>newArrayList(), object);
+        final PreparedUpdate create = new PreparedUpdate(update, null, object, Action.CREATE);
+
+        final Notification notification = new Notification("notify@me.com");
+        notification.add(Notification.Type.SUCCESS, create, updateContext);
+
+
+        final ResponseMessage responseMessage = subject.createNotification(updateContext, origin, notification);
+
+        assertNotification(responseMessage);
+
+        assertThat(responseMessage.getSubject(), is("Notification of RIPE Database changes"));
+
+        assertThat(responseMessage.getMessage(), containsString("" +
+                "Some object(s) in RIPE Database that you either\n" +
+                "maintain or you are listed in as to-be-notified have\n" +
+                "been added, deleted or changed.\n"));
+
+        assertThat(responseMessage.getMessage(), containsString("" +
+                "---\n" +
+                "OBJECT BELOW CREATED:\n" +
+                "\n" +
+                "mntner:         DEV-CRYPT-MNT\n" +
+                "auth:           CRYPT-PW # Filtered\n" +
+                "source:         RIPE # Filtered\n" +
+                ""));
+    }
+
+
+    @Test
     public void notification_success_reference() {
         final RpslObject object1 = RpslObject.parse("mntner: DEV-ROOT1-MNT");
         final Update update1 = new Update(new Paragraph(object1.toString()), Operation.UNSPECIFIED, Lists.<String>newArrayList(), object1);

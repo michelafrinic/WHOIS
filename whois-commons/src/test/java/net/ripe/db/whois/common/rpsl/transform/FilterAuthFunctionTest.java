@@ -59,4 +59,22 @@ public class FilterAuthFunctionTest {
                 "auth:           MD5-PW # Filtered\n" +
                 "source:         RIPE # Filtered\n"));
     }
+
+    @Test
+    public void apply_crypt() {
+        final RpslObject rpslObject = RpslObject.parse("" +
+                "mntner: WEIRD-MNT\n" +
+                "auth: CRYPT-PW apGl30xzHaZxE\n" +
+                "auth: CRYPT-PW apGl30xzHaZxE\n" +
+                "source: RIPE"
+        );
+
+        final RpslObject response = subject.apply(rpslObject);
+
+        assertThat(response.toString(), is("" +
+                "mntner:         WEIRD-MNT\n" +
+                "auth:           CRYPT-PW # Filtered\n" +
+                "auth:           CRYPT-PW # Filtered\n" +
+                "source:         RIPE # Filtered\n"));
+    }
 }

@@ -40,16 +40,26 @@ public class AuthenticationModuleTest {
         when(update.getCredentials()).thenReturn(credentials);
         when(credentialValidator.hasValidCredential(any(PreparedUpdate.class), any(UpdateContext.class), anyCollection(), any(PasswordCredential.class))).thenReturn(true);
 
-        final RpslObject mntner1 = RpslObject.parse("mntner: TEST-MNT\nauth: MD5-PWsomething");
-        final RpslObject mntner2 = RpslObject.parse("mntner: TEST2-MNT\nauth: MD5-PWsomethingElse");
-        final RpslObject mntner3 = RpslObject.parse("mntner: TEST3-MNT");
+        final RpslObject mntner0 = RpslObject.parse("mntner: TEST3-MNT");
+        final RpslObject mntner1 = RpslObject.parse("mntner: TEST3-MNT\nauth: FAKE-PWfake");
+        final RpslObject mntner2 = RpslObject.parse("mntner: TEST-MNT\nauth: MD5-PWsomething-0");
+        final RpslObject mntner3 = RpslObject.parse("mntner: TEST2-MNT\nauth: MD5-PWsomething-20");
+        final RpslObject mntner4 = RpslObject.parse("mntner: TEST2-MNT\nauth: CRYPT-PWsomething-10");
+        final RpslObject mntner5 = RpslObject.parse("mntner: TEST2-MNT\nauth: CRYPT-PWsomething-2");
 
-        final List<RpslObject> result = subject.authenticate(update, updateContext, Lists.newArrayList(mntner1, mntner2, mntner3));
 
-        assertThat(result.size(), is(2));
-        assertThat(result.contains(mntner1), is(true));
+        final List<RpslObject> result = subject.authenticate(
+                update,
+                updateContext,
+                Lists.newArrayList(mntner0, mntner1, mntner2, mntner3, mntner4, mntner5));
+
+        assertThat(result.size(), is(4));
+        assertThat(result.contains(mntner0), is(false));
+        assertThat(result.contains(mntner1), is(false));
         assertThat(result.contains(mntner2), is(true));
-        assertThat(result.contains(mntner3), is(false));
+        assertThat(result.contains(mntner3), is(true));
+        assertThat(result.contains(mntner4), is(true));
+        assertThat(result.contains(mntner5), is(true));
     }
 
     @Test
@@ -57,10 +67,15 @@ public class AuthenticationModuleTest {
         when(update.getCredentials()).thenReturn(credentials);
         when(credentialValidator.hasValidCredential(any(PreparedUpdate.class), any(UpdateContext.class), anyCollection(), any(PasswordCredential.class))).thenReturn(true);
 
-        final RpslObject mntner = RpslObject.parse("mntner: TEST-MNT\nauth: Md5-pW something");
-        final List<RpslObject> result = subject.authenticate(update, updateContext, Lists.newArrayList(mntner));
+        final RpslObject mntner0 = RpslObject.parse("mntner: TEST-MNT\nauth: Md5-pW something");
+        final RpslObject mntner1 = RpslObject.parse("mntner: TEST-MNT\nauth: Crypt-Pw something");
+        final List<RpslObject> result = subject.authenticate(
+                update,
+                updateContext,
+                Lists.newArrayList(mntner0, mntner1));
 
-        assertThat(result.size(), is(1));
-        assertThat(result.contains(mntner), is(true));
+        assertThat(result.size(), is(2));
+        assertThat(result.contains(mntner0), is(true));
+        assertThat(result.contains(mntner1), is(true));
     }
 }

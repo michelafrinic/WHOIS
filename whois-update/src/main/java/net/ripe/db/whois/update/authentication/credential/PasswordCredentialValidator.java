@@ -6,8 +6,10 @@ import net.ripe.db.whois.update.domain.PasswordCredential;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
 import net.ripe.db.whois.update.log.LoggerContext;
+import org.apache.commons.codec.digest.Crypt;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -18,6 +20,7 @@ import java.util.regex.Pattern;
 class PasswordCredentialValidator implements CredentialValidator<PasswordCredential> {
 
     private static final Pattern MD5_PATTERN = Pattern.compile("(?i)^.*MD5-PW \\$1\\$(.{1,8})\\$(.{22}).*$");
+    private static final Pattern CRYPT_PATTERN = Pattern.compile("(?i)^.*CRYPT-PW (.{2})(.{11}).*$");
     private final LoggerContext loggerContext;
 
     @Autowired
@@ -34,6 +37,7 @@ class PasswordCredentialValidator implements CredentialValidator<PasswordCredent
     public boolean hasValidCredential(final PreparedUpdate update, final UpdateContext updateContext, final Collection<PasswordCredential> offeredCredentials, final PasswordCredential knownCredential) {
         for (final PasswordCredential offeredCredential : offeredCredentials) {
             final Matcher matcher = MD5_PATTERN.matcher(knownCredential.getPassword());
+            final Matcher cryptMatcher = CRYPT_PATTERN.matcher(knownCredential.getPassword());
             if (matcher.matches()) {
                 try {
                     final String salt = matcher.group(1);
@@ -51,6 +55,26 @@ class PasswordCredentialValidator implements CredentialValidator<PasswordCredent
                 } catch (IllegalArgumentException e) {
                     updateContext.addGlobalMessage(new Message(Messages.Type.WARNING, e.getMessage()));
                 }
+            } else if (cryptMatcher.matches()) {
+                try {
+                    final String salt = cryptMatcher.group(1);
+                    final String known = String.format("%s%s", salt, cryptMatcher.group(2));
+                    final String offered = Crypt.crypt(offeredCredential.getPassword().getBytes(), salt);
+                    if (known.equals(offered)) {
+                        loggerContext.logString(
+                                update.getUpdate(),
+                                getClass().getCanonicalName(),
+                                String.format("Validated %s against CRYPT-PW password: %s (encrypted: %s)",
+                                        update.getKey(),
+                                        offeredCredential.getPassword(),
+                                        knownCredential.getPassword())
+                        );
+                        return true;
+                    }
+                } catch (IllegalArgumentException e) {
+                    updateContext.addGlobalMessage(new Message(Messages.Type.WARNING, e.getMessage()));
+                }
+
             }
         }
 
