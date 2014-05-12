@@ -1,5 +1,7 @@
 package net.ripe.db.whois.update.rest;
 
+import org.springframework.stereotype.Component;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -10,6 +12,7 @@ import java.net.URL;
 /**
  * Created by michel on 5/9/14.
  */
+@Component
 public class HttpConnexionUtils {
     public String executePost(String serviceUrl, String urlParameters) {
         URL url = null;
