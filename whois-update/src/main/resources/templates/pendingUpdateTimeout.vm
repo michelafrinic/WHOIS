@@ -1,11 +1,11 @@
 >>>>>
-This is to notify you of a pending update timeout in RIPE Database.
+This is to notify you of a pending update timeout in Database.
 This message is auto-generated.
 Please DO NOT reply to this message.
 
 If you do not understand why we sent you this message,
 or for assistance or clarification please contact:
-RIPE Database Administration <ripe-dbm@ripe.net>
+Database Administration <afrinic-dbm@afrinic.net>
 <<<<<
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,6 +20,3 @@ changes that need to be made to the following objects.
 NO FINAL CREATE REQUESTED FOR:
 
 $object
-
-#parse("/templates/include/terms-and-conditions.vm")
-#parse("/templates/include/version.vm")

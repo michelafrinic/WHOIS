@@ -216,14 +216,6 @@ public final class QueryMessages {
                 + "% '-mM' query options are not allowed on very large ranges/prefixes.\n"
                 + "% This data is available from bulk whois:\n"
                 + "% http://www.afrinic.net/en/library/membership-documents/207-bulk-whois-access-form-\n");
-        /*
-        return new Message(Type.ERROR, ""
-                + "%ERROR:112: unsupported query\n"
-                + "%\n"
-                + "% '-mM' query options are not allowed on very large ranges/prefixes.\n"
-                + "% This data is available from the daily object split files:\n"
-                + "% ftp://ftp.ripe.net/ripe/dbase/split/\n");
-        */
     }
 
     public static Message unsupportedQuery() {
@@ -263,7 +255,6 @@ public final class QueryMessages {
                 + "%% Sorry, access from your host has been permanently\n"
                 + "%% denied because of a repeated excessive querying.\n"
                 + "%% For more information, see\n"
-                //+ "%% http://www.ripe.net/data-tools/db/faq/faq-db/why-did-you-receive-the-error-201-access-denied\n",
                 + "%% http://www.afrinic.net/en/faqs/whois\n",
                 remoteAddress.getHostAddress());
     }
@@ -275,7 +266,6 @@ public final class QueryMessages {
                 + "%% Queries from your IP address have passed the daily limit of controlled objects.\n"
                 + "%% Access from your host has been temporarily denied.\n"
                 + "%% For more information, see\n"
-                //+ "%% http://www.ripe.net/data-tools/db/faq/faq-db/why-did-you-receive-the-error-201-access-denied\n",
                 + "%% http://www.afrinic.net/en/faqs/whois\n",
                 remoteAddress.getHostAddress());
     }

@@ -209,7 +209,7 @@ class ArinGrsSource extends GrsSource {
             @Override
             public RpslAttribute apply(final @Nullable RpslAttribute input) {
                 String date = input.getCleanValue().toString().replaceAll("[^0-9]", "");
-                final String value = String.format("unread@ripe.net %s", date);
+                final String value = String.format("no-reply@afrinic.net %s", date);
                 return new RpslAttribute(AttributeType.CHANGED, value);
             }
         }, "Updated");

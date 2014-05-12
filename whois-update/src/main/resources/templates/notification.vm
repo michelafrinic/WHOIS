@@ -1,5 +1,5 @@
 >>>>>
-This is to notify you of changes in RIPE Database or
+This is to notify you of changes in Whois Database or
 object authorisation failures.
 
 This message is auto-generated.
@@ -7,7 +7,7 @@ Please DO NOT reply to this message.
 
 If you do not understand why we sent you this message,
 or for assistance or clarification please contact:
-RIPE Database Administration <ripe-dbm@ripe.net>
+Whois Database Administration <afrinic-dbm@afrinic.net>
 
 Change requested from:
 <<<<<
@@ -54,7 +54,7 @@ and add your authorisation.
 
 #if( $success.size() > 0)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Some object(s) in RIPE Database that you either
+Some object(s) in Whois Database that you either
 maintain or you are listed in as to-be-notified have
 been added, deleted or changed.
 
@@ -84,7 +84,7 @@ $update.reason
 
 #if( $successReference.size() > 0)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Some object(s) in RIPE Database added references to
+Some object(s) in Whois Database added references to
 objects you are listed in as to-be-notified.
 
 #foreach( $update in $successReference )
@@ -110,6 +110,3 @@ $update.updatedObject
 $update.reason
 #end
 #end
-
-#parse("/templates/include/terms-and-conditions.vm")
-#parse("/templates/include/version.vm")

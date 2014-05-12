@@ -37,9 +37,7 @@ public class NrtmQueryHandler extends SimpleChannelUpstreamHandler {
 
     private volatile ScheduledFuture<?> scheduledFuture;
 
-    static final String TERMS_AND_CONDITIONS = "" +
-            "% The RIPE Database is subject to Terms and Conditions.\n" +
-            "% See http://www.ripe.net/db/support/db-terms-conditions.pdf";
+    static final String TERMS_AND_CONDITIONS = "";
 
     public NrtmQueryHandler(final SerialDao serialDao, final Dummifier dummifier, final TaskScheduler clientSynchronisationScheduler, final NrtmLog nrtmLog, final String applicationVersion, final String source, final long updateInterval) {
         this.serialDao = serialDao;

@@ -106,16 +106,8 @@ public class ResponseFactoryTest {
                 ">  Reply-To:   cac37ak@ripe.net\n" +
                 ">  Message-ID: <E1CCB659-9446-41B0-8E4A-5548104F94A9@ripe.net>\n" +
                 "\n" +
-                "Internal software error\n" +
-                "\n" +
-                "\n" +
-                "The RIPE Database is subject to Terms and Conditions:\n" +
-                "http://www.ripe.net/db/support/db-terms-conditions.pdf\n" +
-                "\n" +
-                "For assistance or clarification please contact:\n" +
-                "RIPE Database Administration <ripe-dbm@ripe.net>\n"));
+                "Internal software error\n"));
 
-        assertVersion(response);
     }
 
     @Test
@@ -164,19 +156,8 @@ public class ResponseFactoryTest {
                 "The following object(s) were processed SUCCESSFULLY:\n" +
                 "\n" +
                 "---\n" +
-                "Delete SUCCEEDED: [mntner] DEV-ROOT-MNT\n" +
-                "\n" +
-                "\n" +
-                "\n" +
-                "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
-                "\n" +
-                "The RIPE Database is subject to Terms and Conditions:\n" +
-                "http://www.ripe.net/db/support/db-terms-conditions.pdf\n" +
-                "\n" +
-                "For assistance or clarification please contact:\n" +
-                "RIPE Database Administration <ripe-dbm@ripe.net>\n\n"));
+                "Delete SUCCEEDED: [mntner] DEV-ROOT-MNT\n"));
 
-        assertVersion(response);
     }
 
     @Test
@@ -226,15 +207,8 @@ public class ResponseFactoryTest {
                 "\n" +
                 "paragraph 2\n" +
                 "\n" +
-                "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
-                "\n" +
-                "The RIPE Database is subject to Terms and Conditions:\n" +
-                "http://www.ripe.net/db/support/db-terms-conditions.pdf\n" +
-                "\n" +
-                "For assistance or clarification please contact:\n" +
-                "RIPE Database Administration <ripe-dbm@ripe.net>\n"));
+                "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"));
 
-        assertVersion(response);
     }
 
     @Test
@@ -308,15 +282,8 @@ public class ResponseFactoryTest {
                 "delete:         no longer required\n" +
                 "\n" +
                 "\n" +
-                "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
-                "\n" +
-                "The RIPE Database is subject to Terms and Conditions:\n" +
-                "http://www.ripe.net/db/support/db-terms-conditions.pdf\n" +
-                "\n" +
-                "For assistance or clarification please contact:\n" +
-                "RIPE Database Administration <ripe-dbm@ripe.net>\n"));
+                "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"));
 
-        assertVersion(response);
     }
 
     @Test
@@ -330,30 +297,23 @@ public class ResponseFactoryTest {
                 ">  Reply-To:   cac37ak@ripe.net\n" +
                 ">  Message-ID: <E1CCB659-9446-41B0-8E4A-5548104F94A9@ripe.net>\n" +
                 "\n" +
-                "You have requested Help information from the RIPE NCC Database,\n" +
+                "You have requested Help information from the Whois Database,\n" +
                 "therefore the body of your message has been ignored.\n" +
                 "\n" +
-                "RIPE Database documentation is available at\n" +
+                "Whois Database documentation is available at\n" +
                 "\n" +
-                "http://www.ripe.net/data-tools/support/documentation\n" +
+                "http://www.afrinic.net/en/library/membership-documents\n" +
                 "\n" +
-                "RIPE Database FAQ is available at\n" +
+                "Whois Database FAQ is available at\n" +
                 "\n" +
-                "http://www.ripe.net/data-tools/db/faq\n" +
+                "http://www.afrinic.net/en/faqs/whois\n" +
                 "\n" +
                 "RPSL RFCs are available at\n" +
                 "\n" +
-                "ftp://ftp.ripe.net/rfc/rfc2622.txt\n" +
-                "ftp://ftp.ripe.net/rfc/rfc2725.txt\n" +
-                "ftp://ftp.ripe.net/rfc/rfc4012.txt\n" +
-                "\n" +
-                "The RIPE Database is subject to Terms and Conditions:\n" +
-                "http://www.ripe.net/db/support/db-terms-conditions.pdf\n" +
-                "\n" +
-                "For assistance or clarification please contact:\n" +
-                "RIPE Database Administration <ripe-dbm@ripe.net>\n"));
+                "http://tools.ietf.org/rfc/rfc2622.txt\n" +
+                "http://tools.ietf.org/rfc/rfc2725.txt\n" +
+                "http://tools.ietf.org/rfc/rfc4012.txt\n"));
 
-        assertVersion(response);
     }
 
     @Test
@@ -375,10 +335,10 @@ public class ResponseFactoryTest {
 
         assertNotification(responseMessage);
 
-        assertThat(responseMessage.getSubject(), is("Notification of RIPE Database changes"));
+        assertThat(responseMessage.getSubject(), is("Notification of Whois Database changes"));
 
         assertThat(responseMessage.getMessage(), containsString("" +
-                "Some object(s) in RIPE Database that you either\n" +
+                "Some object(s) in Whois Database that you either\n" +
                 "maintain or you are listed in as to-be-notified have\n" +
                 "been added, deleted or changed.\n"));
 
@@ -413,10 +373,10 @@ public class ResponseFactoryTest {
 
         assertNotification(responseMessage);
 
-        assertThat(responseMessage.getSubject(), is("Notification of RIPE Database changes"));
+        assertThat(responseMessage.getSubject(), is("Notification of Whois Database changes"));
 
         assertThat(responseMessage.getMessage(), containsString("" +
-                "Some object(s) in RIPE Database that you either\n" +
+                "Some object(s) in Whois Database that you either\n" +
                 "maintain or you are listed in as to-be-notified have\n" +
                 "been added, deleted or changed.\n"));
 
@@ -449,10 +409,10 @@ public class ResponseFactoryTest {
 
         assertNotification(responseMessage);
 
-        assertThat(responseMessage.getSubject(), is("Notification of RIPE Database changes"));
+        assertThat(responseMessage.getSubject(), is("Notification of Whois Database changes"));
 
         assertThat(responseMessage.getMessage(), containsString("" +
-                "Some object(s) in RIPE Database that you either\n" +
+                "Some object(s) in Whois Database that you either\n" +
                 "maintain or you are listed in as to-be-notified have\n" +
                 "been added, deleted or changed.\n"));
 
@@ -484,10 +444,10 @@ public class ResponseFactoryTest {
         final ResponseMessage responseMessage = subject.createNotification(updateContext, origin, notification);
         assertNotification(responseMessage);
 
-        assertThat(responseMessage.getSubject(), is("Notification of RIPE Database changes"));
+        assertThat(responseMessage.getSubject(), is("Notification of Whois Database changes"));
 
         assertThat(responseMessage.getMessage(), containsString("" +
-                "Some object(s) in RIPE Database added references to\n" +
+                "Some object(s) in Whois Database added references to\n" +
                 "objects you are listed in as to-be-notified."));
 
         assertThat(responseMessage.getMessage(), containsString("" +
@@ -519,7 +479,7 @@ public class ResponseFactoryTest {
         final ResponseMessage responseMessage = subject.createNotification(updateContext, origin, notification);
         assertNotification(responseMessage);
 
-        assertThat(responseMessage.getSubject(), is("RIPE Database updates, auth error notification"));
+        assertThat(responseMessage.getSubject(), is("Whois Database updates, auth error notification"));
 
         assertThat(responseMessage.getMessage(), containsString("" +
                 "Some objects in which you are referenced as a\n" +
@@ -542,7 +502,7 @@ public class ResponseFactoryTest {
     private void assertNotification(final ResponseMessage responseMessage) {
         final String message = responseMessage.getMessage();
         assertThat(message, containsString("" +
-                "This is to notify you of changes in RIPE Database or\n" +
+                "This is to notify you of changes in Whois Database or\n" +
                 "object authorisation failures.\n" +
                 "\n" +
                 "This message is auto-generated.\n" +
@@ -550,30 +510,9 @@ public class ResponseFactoryTest {
                 "\n" +
                 "If you do not understand why we sent you this message,\n" +
                 "or for assistance or clarification please contact:\n" +
-                "RIPE Database Administration <ripe-dbm@ripe.net>\n" +
+                "Whois Database Administration <afrinic-dbm@afrinic.net>\n" +
                 "\n" +
                 "Change requested from:"));
 
-        assertThat(message, containsString("" +
-                "The RIPE Database is subject to Terms and Conditions:\n" +
-                "http://www.ripe.net/db/support/db-terms-conditions.pdf\n" +
-                "\n" +
-                "For assistance or clarification please contact:\n" +
-                "RIPE Database Administration <ripe-dbm@ripe.net>"));
-
-        assertVersion(message);
-    }
-
-    private void assertVersion(final String response) {
-        assertThat(response, containsString("" +
-                "\n" +
-                "The RIPE Database is subject to Terms and Conditions:\n" +
-                "http://www.ripe.net/db/support/db-terms-conditions.pdf\n" +
-                "\n" +
-                "For assistance or clarification please contact:\n" +
-                "RIPE Database Administration <ripe-dbm@ripe.net>\n" +
-                "\n" +
-                "Generated by RIPE WHOIS Update version 1.2.3 on UNDEFINED\n" +
-                "Handled mail update (TEST, 1970-01-01 00:00:00)\n"));
     }
 }

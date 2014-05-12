@@ -117,7 +117,7 @@ public final class UpdateMessages {
     }
 
     public static Message invalidRoutePrefix(final CharSequence type) {
-        return new Message(Type.ERROR, "Automatic creation of %s objects of this size in not allowed, please contact lir-help@ripe.net for further information.", type);
+        return new Message(Type.ERROR, "Automatic creation of %s objects of this size in not allowed, please contact hostmaster@afrinic.net for further information.", type);
     }
 
     public static Message invalidDateFormat() {
@@ -198,7 +198,7 @@ public final class UpdateMessages {
     }
 
     public static Message asblockIsMaintainedByRipe() {
-        return new Message(Type.ERROR, "As-block object are maintained by RIPE NCC");
+        return new Message(Type.ERROR, "As-block object are maintained by registry");
     }
 
     public static Message asblockParentAlreadyExists() {
@@ -296,7 +296,7 @@ public final class UpdateMessages {
     }
 
     public static Message createFirstPersonMntnerForOrganisation() {
-        return new Message(Type.INFO, "To create the first person/mntner pair of objects for an organisation see https://apps.db.ripe.net/startup/");
+        return new Message(Type.INFO, "To create the first person/mntner pair of objects for an organisation see http://www.afrinic.net/en/library/membership-documents");
     }
 
     public static Message maintainerNotFound(final CharSequence maintainer) {
@@ -383,7 +383,7 @@ public final class UpdateMessages {
 
     // NOTE: this errormessage is being used by webupdates.
     public static Message authorisationRequiredForChangingRipeMaintainer() {
-        return new Message(Type.ERROR, "Adding or removing a RIPE NCC maintainer requires administrative authorisation");
+        return new Message(Type.ERROR, "Adding or removing a power maintainer requires administrative authorisation");
     }
 
     public static Message tooManyPasswordsSpecified() {
@@ -431,7 +431,7 @@ public final class UpdateMessages {
     }
 
     public static Message ripeMntnerUpdatesOnlyAllowedFromWithinNetwork() {
-        return new Message(Type.ERROR, "Authentication by RIPE NCC maintainers only allowed from within the RIPE NCC network");
+        return new Message(Type.ERROR, "Authentication by power maintainers only allowed from within the registry network");
     }
 
     public static Message parentObjectNotFound(final CharSequence parent) {

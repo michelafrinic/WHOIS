@@ -82,7 +82,7 @@ public class AutNumCleanup {
     );
 
 
-    private static final String MAIL_HOST = "massmailer.ripe.net";
+    private static final String MAIL_HOST = "massmailer.afrinic.net";
     private static final int MAIL_PORT = 25;
     private static final String LOG_DIR = "var";
     private static final Joiner JOINER = Joiner.on(',');
@@ -125,12 +125,12 @@ public class AutNumCleanup {
 
         final Downloader downloader = new Downloader();
 
-        downloader.downloadToWithMd5Check(LOGGER, new URL("ftp://ftp.ripe.net/ripe/stats/delegated-ripencc-extended-latest"), resourceDataFile);
+        downloader.downloadToWithMd5Check(LOGGER, new URL("ftp://ftp.afrinic.net/afrinic/stats/delegated-afrinic-extended-latest"), resourceDataFile);
 
         final AuthoritativeResourceLoader authoritativeResourceLoader = new AuthoritativeResourceLoader(LOGGER, "ripe", new Scanner(resourceDataFile), Sets.newHashSet("reserved"));
         final AuthoritativeResource authoritativeResource = authoritativeResourceLoader.load();
 
-        final DataSource dataSource = new SimpleDriverDataSource(new Driver(), "jdbc:mysql://dbc-whois5.ripe.net/WHOIS_UPDATE_RIPE", "rdonly", mysqlConnectionPassword);
+        final DataSource dataSource = new SimpleDriverDataSource(new Driver(), "jdbc:mysql://db.afrinic.net/WHOIS_UPDATE", "rdonly", mysqlConnectionPassword);
         final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
         LOGGER.info("There are " + authoritativeResource.getNrAutNums() + " reserved autnums");
@@ -231,7 +231,7 @@ public class AutNumCleanup {
         LOGGER.info("About to send {} emails", cleanupsPerMntnerEmail.size());
 
         for (final CIString email : cleanupsPerMntnerEmail.keySet()) {
-            mailGateway.sendEmail(email.toString(), "Clean up of old ASN references in the RIPE Database", createMailContent(cleanupsPerMntnerEmail.get(email)));
+            mailGateway.sendEmail(email.toString(), "Clean up of old ASN references in the Whois Database", createMailContent(cleanupsPerMntnerEmail.get(email)));
             LOGGER.info("Mailing {}, content: {}", email, createMailContent(cleanupsPerMntnerEmail.get(email)));
         }
     }
@@ -239,12 +239,11 @@ public class AutNumCleanup {
     private String createMailContent(final List<Container> containers) {
         final StringBuilder builder = new StringBuilder();
         builder.append("Dear Colleagues,\n\n")
-                .append("The RIPE NCC is sending you this email as some of your objects in the RIPE Database still reference deleted AS Numbers.")
+                .append("The registry is sending you this email as some of your objects in the database still reference deleted AS Numbers.")
                 .append("Before these AS Numbers can be re-assigned all references to them need to be removed.")
                 .append("Below is a list of your objects that have these references.")
                 .append("Please update your objects to remove these references.\n\n")
                 .append("IMPORTANT: If you have any scripts or templates to auto-generate any of these objects, please also adjust them to prevent these references being re-generated.\n\n")
-                .append("For further details see https://labs.ripe.net/Members/denis/making-more-16-bit-as-numbers-available\n\n")
                 .append("Your Object:\t\treferences these deleted AS Numbers\n\n");
         for (final Container container : containers) {
             builder.append(container.getObjectWithAutnumReferences().getKey())
@@ -253,11 +252,9 @@ public class AutNumCleanup {
                     .append("\n");
         }
 
-        builder.append("\nIf you have any questions or need help to remove the references please contact our Customer Services ripe-dbm@ripe.net\n\n")
+        builder.append("\nIf you have any questions or need help to remove the references please contact our Customer Services afrinic-dbm@afrinic.net\n\n")
                 .append("Regards\n" +
-                        "Denis Walker\n" +
-                        "Business Analyst\n" +
-                        "RIPE NCC Database Team");
+                        "Database Team");
         return builder.toString();
     }
 
@@ -280,8 +277,8 @@ public class AutNumCleanup {
     }
 
     private class MailGatewayImpl implements MailGateway {
-        private static final String MAIL_FROM = "RIPE Database Administration <asnbounce@ripe.net>";
-        private static final String MAIL_REPLY_TO = "unread@ripe.net";
+        private static final String MAIL_FROM = "Database Administration <no-reply@afrinic.net>";
+        private static final String MAIL_REPLY_TO = "no-reply@afrinic.net";
 
         private final JavaMailSender mailSender;
         private final LoggerContext loggerContext;

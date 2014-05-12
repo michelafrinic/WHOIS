@@ -50,7 +50,7 @@ public class ArinGrsSourceTest {
                         "org:            IANA\n" +
                         "as-name:        IANA-RSVD-0\n" +
                         "remarks:        Reserved - May be used to identify non-routed networks\n" +
-                        "changed:        unread@ripe.net 20020913\n" +
+                        "changed:        no-reply@afrinic.net 20020913\n" +
                         "source:         ARIN\n"),
 
                 RpslObject.parse("" +
@@ -59,7 +59,7 @@ public class ArinGrsSourceTest {
                         "parent:         NET-192-0-0-0-0\n" + // Afrinic WHOIS has a generated "parent" element in the inetnum
                         "netname:        SPINK\n" +
                         "status:         assignment\n" +
-                        "changed:        unread@ripe.net 19910409\n" +
+                        "changed:        no-reply@afrinic.net 19910409\n" +
                         "source:         ARIN\n"),
 
                 RpslObject.parse("" +
@@ -68,7 +68,7 @@ public class ArinGrsSourceTest {
                         "parent:         NET6-2001-400-0\n" + // Afrinic WHOIS has a generated "parent" element in the inet6num
                         "netname:        NASA-PCCA-V6\n" +
                         "status:         allocation\n" +
-                        "changed:        unread@ripe.net 20021114\n" +
+                        "changed:        no-reply@afrinic.net 20021114\n" +
                         "tech-c:         ZN7-ARIN\n" +
                         "source:         ARIN\n"),
 
@@ -78,7 +78,7 @@ public class ArinGrsSourceTest {
                         "parent:         NET6-2001-468-1\n" + // Afrinic WHOIS has a generated "parent" element in the inet6num
                         "netname:        ABILENE-IU-V6\n" +
                         "status:         reallocation\n" +
-                        "changed:        unread@ripe.net 20020531\n" +
+                        "changed:        no-reply@afrinic.net 20020531\n" +
                         "tech-c:         BS69-ARIN\n" +
                         "source:         ARIN\n")
         ));
@@ -105,31 +105,31 @@ public class ArinGrsSourceTest {
                             "aut-num:        AS701\n" +
                             "org:            MCICS\n" +
                             "as-name:        UUNET\n" +
-                            "changed:        unread@ripe.net 20120320\n" +
+                            "changed:        no-reply@afrinic.net 20120320\n" +
                             "source:         ARIN"),
                     RpslObject.parse(
                             "aut-num:        AS702\n" +
                             "org:            MCICS\n" +
                             "as-name:        UUNET\n" +
-                            "changed:        unread@ripe.net 20120320\n" +
+                            "changed:        no-reply@afrinic.net 20120320\n" +
                             "source:         ARIN"),
                     RpslObject.parse(
                             "aut-num:        AS703\n" +
                             "org:            MCICS\n" +
                             "as-name:        UUNET\n" +
-                            "changed:        unread@ripe.net 20120320\n" +
+                            "changed:        no-reply@afrinic.net 20120320\n" +
                             "source:         ARIN"),
                     RpslObject.parse(
                             "aut-num:        AS704\n" +
                             "org:            MCICS\n" +
                             "as-name:        UUNET\n" +
-                            "changed:        unread@ripe.net 20120320\n" +
+                            "changed:        no-reply@afrinic.net 20120320\n" +
                             "source:         ARIN"),
                     RpslObject.parse(
                             "aut-num:        AS705\n" +
                             "org:            MCICS\n" +
                             "as-name:        UUNET\n" +
-                            "changed:        unread@ripe.net 20120320\n" +
+                            "changed:        no-reply@afrinic.net 20120320\n" +
                             "source:         ARIN")
                     ));
         } finally {
@@ -158,7 +158,7 @@ public class ArinGrsSourceTest {
                             "aut-num:        AS701\n" +
                             "org:            MCICS\n" +
                             "as-name:        UUNET\n" +
-                            "changed:        unread@ripe.net 20120320\n" +
+                            "changed:        no-reply@afrinic.net 20120320\n" +
                             "source:         ARIN")));
         } finally {
             zipFile.delete();
@@ -185,7 +185,7 @@ public class ArinGrsSourceTest {
                             "aut-num:        AS701\n" +
                             "org:            MCICS\n" +
                             "as-name:        UUNET\n" +
-                            "changed:        unread@ripe.net 20120320\n" +
+                            "changed:        no-reply@afrinic.net 20120320\n" +
                             "source:         ARIN")));
         } finally {
             zipFile.delete();

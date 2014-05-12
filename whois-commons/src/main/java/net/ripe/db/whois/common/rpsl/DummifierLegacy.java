@@ -201,7 +201,7 @@ public class DummifierLegacy implements Dummifier {
                         new RpslAttribute("remarks", "        * Please note that all data that is generally regarded as personal"),
                         new RpslAttribute("remarks", "        * data has been removed from this object."),
                         new RpslAttribute("remarks", "        * To view the original object, please query the AFRINIC Database at:"),
-                        new RpslAttribute("remarks", "        * http://www.afrinic.net/"),
+                        new RpslAttribute("remarks", "        * http://www.afrinic.net/services/whois-query"),
                         new RpslAttribute("remarks", "        ****************************"));
 
             case "apnic-grs":

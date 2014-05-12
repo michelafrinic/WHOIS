@@ -73,5 +73,3 @@ $paragraph.content
 #end
 #end
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#parse("/templates/include/terms-and-conditions.vm")
-#parse("/templates/include/version.vm")

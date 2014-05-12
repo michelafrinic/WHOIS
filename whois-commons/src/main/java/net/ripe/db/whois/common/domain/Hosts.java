@@ -18,7 +18,7 @@ public enum Hosts {
     WHOIS6("dbc-whois6.ripe.net"),
     PRE1("dbc-pre1.ripe.net"),
     PRE2("dbc-pre2.ripe.net"),
-    DEV1("dbc-dev1.ripe.net"),
+    DEV1("whois01.dev.mu.afrinic.net"),
     DEV2("dbc-dev2.ripe.net"),
     UNDEFINED("");
 

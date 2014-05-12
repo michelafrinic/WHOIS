@@ -1,6 +1,3 @@
 $origin.responseHeader
 
 Internal software error
-
-#parse("/templates/include/terms-and-conditions.vm")
-#parse("/templates/include/version.vm")

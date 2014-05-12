@@ -126,7 +126,7 @@ class LacnicGrsSource extends GrsSource {
             @Override
             public RpslAttribute apply(@Nullable RpslAttribute input) {
                 final String date = input.getCleanValue().toString().replaceAll("-", "");
-                final String value = String.format("unread@ripe.net %s # %s", date, input.getKey());
+                final String value = String.format("no-reply@afrinic.net %s # %s", date, input.getKey());
                 return new RpslAttribute(AttributeType.CHANGED, value);
             }
         }, "changed", "created");

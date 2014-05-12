@@ -90,11 +90,11 @@ public class ResponseFactory {
 
         final String subject;
         if (notification.has(Notification.Type.PENDING_UPDATE)) {
-            subject = "RIPE Database updates, auth request notification";
+            subject = "Whois Database updates, auth request notification";
         } else if (notification.has(Notification.Type.FAILED_AUTHENTICATION)) {
-            subject = "RIPE Database updates, auth error notification";
+            subject = "Whois Database updates, auth error notification";
         } else {
-            subject = "Notification of RIPE Database changes";
+            subject = "Notification of Whois Database changes";
         }
 
         return new ResponseMessage(subject, createResponse(TEMPLATE_NOTIFICATION, updateContext, velocityContext, origin));
@@ -106,7 +106,7 @@ public class ResponseFactory {
         velocityContext.put("object", rpslObject);
         velocityContext.put("timeout", days);
 
-        final String subject = String.format("Notification of RIPE Database pending update timeout on %s", rpslObject.getFormattedKey());
+        final String subject = String.format("Notification of Whois Database pending update timeout on %s", rpslObject.getFormattedKey());
 
         return new ResponseMessage(subject, createResponse(TEMPLATE_PENDING_UPDATE_TIMEOUT, updateContext, velocityContext, origin));
     }
