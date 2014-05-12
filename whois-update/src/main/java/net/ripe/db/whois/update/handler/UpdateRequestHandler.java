@@ -2,6 +2,8 @@ package net.ripe.db.whois.update.handler;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
+import net.ripe.db.whois.common.Message;
+import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.source.SourceContext;
 import net.ripe.db.whois.update.domain.*;
 import net.ripe.db.whois.update.handler.response.ResponseFactory;
@@ -11,6 +13,7 @@ import net.ripe.db.whois.update.log.UpdateLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -22,6 +25,7 @@ import java.util.List;
 public class UpdateRequestHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(UpdateRequestHandler.class);
 
+    private static boolean isUpdateEnabled = true;
     private final SourceContext sourceContext;
     private final ResponseFactory responseFactory;
     private final SingleUpdateHandler singleUpdateHandler;
@@ -41,10 +45,17 @@ public class UpdateRequestHandler {
 
     public UpdateResponse handle(final UpdateRequest updateRequest, final UpdateContext updateContext) {
         UpdateResponse updateResponse;
-        try {
-            updateResponse = handleUpdateRequest(updateRequest, updateContext);
-        } catch (RuntimeException e) {
-            LOGGER.error("Handling update request", e);
+
+        if (isUpdateEnabled) {
+            try {
+                updateResponse = handleUpdateRequest(updateRequest, updateContext);
+            } catch (RuntimeException e) {
+                LOGGER.error("Handling update request", e);
+                updateResponse = new UpdateResponse(UpdateStatus.EXCEPTION, responseFactory.createExceptionResponse(updateContext, updateRequest.getOrigin()));
+            }
+        } else {
+            LOGGER.error("Whois update called, but whois update is not allowed on this server. If this error is not expected, verify server configuration.");
+            updateContext.addGlobalMessage(new Message(Messages.Type.ERROR, "Whois update is not allowed on this server."));
             updateResponse = new UpdateResponse(UpdateStatus.EXCEPTION, responseFactory.createExceptionResponse(updateContext, updateRequest.getOrigin()));
         }
 
@@ -138,5 +149,10 @@ public class UpdateRequestHandler {
                 updateContext.prepareForReattempt(update);
             }
         }
+    }
+
+    @Value("${whois.enable.update:true}")
+    public void setEnableUpdate(boolean b) {
+        isUpdateEnabled = b;
     }
 }

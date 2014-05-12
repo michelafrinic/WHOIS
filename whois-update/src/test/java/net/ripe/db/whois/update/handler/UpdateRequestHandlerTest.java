@@ -18,6 +18,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Collections;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -144,4 +145,24 @@ public class UpdateRequestHandlerTest {
         verify(sourceContext, never()).removeCurrentSource();
 
     }
+
+    @Test
+    public void handle_update_disabled() {
+
+        when(updateRequest.getUpdates()).thenReturn(Lists.newArrayList(update));
+
+        when(ack.getUpdateStatus()).thenReturn(UpdateStatus.SUCCESS);
+        when(responseFactory.createAckResponse(updateContext, origin, ack)).thenReturn("ACK");
+
+        final RpslObject domain = RpslObject.parse("domain: 36.84.80.in-addr.arpa");
+        when(update.getType()).thenReturn(ObjectType.DOMAIN);
+        when(update.getSubmittedObject()).thenReturn(domain);
+        when(update.getOperation()).thenReturn(Operation.DELETE);
+        when(updateContext.getStatus(any(PreparedUpdate.class))).thenReturn(UpdateStatus.SUCCESS);
+
+        subject.setEnableUpdate(false);
+        UpdateResponse response = subject.handle(updateRequest, updateContext);
+        assertThat(response.getStatus(), is(UpdateStatus.EXCEPTION));
+    }
+
 }
