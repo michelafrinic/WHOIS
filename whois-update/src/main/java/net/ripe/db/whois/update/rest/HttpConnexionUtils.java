@@ -1,5 +1,6 @@
 package net.ripe.db.whois.update.rest;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -14,6 +15,8 @@ import java.net.URL;
  */
 @Component
 public class HttpConnexionUtils {
+    private final Logger logger = Logger.getLogger(HttpConnexionUtils.class);
+
     public String executePost(String serviceUrl, String urlParameters) {
         URL url = null;
         HttpURLConnection connection = null;
@@ -48,7 +51,7 @@ public class HttpConnexionUtils {
             rd.close();
             return response.toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error while doing POST", e);
             return null;
         } finally {
             if (connection != null) {
@@ -83,7 +86,7 @@ public class HttpConnexionUtils {
             rd.close();
             return response.toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error while doing GET", e);
             return null;
         } finally {
             if (connection != null) {

@@ -295,6 +295,18 @@ public final class UpdateMessages {
         return new Message(Type.ERROR, "%s cannot be smaller than /%s", inetStatus.toString(), maxPrefixLength);
     }
 
+    public static Message rangeTooHighForStatusSAW(final int maxPrefixLength, final int inetNumPrefixLength) {
+        return new Message(Type.ERROR, "According to Sub Allocation Window, the size of the sub allocation cannot be greater than /%s while this inetnum is a /%s", maxPrefixLength, inetNumPrefixLength);
+    }
+
+    public static Message subAllocationNotAllowed() {
+        return new Message(Type.ERROR, "Sub allocation not allowed");
+    }
+
+    public static Message noSubAllocationSpecified() {
+        return new Message(Type.ERROR, "No sub allocation window specified");
+    }
+
     public static Message createFirstPersonMntnerForOrganisation() {
         return new Message(Type.INFO, "To create the first person/mntner pair of objects for an organisation see http://www.afrinic.net/en/library/membership-documents");
     }
@@ -532,5 +544,9 @@ public final class UpdateMessages {
 
     public static Message dryRunNotice() {
         return new Message(Type.INFO, "Dry-run performed, no changes to the database have been made");
+    }
+
+    public static Message onlyLIRCanCreateSubAllocations() {
+        return new Message(Type.ERROR, "Only a LIR can create sub allocations");
     }
 }

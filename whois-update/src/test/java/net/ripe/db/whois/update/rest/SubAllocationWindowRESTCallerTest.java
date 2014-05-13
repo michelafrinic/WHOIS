@@ -56,6 +56,21 @@ public class SubAllocationWindowRESTCallerTest {
     }
 
     @Test
+    public void testExistingOrgHandleButNoSAW() {
+        when(httpConnexionUtils.executeGet(any(String.class))).thenReturn("" +
+                "<?xml version=\"1.0\"?>\n" +
+                "<customer>\n" +
+                "<org_handle>ORG-SA56-AFRINIC</org_handle>\n" +
+                "<saw>\n" +
+                "<saw_v4>None</saw_v4>\n" +
+                "<saw_v6>None</saw_v6>\n" +
+                "</saw>\n" +
+                "</customer>");
+        Assert.assertNull(subject.getSAW4(""));
+        Assert.assertNull(subject.getSAW6(""));
+    }
+
+    @Test
     public void testSAW() {
         when(httpConnexionUtils.executeGet(any(String.class))).thenReturn("" +
                 "<?xml version=\"1.0\"?>\n" +
