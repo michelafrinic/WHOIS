@@ -58,6 +58,11 @@ public class IpDomainUniqueHierarchyValidator implements BusinessRuleValidator {
                 if(entry.getKey().getPrefixLength() == 8) {
                     return;
                 }
+            }else {
+                Ipv6Entry entry = (Ipv6Entry) ipEntry;
+                if (entry.getKey().getPrefixLength() <= 24) {
+                    return;
+                }
             }
 
             updateContext.addMessage(update, UpdateMessages.lessSpecificDomainFound(ipEntry.getKey().toString()));

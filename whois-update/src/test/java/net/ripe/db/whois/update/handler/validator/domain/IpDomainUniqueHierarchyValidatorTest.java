@@ -7,6 +7,7 @@ import net.ripe.db.whois.common.domain.Ipv6Resource;
 import net.ripe.db.whois.common.iptree.Ipv4DomainTree;
 import net.ripe.db.whois.common.iptree.Ipv4Entry;
 import net.ripe.db.whois.common.iptree.Ipv6DomainTree;
+import net.ripe.db.whois.common.iptree.Ipv6Entry;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.update.domain.Action;
@@ -18,6 +19,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertThat;
@@ -121,5 +125,24 @@ public class IpDomainUniqueHierarchyValidatorTest {
 
         verify(updateContext, never()).addMessage(any(PreparedUpdate.class), any(Message.class));
         verifyZeroInteractions(ipv6DomainTree);
+    }
+
+    @Test
+    public void validate_ipv6_domain_less_specific_slashlessthan24_success() {
+        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("" +
+                "domain: 0.0.0.0.8.f.3.4.1.0.0.2.ip6.arpa"));
+
+        final Ipv6Resource lessSpecific = Ipv6Resource.parse("2001:4300::/24");
+
+        final Ipv6Entry ipv6Entry = new Ipv6Entry(lessSpecific,anyInt());
+        final List<Ipv6Entry> ipv6EntryList = new ArrayList<>();
+        ipv6EntryList.add(ipv6Entry);
+
+        when(ipv6DomainTree.findFirstLessSpecific(Ipv6Resource.parse("2001:4300::/48"))).thenReturn(ipv6EntryList);
+
+        subject.validate(update, updateContext);
+
+        verify(updateContext, never()).addMessage(any(PreparedUpdate.class), any(Message.class));
+        verifyZeroInteractions(ipv4DomainTree);
     }
 }
