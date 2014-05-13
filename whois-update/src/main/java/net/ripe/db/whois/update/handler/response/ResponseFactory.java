@@ -26,6 +26,7 @@ import java.io.StringWriter;
 public class ResponseFactory {
     private static final Splitter LINE_SPLITTER = Splitter.on('\n');
 
+    private static final String TEMPLATE_SERVER_MSG = "templates/serverMessage.vm";
     private static final String TEMPLATE_EXCEPTION = "templates/exception.vm";
     private static final String TEMPLATE_ACK = "templates/ack.vm";
     private static final String TEMPLATE_HELP = "templates/help.vm";
@@ -120,6 +121,24 @@ public class ResponseFactory {
         velocityContext.put("timestamp", FormatHelper.dateTimeToString(dateTimeProvider.getCurrentDateTime()));
 
         final Template template = velocityEngine.getTemplate(templateName);
+        final StringWriter writer = new StringWriter();
+
+        template.merge(velocityContext, writer);
+
+        return cleanupResponse(writer.toString());
+    }
+
+    public String createServerResponse(final UpdateContext updateContext, final Origin origin, final String msg) {
+        final VelocityContext velocityContext = new VelocityContext();
+        velocityContext.put("globalMessages", updateContext.printGlobalMessages());
+        velocityContext.put("origin", origin);
+        velocityContext.put("version", version);
+        velocityContext.put("hostName", Hosts.getLocalHost().name());
+        velocityContext.put("source", source);
+        velocityContext.put("timestamp", FormatHelper.dateTimeToString(dateTimeProvider.getCurrentDateTime()));
+        velocityContext.put("serverMessage", msg);
+
+        final Template template = velocityEngine.getTemplate(TEMPLATE_SERVER_MSG);
         final StringWriter writer = new StringWriter();
 
         template.merge(velocityContext, writer);

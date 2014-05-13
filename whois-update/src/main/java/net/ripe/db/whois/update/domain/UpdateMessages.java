@@ -549,4 +549,8 @@ public final class UpdateMessages {
     public static Message onlyLIRCanCreateSubAllocations() {
         return new Message(Type.ERROR, "Only a LIR can create sub allocations");
     }
+
+    public static Message updateNotAllowed() {
+        return new Message(Messages.Type.ERROR, "Whois update is not allowed on this server.");
+    }
 }

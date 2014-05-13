@@ -89,7 +89,10 @@ interface AttributeSyntax extends Documented {
             "                                  \"key-cert:\" attribute (X509-nnn).\n");
     */
     AttributeSyntax AUTH_SCHEME_SYNTAX = new AttributeSyntaxRegexp(
+    /*
             Pattern.compile("(?i)^(MD5-PW \\$1\\$[A-Z0-9./]{1,8}\\$[A-Z0-9./]{22}|PGPKEY-[A-F0-9]{8}|X509-[1-9][0-9]{0,19}|AUTO-[1-9][0-9]*)$"), "" +
+    */
+            Pattern.compile("(?i)^(MD5-PW \\$1\\$[A-Z0-9./]{1,8}\\$[A-Z0-9./]{22}|CRYPT-PW (.{2})(.{11})|PGPKEY-[A-F0-9]{8}|X509-[1-9][0-9]{0,19}|AUTO-[1-9][0-9]*)$"), "" +
             "<auth-scheme> <scheme-info>       Description\n" +
             "\n" +
             "CRYPT-PW      encrypted           This scheme is our weeakest form\n"+

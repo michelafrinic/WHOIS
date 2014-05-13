@@ -52,6 +52,8 @@ public class UpdateRequestHandlerTest {
         when(updateRequest.getKeyword()).thenReturn(Keyword.NONE);
         when(updateRequest.isNotificationsEnabled()).thenReturn(false);
         when(updateContext.createAck()).thenReturn(ack);
+
+        subject.setUpdateEnabled(true);
     }
 
     @Test
@@ -160,7 +162,7 @@ public class UpdateRequestHandlerTest {
         when(update.getOperation()).thenReturn(Operation.DELETE);
         when(updateContext.getStatus(any(PreparedUpdate.class))).thenReturn(UpdateStatus.SUCCESS);
 
-        subject.setEnableUpdate(false);
+        subject.setUpdateEnabled(false);
         UpdateResponse response = subject.handle(updateRequest, updateContext);
         assertThat(response.getStatus(), is(UpdateStatus.EXCEPTION));
     }

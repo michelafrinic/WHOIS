@@ -25,7 +25,7 @@ import java.util.List;
 public class UpdateRequestHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(UpdateRequestHandler.class);
 
-    private static boolean isUpdateEnabled = true;
+    private boolean isUpdateEnabled = true;
     private final SourceContext sourceContext;
     private final ResponseFactory responseFactory;
     private final SingleUpdateHandler singleUpdateHandler;
@@ -46,7 +46,7 @@ public class UpdateRequestHandler {
     public UpdateResponse handle(final UpdateRequest updateRequest, final UpdateContext updateContext) {
         UpdateResponse updateResponse;
 
-        if (isUpdateEnabled) {
+        if (isUpdateEnabled()) {
             try {
                 updateResponse = handleUpdateRequest(updateRequest, updateContext);
             } catch (RuntimeException e) {
@@ -54,9 +54,11 @@ public class UpdateRequestHandler {
                 updateResponse = new UpdateResponse(UpdateStatus.EXCEPTION, responseFactory.createExceptionResponse(updateContext, updateRequest.getOrigin()));
             }
         } else {
-            LOGGER.error("Whois update called, but whois update is not allowed on this server. If this error is not expected, verify server configuration.");
-            updateContext.addGlobalMessage(new Message(Messages.Type.ERROR, "Whois update is not allowed on this server."));
-            updateResponse = new UpdateResponse(UpdateStatus.EXCEPTION, responseFactory.createExceptionResponse(updateContext, updateRequest.getOrigin()));
+            Message updMessage = UpdateMessages.updateNotAllowed();
+            String message = updMessage.getValue();
+            LOGGER.error(message +" If this error is not expected, verify server configuration.");
+            updateContext.addGlobalMessage(updMessage);
+            updateResponse = new UpdateResponse(UpdateStatus.EXCEPTION, responseFactory.createServerResponse(updateContext, updateRequest.getOrigin(), message));
         }
 
         return updateResponse;
@@ -151,8 +153,12 @@ public class UpdateRequestHandler {
         }
     }
 
-    @Value("${whois.enable.update:true}")
-    public void setEnableUpdate(boolean b) {
+    @Value("${whois.enable.update}")
+    public void setUpdateEnabled(boolean b) {
         isUpdateEnabled = b;
+    }
+
+    public boolean isUpdateEnabled() {
+        return isUpdateEnabled;
     }
 }
