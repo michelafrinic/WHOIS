@@ -3,10 +3,13 @@ package net.ripe.db.whois.update.handler.validator.domain;
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
+import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.IpInterval;
 import net.ripe.db.whois.common.domain.Ipv4Resource;
 import net.ripe.db.whois.common.domain.Ipv6Resource;
 import net.ripe.db.whois.common.domain.attrs.Domain;
+import net.ripe.db.whois.common.domain.attrs.Inet6numStatus;
+import net.ripe.db.whois.common.domain.attrs.InetStatus;
 import net.ripe.db.whois.common.domain.attrs.InetnumStatus;
 import net.ripe.db.whois.common.iptree.*;
 import net.ripe.db.whois.common.rpsl.AttributeType;
@@ -21,6 +24,7 @@ import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -48,58 +52,92 @@ public class NoReverseUnlessAssignedValidator implements BusinessRuleValidator {
 
     @Override
     public void validate(final PreparedUpdate update, final UpdateContext updateContext) {
+
         final Domain domain = Domain.parse(update.getUpdatedObject().getKey());
+
         if (domain.getType() == Domain.Type.E164) {
+            updateContext.addMessage(update, UpdateMessages.invalidDomainObjectType(domain.getReverseIp().toString()));
             return;
         }
 
-        final IpInterval reverseIp = domain.getReverseIp();
-        List<Ipv4Entry> parentInetnum = null;
-        List<Ipv6Entry> parentInet6num = null;
+        final IpEntry coveringInetnum = getExactOrFirstLessSpecificInetnum(domain);
+
+        final InetStatus coveringInetStatus = getInetStatusFromIpEntry(coveringInetnum, domain);
+
+        if (coveringInetStatus != null &&
+                (coveringInetStatus.equals(InetnumStatus.ASSIGNED_PI)
+                || coveringInetStatus.equals(InetnumStatus.ASSIGNED_PA)
+                || coveringInetStatus.equals(InetnumStatus.SUB_ALLOCATED_PA)
+                || coveringInetStatus.equals(Inet6numStatus.ASSIGNED_PA))) {
+            return;
+        }
+
+        if (coveringInetStatus != null &&
+                (coveringInetStatus.equals(InetnumStatus.ALLOCATED_PA)
+                        || coveringInetStatus.equals(Inet6numStatus.ALLOCATED_BY_RIR))) {
+            final List<IpEntry> childEntries = getFirstMoreSpecificInetnum(coveringInetnum, domain);
+
+            if (childEntries.isEmpty()) {
+                updateContext.addMessage(update, UpdateMessages.noMoreSpecificInetnumFound(domain.getReverseIp().toString()));
+            }
+
+        }
+    }
+
+    private InetStatus getInetStatusFromIpEntry(final IpEntry ipEntry, final Domain domain) {
+
+        final List<RpslObjectInfo> rpslObjectInfoList =
+                objectDao.findByAttribute(AttributeType.ADDRESS, ipEntry.getKey().toString());
+
+        RpslObject rpslObject = null;
+
+        if (!rpslObjectInfoList.isEmpty()) {
+            rpslObject = objectDao.getById(rpslObjectInfoList.get(0).getObjectId());
+        }
+
+        if (rpslObject == null || domain == null) {
+            return null;
+        }
 
         if (domain.getType() == Domain.Type.INADDR) {
-            parentInetnum = ipv4Tree.findExactOrFirstLessSpecific(Ipv4Resource.parse(reverseIp.toString()));
-            validateMoreSpecificFound(update, updateContext, parentInetnum.get(0).getKey(), ipv4Tree);
-            Validate.notEmpty(parentInetnum, "Should always have a parent");
-        } else {
-            parentInet6num = ipv6Tree.findExactOrFirstLessSpecific(Ipv6Resource.parse(reverseIp.toString()));
-            validateMoreSpecificFound(update, updateContext, parentInet6num.get(0).getKey(), ipv6Tree);
-            Validate.notEmpty(parentInet6num, "Should always have a parent");
+            return InetnumStatus.getStatusFor(rpslObject.getValueForAttribute(AttributeType.STATUS));
+        }
+        else {
+            return Inet6numStatus.getStatusFor(rpslObject.getValueForAttribute(AttributeType.STATUS));
         }
     }
 
-    private void validateMoreSpecificFound(final PreparedUpdate update, final UpdateContext updateContext, final IpInterval parentInetnumIpInterval, final IpTree ipTree) {
-        List<RpslObjectInfo> rpslObjectInfoList = objectDao.findByAttribute(AttributeType.ADDRESS, parentInetnumIpInterval.toString());
-        RpslObjectInfo rpslObjectInfo = rpslObjectInfoList.get(0);
-        RpslObject rpslObject = objectDao.getById(rpslObjectInfo.getObjectId());
 
-        final InetnumStatus objectStatus = InetnumStatus.getStatusFor(rpslObject.getValueForAttribute(AttributeType.STATUS));
+    private IpEntry getExactOrFirstLessSpecificInetnum(final Domain domain) {
+        List<IpEntry> parentEntries = new ArrayList<>();
 
-        if (objectStatus.equals(InetnumStatus.ALLOCATED_PA)) {
-            final List<IpEntry> childEntries = ipTree.findFirstMoreSpecific(Ipv4Resource.parse(parentInetnumIpInterval.toString()));
-            if (childEntries.isEmpty()) {
-                updateContext.addMessage(update, UpdateMessages.noMoreSpecificInetnumFound(rpslObject.toString()));
-            }
+        if (domain.getType() == Domain.Type.INADDR) {
+            parentEntries.addAll(ipv4Tree.findExactOrFirstLessSpecific(Ipv4Resource.parse(domain.getReverseIp().toString())));
+        }
+        else {
+            parentEntries.addAll(ipv6Tree.findExactOrFirstLessSpecific(Ipv6Resource.parse(domain.getReverseIp().toString())));
         }
 
-        if (objectStatus.equals(InetnumStatus.ASSIGNED_PI) || objectStatus.equals(InetnumStatus.ASSIGNED_PA) || objectStatus.equals(InetnumStatus.SUB_ALLOCATED_PA)) {
-            return;
+        if (!parentEntries.isEmpty()) {
+            return parentEntries.get(0);
         }
+        return null;
 
-        /*Interval firstIntersecting = null;
-        final List<IpEntry> childEntries = ipTree.findFirstMoreSpecific((IpInterval) parent.get(0).getKey());
-        for (final IpEntry childEntry : childEntries) {
-            final Interval child = childEntry.getKey();
-
-            if (child.intersects(ipInterval) && !(child.contains(ipInterval) || ipInterval.contains(child))) {
-                if (firstIntersecting == null || firstIntersecting.singletonIntervalAtLowerBound().compareUpperBound(child.singletonIntervalAtLowerBound()) > 0) {
-                    firstIntersecting = child;
-                }
-            }
-        }
-
-        if (firstIntersecting != null) {
-            updateContext.addMessage(update, UpdateMessages.intersectingRange(firstIntersecting));
-        }*/
     }
+
+    private List<IpEntry> getFirstMoreSpecificInetnum(final IpEntry ipEntry, final Domain domain) {
+
+        List<IpEntry> childEntries = new ArrayList<>();
+
+        if (domain.getType() == Domain.Type.INADDR) {
+            childEntries.addAll(ipv4Tree.findFirstMoreSpecific(Ipv4Resource.parse(ipEntry.getKey().toString())));
+        }
+        else {
+            childEntries.addAll(ipv6Tree.findFirstMoreSpecific(Ipv6Resource.parse(ipEntry.getKey().toString())));
+        }
+
+        return childEntries;
+
+    }
+
 }

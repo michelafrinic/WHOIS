@@ -373,7 +373,11 @@ public final class UpdateMessages {
     }
 
     public static Message noMoreSpecificInetnumFound(final CharSequence s) {
-        return new Message(Type.ERROR, "No assignment or sub-allocations found for %s", s);
+        return new Message(Type.ERROR, "No assignment or sub-allocation found for %s", s);
+    }
+
+    public static Message invalidDomainObjectType(final CharSequence s) {
+        return new Message(Type.ERROR, "Domain object type not supported %s", s);
     }
 
     public static Message hostNameMustEndWith(final CharSequence s) {
