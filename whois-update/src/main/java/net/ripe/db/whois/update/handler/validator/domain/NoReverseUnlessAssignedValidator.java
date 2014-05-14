@@ -52,7 +52,6 @@ public class NoReverseUnlessAssignedValidator implements BusinessRuleValidator {
 
     @Override
     public void validate(final PreparedUpdate update, final UpdateContext updateContext) {
-
         final Domain domain = Domain.parse(update.getUpdatedObject().getKey());
 
         if (domain.getType() == Domain.Type.E164) {
@@ -60,40 +59,82 @@ public class NoReverseUnlessAssignedValidator implements BusinessRuleValidator {
             return;
         }
 
+        if (domain.getType() == Domain.Type.INADDR) {
+            validate_ipv4_rdns(update, updateContext);
+        }else{
+            validate_ipv6_rdns(update, updateContext);
+        }
+    }
+
+    private void validate_ipv6_rdns(final PreparedUpdate update, final UpdateContext updateContext) {
+
+        final Domain domain = Domain.parse(update.getUpdatedObject().getKey());
+
         final IpEntry coveringInetnum = getExactOrFirstLessSpecificInetnum(domain);
 
         final InetStatus coveringInetStatus = getInetStatusFromIpEntry(coveringInetnum, domain);
 
-        if (coveringInetStatus != null &&
-                (coveringInetStatus.equals(InetnumStatus.ASSIGNED_PI)
-                || coveringInetStatus.equals(InetnumStatus.ASSIGNED_PA)
-                || coveringInetStatus.equals(InetnumStatus.SUB_ALLOCATED_PA)
-                || coveringInetStatus.equals(Inet6numStatus.ASSIGNED_PA))) {
+        if (    ((Inet6numStatus)coveringInetStatus).compareTo(Inet6numStatus.ASSIGNED_PA) == 0 ||
+                ((Inet6numStatus)coveringInetStatus).compareTo(Inet6numStatus.ASSIGNED_PI) == 0
+                ){
             return;
         }
 
-        if (coveringInetStatus != null &&
-                (coveringInetStatus.equals(InetnumStatus.ALLOCATED_PA)
-                        || coveringInetStatus.equals(Inet6numStatus.ALLOCATED_BY_RIR))) {
+        if (  ((Inet6numStatus)coveringInetStatus).compareTo(Inet6numStatus.ALLOCATED_BY_RIR) == 0 ) {
             final List<IpEntry> childEntries = getFirstMoreSpecificInetnum(coveringInetnum, domain);
 
             if (childEntries.isEmpty()) {
                 updateContext.addMessage(update, UpdateMessages.noMoreSpecificInetnumFound(domain.getReverseIp().toString()));
             }
-
         }
+    }
+
+    private void validate_ipv4_rdns(final PreparedUpdate update, final UpdateContext updateContext) {
+
+        final Domain domain = Domain.parse(update.getUpdatedObject().getKey());
+
+        final IpEntry coveringInetnum = getExactOrFirstLessSpecificInetnum(domain);
+
+        final InetStatus coveringInetStatus = getInetStatusFromIpEntry(coveringInetnum, domain);
+
+        if (    ((InetnumStatus)coveringInetStatus).compareTo(InetnumStatus.ASSIGNED_PA) == 0 ||
+                ((InetnumStatus)coveringInetStatus).compareTo(InetnumStatus.ASSIGNED_PI) == 0 ||
+                ((InetnumStatus)coveringInetStatus).compareTo(InetnumStatus.SUB_ALLOCATED_PA) == 0
+           ){
+            return;
+        }
+
+        if (  ((InetnumStatus)coveringInetStatus).compareTo(InetnumStatus.ALLOCATED_PA) == 0 ) {
+            final List<IpEntry> childEntries = getFirstMoreSpecificInetnum(coveringInetnum, domain);
+
+            if (childEntries.isEmpty()) {
+                updateContext.addMessage(update, UpdateMessages.noMoreSpecificInetnumFound(domain.getReverseIp().toString()));
+            }
+        }
+    }
+
+    private RpslObject getRpslObjectFromIpEntry(final IpEntry ipEntry, final Domain domain) {
+
+        List<RpslObjectInfo> rpslObjectInfoList = new ArrayList<>();
+
+        if (domain.getType() == Domain.Type.INADDR) {
+            rpslObjectInfoList.addAll(objectDao.findByAttribute(AttributeType.INETNUM, ((Ipv4Entry) ipEntry).getKey().toString()));
+        }
+        else {
+            rpslObjectInfoList.addAll(objectDao.findByAttribute(AttributeType.INET6NUM, ((Ipv6Entry) ipEntry).getKey().toString()));
+        }
+
+        if (!rpslObjectInfoList.isEmpty()) {
+            return objectDao.getById(rpslObjectInfoList.get(0).getObjectId());
+        }else{
+            return null;
+        }
+
     }
 
     private InetStatus getInetStatusFromIpEntry(final IpEntry ipEntry, final Domain domain) {
 
-        final List<RpslObjectInfo> rpslObjectInfoList =
-                objectDao.findByAttribute(AttributeType.ADDRESS, ipEntry.getKey().toString());
-
-        RpslObject rpslObject = null;
-
-        if (!rpslObjectInfoList.isEmpty()) {
-            rpslObject = objectDao.getById(rpslObjectInfoList.get(0).getObjectId());
-        }
+        final RpslObject rpslObject = getRpslObjectFromIpEntry(ipEntry, domain);
 
         if (rpslObject == null || domain == null) {
             return null;
@@ -121,6 +162,8 @@ public class NoReverseUnlessAssignedValidator implements BusinessRuleValidator {
         if (!parentEntries.isEmpty()) {
             return parentEntries.get(0);
         }
+
+        Validate.notEmpty(parentEntries, "Should always have a parent");
         return null;
 
     }
