@@ -47,7 +47,7 @@ public class NoReverseUnlessAssignedValidator implements BusinessRuleValidator {
 
     @Override
     public List<ObjectType> getTypes() {
-        return Lists.newArrayList(ObjectType.INETNUM, ObjectType.INET6NUM);
+        return Lists.newArrayList(ObjectType.DOMAIN);
     }
 
     @Override
