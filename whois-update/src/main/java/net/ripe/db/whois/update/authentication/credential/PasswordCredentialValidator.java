@@ -6,8 +6,8 @@ import net.ripe.db.whois.update.domain.PasswordCredential;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
 import net.ripe.db.whois.update.log.LoggerContext;
-import org.apache.commons.codec.digest.Crypt;
 import org.apache.commons.codec.digest.Md5Crypt;
+import org.apache.commons.codec.digest.UnixCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -59,7 +59,7 @@ class PasswordCredentialValidator implements CredentialValidator<PasswordCredent
                 try {
                     final String salt = cryptMatcher.group(1);
                     final String known = String.format("%s%s", salt, cryptMatcher.group(2));
-                    final String offered = Crypt.crypt(offeredCredential.getPassword().getBytes(), salt);
+                    final String offered = UnixCrypt.crypt(offeredCredential.getPassword().getBytes(), salt);
                     if (known.equals(offered)) {
                         loggerContext.logString(
                                 update.getUpdate(),
