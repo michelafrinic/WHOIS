@@ -66,7 +66,7 @@ public class SubAllocationWindowValidator implements BusinessRuleValidator {
                 final OrgType orgType = OrgType.getFor(orgTypeStr);
 
                 if (OrgType.LIR.equals(orgType)) {
-                    String orgHdl = referencedOrganisation.findAttribute(AttributeType.ORGANISATION).getValue();
+                    String orgHdl = referencedOrganisation.findAttribute(AttributeType.ORGANISATION).getValue().trim();
                     Integer subAllocationWindowSizePrefix = subAllocationWindowRESTCaller.getSAW4(orgHdl);
 
                     if (subAllocationWindowSizePrefix != null) {
