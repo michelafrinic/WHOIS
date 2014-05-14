@@ -118,6 +118,6 @@ public class OverrideOptionsTest {
     }
 
     private void useCredentialWithRemarks(final String remarks) {
-        when(update.getCredentials()).thenReturn(new Credentials(Collections.<Credential>singleton(OverrideCredential.parse("user,pw," + remarks))));
+        when(update.getCredentials()).thenReturn(new Credentials(Collections.<Credential>singleton(PasswordOverrideCredential.parse("user,pw," + remarks))));
     }
 }

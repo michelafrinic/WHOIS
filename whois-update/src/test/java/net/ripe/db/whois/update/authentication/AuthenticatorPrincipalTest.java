@@ -21,7 +21,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -178,7 +177,7 @@ public class AuthenticatorPrincipalTest {
     @Test
     public void authenticate_override_no_syncupdate() {
         final HashSet<Credential> credentialSet = Sets.newHashSet();
-        credentialSet.add(OverrideCredential.parse("user,pwd"));
+        credentialSet.add(PasswordOverrideCredential.parse("user,pwd"));
 
         when(origin.getFrom()).thenReturn("someone@mail.com");
         when(update.isOverride()).thenReturn(true);
@@ -193,7 +192,7 @@ public class AuthenticatorPrincipalTest {
     @Test
     public void authenticate_override_outside_RIPE_range() {
         final HashSet<Credential> credentialSet = Sets.newHashSet();
-        credentialSet.add(OverrideCredential.parse("user,pwd"));
+        credentialSet.add(PasswordOverrideCredential.parse("user,pwd"));
 
         when(origin.allowAdminOperations()).thenReturn(true);
         when(origin.getFrom()).thenReturn("10.0.0.0");
@@ -209,8 +208,8 @@ public class AuthenticatorPrincipalTest {
     @Test
     public void authenticate_override_multiple_overrides() {
         final HashSet<Credential> credentialSet = Sets.newHashSet();
-        credentialSet.add(OverrideCredential.parse("user,pwd1"));
-        credentialSet.add(OverrideCredential.parse("user,pwd2"));
+        credentialSet.add(PasswordOverrideCredential.parse("user,pwd1"));
+        credentialSet.add(PasswordOverrideCredential.parse("user,pwd2"));
 
         when(origin.getFrom()).thenReturn("193.0.0.10");
         when(update.isOverride()).thenReturn(true);
@@ -228,7 +227,7 @@ public class AuthenticatorPrincipalTest {
         when(origin.allowAdminOperations()).thenReturn(true);
 
         final HashSet<Credential> credentialSet = Sets.newHashSet();
-        credentialSet.add(OverrideCredential.parse("user,password"));
+        credentialSet.add(PasswordOverrideCredential.parse("user,password"));
 
         when(origin.getFrom()).thenReturn("193.0.0.10");
         when(update.isOverride()).thenReturn(true);
@@ -248,7 +247,7 @@ public class AuthenticatorPrincipalTest {
     @Test
     public void authenticate_override_invalid_password() {
         final HashSet<Credential> credentialSet = Sets.newHashSet();
-        credentialSet.add(OverrideCredential.parse("user,invalid"));
+        credentialSet.add(PasswordOverrideCredential.parse("user,invalid"));
 
         when(origin.allowAdminOperations()).thenReturn(true);
         when(origin.getFrom()).thenReturn("193.0.0.10");
@@ -269,7 +268,7 @@ public class AuthenticatorPrincipalTest {
     @Test
     public void authenticate_override_valid_password_no_objecttypes() {
         final HashSet<Credential> credentialSet = Sets.newHashSet();
-        credentialSet.add(OverrideCredential.parse("user,password"));
+        credentialSet.add(PasswordOverrideCredential.parse("user,password"));
 
         when(origin.getFrom()).thenReturn("193.0.0.10");
         when(update.isOverride()).thenReturn(true);
@@ -362,7 +361,7 @@ public class AuthenticatorPrincipalTest {
     @Test
     public void authenticate_override_valid_password_and_objecttypes() {
         final HashSet<Credential> credentialSet = Sets.newHashSet();
-        credentialSet.add(OverrideCredential.parse("user,password"));
+        credentialSet.add(PasswordOverrideCredential.parse("user,password"));
 
         when(origin.allowAdminOperations()).thenReturn(true);
         when(origin.getFrom()).thenReturn("193.0.0.10");

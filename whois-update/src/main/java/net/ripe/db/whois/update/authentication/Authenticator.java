@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 @Component
@@ -122,6 +123,8 @@ public class Authenticator {
         for (PgpCredential pgpOverrideKey : pgpOverrideKeys){
             if (pgpCredentialValidator.hasValidCredential(update,updateContext,offeredCredentials,pgpOverrideKey)){
                 updateContext.addMessage(update, UpdateMessages.overrideAuthenticationUsed());
+
+                update.getParagraph().getCredentials().add(new PgpOverrideCredential(pgpOverrideKey));
                 return true;
             }
         }
@@ -130,7 +133,7 @@ public class Authenticator {
     }
 
     private Subject performOverrideAuthentication(final Origin origin, final PreparedUpdate update, final UpdateContext updateContext) {
-        final Set<OverrideCredential> overrideCredentials = update.getCredentials().ofType(OverrideCredential.class);
+        final Set<PasswordOverrideCredential> passwordOverrideCredentials = update.getCredentials().ofType(PasswordOverrideCredential.class);
         final Set<Message> authenticationMessages = Sets.newLinkedHashSet();
 
         if (!origin.allowAdminOperations()) {
@@ -139,7 +142,7 @@ public class Authenticator {
             authenticationMessages.add(UpdateMessages.overrideOnlyAllowedByDbAdmins());
         }
 
-        if (overrideCredentials.size() != 1) {
+        if (passwordOverrideCredentials.size() != 1) {
             authenticationMessages.add(UpdateMessages.multipleOverridePasswords());
         }
 
@@ -148,8 +151,8 @@ public class Authenticator {
             return Subject.EMPTY;
         }
 
-        final OverrideCredential overrideCredential = overrideCredentials.iterator().next();
-        for (OverrideCredential.UsernamePassword possibleCredential : overrideCredential.getPossibleCredentials()) {
+        final PasswordOverrideCredential passwordOverrideCredential = passwordOverrideCredentials.iterator().next();
+        for (PasswordOverrideCredential.UsernamePassword possibleCredential : passwordOverrideCredential.getPossibleCredentials()) {
             final String username = possibleCredential.getUsername();
             try {
                 final User user = userDao.getOverrideUser(username);

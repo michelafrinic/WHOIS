@@ -14,13 +14,18 @@ public class Credentials {
     }
 
     public Credentials(final Set<? extends Credential> credentials) {
-        this.credentials = Collections.unmodifiableSet(credentials);
+        //this.credentials = Collections.unmodifiableSet(credentials);
+        this.credentials = Sets.newLinkedHashSet(credentials);
     }
 
     public Credentials add(final Collection<Credential> addedCredentials) {
         final Set<Credential> newCredentials = Sets.newLinkedHashSet(this.credentials);
         newCredentials.addAll(addedCredentials);
         return new Credentials(newCredentials);
+    }
+
+    public void add(Credential credential){
+        this.credentials.add(credential);
     }
 
     public Set<Credential> all() {

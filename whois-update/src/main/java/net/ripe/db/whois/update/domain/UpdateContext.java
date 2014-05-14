@@ -145,7 +145,7 @@ public class UpdateContext {
             ignored.add(paragraph);
         }
 
-        if (!paragraph.getCredentials().ofType(OverrideCredential.class).isEmpty()) {
+        if (!paragraph.getCredentials().ofType(PasswordOverrideCredential.class).isEmpty()) {
             addGlobalMessage(UpdateMessages.overrideIgnored());
         }
     }

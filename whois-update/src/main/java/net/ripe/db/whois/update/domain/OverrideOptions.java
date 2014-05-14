@@ -40,17 +40,17 @@ public class OverrideOptions {
     }
 
     public static OverrideOptions parse(final Update update, final UpdateContext updateContext) {
-        final Set<OverrideCredential> overrideCredentials = update.getCredentials().ofType(OverrideCredential.class);
-        if (overrideCredentials.isEmpty()) {
+        final Set<PasswordOverrideCredential> passwordOverrideCredentials = update.getCredentials().ofType(PasswordOverrideCredential.class);
+        if (passwordOverrideCredentials.isEmpty()) {
             return NONE;
         }
 
-        if (overrideCredentials.size() > 1) {
+        if (passwordOverrideCredentials.size() > 1) {
             updateContext.addMessage(update, UpdateMessages.multipleOverridePasswords());
         }
 
-        final OverrideCredential overrideCredential = overrideCredentials.iterator().next();
-        final String remarks = overrideCredential.getRemarks();
+        final PasswordOverrideCredential passwordOverrideCredential = passwordOverrideCredentials.iterator().next();
+        final String remarks = passwordOverrideCredential.getRemarks();
 
         final Matcher optionMatcher = OPTIONS_PATTERN.matcher(remarks);
         if (!optionMatcher.find()) {

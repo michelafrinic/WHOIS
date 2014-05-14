@@ -130,7 +130,7 @@ public class ParagraphParser {
     private String extractOverride(final Set<Credential> credentials, final String paragraph) {
         final Matcher overrideMatcher = OVERRIDE_PATTERN.matcher(paragraph);
         while (overrideMatcher.find()) {
-            credentials.add(OverrideCredential.parse(overrideMatcher.group(1).trim()));
+            credentials.add(PasswordOverrideCredential.parse(overrideMatcher.group(1).trim()));
         }
 
         return overrideMatcher.reset().replaceAll("");

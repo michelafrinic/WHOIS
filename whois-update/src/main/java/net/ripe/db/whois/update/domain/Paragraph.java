@@ -20,4 +20,5 @@ public class Paragraph {
     public Credentials getCredentials() {
         return credentials;
     }
+
 }

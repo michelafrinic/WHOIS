@@ -42,7 +42,7 @@ public class UpdateTest {
 
     @Test
     public void is_override() {
-        final Paragraph paragraph = new Paragraph(content, new Credentials(Sets.newHashSet(OverrideCredential.parse("username,password"))));
+        final Paragraph paragraph = new Paragraph(content, new Credentials(Sets.newHashSet(PasswordOverrideCredential.parse("username,password"))));
 
         Update subject = new Update(paragraph, Operation.UNSPECIFIED, Lists.<String>newArrayList(), rpslObject);
 

@@ -130,7 +130,7 @@ public class ParagraphParserTest {
 
         final List<Paragraph> paragraphs = subject.createParagraphs(new ContentWithCredentials(content), updateContext);
         assertThat(paragraphs, hasSize(1));
-        assertParagraphNoDryRun(paragraphs.get(0), "mntner: DEV-MNT", OverrideCredential.parse("some override"));
+        assertParagraphNoDryRun(paragraphs.get(0), "mntner: DEV-MNT", PasswordOverrideCredential.parse("some override"));
     }
 
     @Test
@@ -144,7 +144,7 @@ public class ParagraphParserTest {
         assertThat(paragraphs, hasSize(1));
         final Paragraph paragraph = paragraphs.get(0);
         assertThat(paragraph.getContent(), is("mntner: DEV-MNT"));
-        assertThat(paragraph.getCredentials().all(), containsInAnyOrder((Credential) OverrideCredential.parse("some override")));
+        assertThat(paragraph.getCredentials().all(), containsInAnyOrder((Credential) PasswordOverrideCredential.parse("some override")));
 
         verify(updateContext).dryRun();
     }
@@ -324,7 +324,7 @@ public class ParagraphParserTest {
 
         assertThat(paragraphs, hasSize(2));
         assertThat(paragraphs.get(0).getContent(), is("mntner: DEV-MNT"));
-        assertThat(paragraphs.get(0).getCredentials().all(), contains((Credential) OverrideCredential.parse("override")));
+        assertThat(paragraphs.get(0).getCredentials().all(), contains((Credential) PasswordOverrideCredential.parse("override")));
         assertThat(paragraphs.get(1).getCredentials().all(), hasSize(0));
     }
 
@@ -338,7 +338,7 @@ public class ParagraphParserTest {
 
         assertThat(paragraphs, hasSize(2));
         assertThat(paragraphs.get(0).getContent(), is("mntner: DEV-MNT"));
-        assertThat(paragraphs.get(0).getCredentials().all(), contains((Credential) OverrideCredential.parse("override")));
+        assertThat(paragraphs.get(0).getCredentials().all(), contains((Credential) PasswordOverrideCredential.parse("override")));
         assertThat(paragraphs.get(1).getCredentials().all(), hasSize(0));
     }
 
@@ -354,7 +354,7 @@ public class ParagraphParserTest {
 
         assertThat(paragraphs, hasSize(2));
         assertThat(paragraphs.get(0).getContent(), is("mntner: DEV-MNT"));
-        assertThat(paragraphs.get(0).getCredentials().all(), contains((Credential) OverrideCredential.parse("override1"), OverrideCredential.parse("override2")));
+        assertThat(paragraphs.get(0).getCredentials().all(), contains((Credential) PasswordOverrideCredential.parse("override1"), PasswordOverrideCredential.parse("override2")));
         assertThat(paragraphs.get(1).getCredentials().all(), hasSize(0));
     }
 
@@ -371,8 +371,8 @@ public class ParagraphParserTest {
 
         assertThat(paragraphs, hasSize(2));
         assertThat(paragraphs.get(0).getContent(), is("mntner: DEV-MNT1"));
-        assertThat(paragraphs.get(0).getCredentials().all(), contains((Credential) OverrideCredential.parse("override1"), OverrideCredential.parse("override2")));
-        assertThat(paragraphs.get(1).getCredentials().all(), contains((Credential) OverrideCredential.parse("override3")));
+        assertThat(paragraphs.get(0).getCredentials().all(), contains((Credential) PasswordOverrideCredential.parse("override1"), PasswordOverrideCredential.parse("override2")));
+        assertThat(paragraphs.get(1).getCredentials().all(), contains((Credential) PasswordOverrideCredential.parse("override3")));
     }
 
     @Test(timeout = 2000)
