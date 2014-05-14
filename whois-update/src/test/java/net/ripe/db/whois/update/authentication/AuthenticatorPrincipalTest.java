@@ -51,6 +51,8 @@ public class AuthenticatorPrincipalTest {
     @Mock LoggerContext loggerContext;
     @Mock
     PgpCredentialValidator pgpCredentialValidator;
+    @Mock
+    Paragraph paragraph;
 
     Authenticator subject;
     ArgumentCaptor<Subject> subjectCapture;
@@ -288,23 +290,18 @@ public class AuthenticatorPrincipalTest {
         final HashSet<Credential> credentialSet = Sets.newHashSet();
         credentialSet.add(getOfferredPgpKey());
 
-
         when(origin.getFrom()).thenReturn("127.0.0.1");
         when(origin.allowAdminOperations()).thenReturn(true);
         when(ipRanges.isTrusted(any(Interval.class))).thenReturn(true);
-        //when(update.isOverride()).thenReturn(true);
         when(update.getCredentials()).thenReturn(new Credentials(credentialSet));
+
+        when(update.getParagraph()).thenReturn(paragraph);
+        when(paragraph.getCredentials()).thenReturn(new Credentials(new HashSet<Credential>()));
 
         Collection<PgpCredential> offeredCredentials = new ArrayList<PgpCredential>();
         offeredCredentials.add(PgpCredential.createKnownCredential("PGPKEY-79D36007"));
 
-        //when(pgpCredentialValidator.hasValidCredential(update, updateContext, offeredCredentials, PgpCredential.createKnownCredential("PGPKEY-79D36007"))).thenReturn(true);
-
         when(pgpCredentialValidator.hasValidCredential(any(PreparedUpdate.class), any(UpdateContext.class), anyCollection(), any(PgpCredential.class))).thenReturn(true);
-        /*when(userDao.getOverrideUser("user")).thenReturn(User.createWithPlainTextPassword("user", "password"));
-        when(userDao.getOverrideUser("dbase1")).thenReturn(User.createWithPlainTextPassword("dbase", "password"));
-        when(userDao.getOverrideUser("dbase2")).thenReturn(User.createWithPlainTextPassword("dbase", "password"));*/
-
 
         subject.setOverrideKeys("PGPKEY-79D36007");
         subject.authenticate(origin, update, updateContext);

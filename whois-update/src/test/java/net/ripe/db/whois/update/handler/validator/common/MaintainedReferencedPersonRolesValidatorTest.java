@@ -86,9 +86,9 @@ public class MaintainedReferencedPersonRolesValidatorTest {
 
         final ObjectMessages messages = validateUpdate(subject, null, RpslObject.parse("mntner: foo\ntech-c: " + personName + "\nadmin-c: " + roleName));
 
-        assertThat(messages.getMessages().getAllMessages(), hasItems(
+        assertThat(messages.getMessages().getAllMessages(), not(hasItems(
                 UpdateMessages.referencedObjectMissingAttribute(ObjectType.PERSON, personName, AttributeType.MNT_BY),
                 UpdateMessages.referencedObjectMissingAttribute(ObjectType.ROLE, roleName, AttributeType.MNT_BY)
-        ));
+        )));
     }
 }
