@@ -119,7 +119,7 @@ public class NoReverseUnlessAssignedValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, UpdateMessages.noMoreSpecificInetnumFound("102.2.0.0/16"));
+        verify(updateContext).addMessage(update, UpdateMessages.noMoreSpecificInetnumFound("2.102.in-addr.arpa", "102.2.0.0/16"));
 
     }
 
@@ -258,7 +258,7 @@ public class NoReverseUnlessAssignedValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, UpdateMessages.noMoreSpecificInetnumFound("102.2.0.0/16"));
+        verify(updateContext).addMessage(update, UpdateMessages.noMoreSpecificInetnumFound("2.102.in-addr.arpa", "102.0.0.0/14"));
 
     }
 
@@ -339,7 +339,7 @@ public class NoReverseUnlessAssignedValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, UpdateMessages.noMoreSpecificInetnumFound("2c0f:ff41::/32"));
+        verify(updateContext).addMessage(update, UpdateMessages.noMoreSpecificInetnumFound("1.4.f.f.f.0.c.2.ip6.arpa","2c0f:ff40::/26"));
 
     }
 

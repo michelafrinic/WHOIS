@@ -85,15 +85,17 @@ public class IpDomainUniqueHierarchyValidatorTest {
     @Test
     public void validate_ipv4_domain_less_specific() {
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("" +
-                "domain: 200.193.193.in-addr.arpa"));
+                "domain: 200.193.196.in-addr.arpa"));
 
-        final Ipv4Resource lessSpecific = Ipv4Resource.parse("193.0/16");
+        final Ipv4Resource lessSpecific = Ipv4Resource.parse("196/8");
 
-        when(ipv4DomainTree.findFirstLessSpecific(Ipv4Resource.parse("193.193.200.0/24"))).thenReturn(Lists.newArrayList(new Ipv4Entry(lessSpecific, 1)));
+        String [] exclude = {"196/8"};
+        subject.setIpv4ParentDomainToExclude(exclude);
+
+        when(ipv4DomainTree.findFirstLessSpecific(Ipv4Resource.parse("196.193.200.0/24"))).thenReturn(Lists.newArrayList(new Ipv4Entry(lessSpecific, 1)));
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, UpdateMessages.lessSpecificDomainFound(lessSpecific.toString()));
         verifyZeroInteractions(ipv6DomainTree);
     }
 
@@ -117,7 +119,9 @@ public class IpDomainUniqueHierarchyValidatorTest {
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("" +
                 "domain: 140.192.196.in-addr.arpa"));
 
-        final Ipv4Resource lessSpecific = Ipv4Resource.parse("196.0.0.0/8");
+        final Ipv4Resource lessSpecific = Ipv4Resource.parse("196/8");
+        String [] exclude = {"196/8"};
+        subject.setIpv4ParentDomainToExclude(exclude);
 
         when(ipv4DomainTree.findFirstLessSpecific(Ipv4Resource.parse("196.192.140.0/24"))).thenReturn(Lists.newArrayList(new Ipv4Entry(lessSpecific, 1)));
 
@@ -137,6 +141,9 @@ public class IpDomainUniqueHierarchyValidatorTest {
         final Ipv6Entry ipv6Entry = new Ipv6Entry(lessSpecific,anyInt());
         final List<Ipv6Entry> ipv6EntryList = new ArrayList<>();
         ipv6EntryList.add(ipv6Entry);
+
+        String [] exclude = {"2001:4300::/24"};
+        subject.setIpv6ParentDomainToExclude(exclude);
 
         when(ipv6DomainTree.findFirstLessSpecific(Ipv6Resource.parse("2001:4300::/48"))).thenReturn(ipv6EntryList);
 

@@ -13,6 +13,7 @@ import net.ripe.db.whois.update.domain.UpdateContext;
 import net.ripe.db.whois.update.domain.UpdateMessages;
 import net.ripe.db.whois.update.handler.validator.BusinessRuleValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,6 +22,8 @@ import java.util.List;
 public class IpDomainUniqueHierarchyValidator implements BusinessRuleValidator {
     private final Ipv4DomainTree ipv4DomainTree;
     private final Ipv6DomainTree ipv6DomainTree;
+    private String [] ipv4ParentDomainToExclude;
+    private String [] ipv6ParentDomainToExclude;
 
     @Autowired
     public IpDomainUniqueHierarchyValidator(final Ipv4DomainTree ipv4DomainTree, final Ipv6DomainTree ipv6DomainTree) {
@@ -55,14 +58,23 @@ public class IpDomainUniqueHierarchyValidator implements BusinessRuleValidator {
 
             if(domain.getType() == Domain.Type.INADDR) {
                 Ipv4Entry entry = (Ipv4Entry) ipEntry;
-                if(entry.getKey().getPrefixLength() == 8) {
-                    return;
+
+                for (int i=0; i<ipv4ParentDomainToExclude.length;i++) {
+                    if (entry.getKey().intersects(Ipv4Resource.parse(ipv4ParentDomainToExclude[i]))) {
+                        return;
+                    }
                 }
+
+
             }else {
                 Ipv6Entry entry = (Ipv6Entry) ipEntry;
-                if (entry.getKey().getPrefixLength() <= 24) {
-                    return;
+
+                for (int i=0; i<ipv6ParentDomainToExclude.length;i++) {
+                    if (entry.getKey().intersects(Ipv6Resource.parse(ipv6ParentDomainToExclude[i]))) {
+                        return;
+                    }
                 }
+
             }
 
             updateContext.addMessage(update, UpdateMessages.lessSpecificDomainFound(ipEntry.getKey().toString()));
@@ -83,5 +95,16 @@ public class IpDomainUniqueHierarchyValidator implements BusinessRuleValidator {
         }
 
         throw new IllegalArgumentException("Unexpected reverse ip: " + reverseIp);
+    }
+
+
+    @Value("${whois.domain.exclude.ipv4}")
+    public void setIpv4ParentDomainToExclude(final String[] ipv4ParentDomainToExclude) {
+        this.ipv4ParentDomainToExclude = ipv4ParentDomainToExclude;
+    }
+
+    @Value("${whois.domain.exclude.ipv6}")
+    public void setIpv6ParentDomainToExclude(final String[] ipv6ParentDomainToExclude) {
+        this.ipv6ParentDomainToExclude = ipv6ParentDomainToExclude;
     }
 }

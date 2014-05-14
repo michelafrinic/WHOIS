@@ -22,6 +22,7 @@ import net.ripe.db.whois.update.domain.UpdateMessages;
 import net.ripe.db.whois.update.handler.validator.BusinessRuleValidator;
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -84,7 +85,8 @@ public class NoReverseUnlessAssignedValidator implements BusinessRuleValidator {
             final List<IpEntry> childEntries = getFirstMoreSpecificInetnum(coveringInetnum, domain);
 
             if (childEntries.isEmpty()) {
-                updateContext.addMessage(update, UpdateMessages.noMoreSpecificInetnumFound(domain.getReverseIp().toString()));
+                updateContext.addMessage(update, UpdateMessages.noMoreSpecificInetnumFound(domain.getValue(),
+                        coveringInetnum.getKey().toString()));
             }
         }
     }
@@ -108,7 +110,8 @@ public class NoReverseUnlessAssignedValidator implements BusinessRuleValidator {
             final List<IpEntry> childEntries = getFirstMoreSpecificInetnum(coveringInetnum, domain);
 
             if (childEntries.isEmpty()) {
-                updateContext.addMessage(update, UpdateMessages.noMoreSpecificInetnumFound(domain.getReverseIp().toString()));
+                updateContext.addMessage(update, UpdateMessages.noMoreSpecificInetnumFound(domain.getValue(),
+                        coveringInetnum.getKey().toString()));
             }
         }
     }

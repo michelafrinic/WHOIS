@@ -372,8 +372,9 @@ public final class UpdateMessages {
         return new Message(Type.ERROR, "Existing more specific domain object found %s", existing);
     }
 
-    public static Message noMoreSpecificInetnumFound(final CharSequence s) {
-        return new Message(Type.ERROR, "No assignment or sub-allocation found for %s", s);
+    public static Message noMoreSpecificInetnumFound(final CharSequence domain, final CharSequence coveringInetnum) {
+        return new Message(Type.ERROR, "Error adding domain %s \nNo assignment or sub-allocation found for covering " +
+                "inetnum %s", domain, coveringInetnum);
     }
 
     public static Message invalidDomainObjectType(final CharSequence s) {
