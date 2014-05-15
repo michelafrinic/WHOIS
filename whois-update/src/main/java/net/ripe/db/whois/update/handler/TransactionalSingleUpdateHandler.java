@@ -1,6 +1,5 @@
 package net.ripe.db.whois.update.handler;
 
-import net.afrinic.db.rules.WhoisRules;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateDao;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateInfo;
@@ -40,7 +39,6 @@ class TransactionalSingleUpdateHandler implements SingleUpdateHandler {
     private final IpTreeUpdater ipTreeUpdater;
     private final PendingUpdateHandler pendingUpdateHandler;
     private CIString source;
-    private final WhoisRules whoisRules = new WhoisRules();
 
 
 

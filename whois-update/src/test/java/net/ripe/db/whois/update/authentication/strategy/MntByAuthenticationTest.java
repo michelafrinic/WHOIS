@@ -16,7 +16,6 @@ import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
 import net.ripe.db.whois.update.domain.UpdateMessages;
-import org.drools.marshalling.impl.ProtobufMessages;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
