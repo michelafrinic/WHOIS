@@ -31,22 +31,23 @@ public class FirstDescriptionChanged implements BusinessRuleValidator {
 
     @Override
     public void validate(final PreparedUpdate update, final UpdateContext updateContext) {
-        if (true) {
-            return; // TODO [AH] This check breaks updates for ERX ranges; Denis is working with RS to sort it out (2013-06-10)
-        }
-
-        if (update.isOverride()) {
-            return;
-        }
-
-        final RpslObject originalObject = update.getReferenceObject();
-        final CIString originalFirstDescription = originalObject.findAttributes(AttributeType.DESCR).get(0).getCleanValue();
-        final CIString updatedFirstDescription = update.getUpdatedObject().findAttributes(AttributeType.DESCR).get(0).getCleanValue();
-
-        final boolean statusRequiresEndMntnerAuth = getStatus(update).requiresRsMaintainer();
-        final boolean hasEndMntnerAuth = updateContext.getSubject(update).hasPrincipal(Principal.ENDUSER_MAINTAINER);
-        if (statusRequiresEndMntnerAuth && !hasEndMntnerAuth && !originalFirstDescription.equals(updatedFirstDescription)) {
-            updateContext.addMessage(update, UpdateMessages.authorisationRequiredForFirstAttrChange(AttributeType.DESCR));
-        }
+//        if (true) {
+//            return; // TODO [AH] This check breaks updates for ERX ranges; Denis is working with RS to sort it out (2013-06-10)
+//        }
+//
+//        if (update.isOverride()) {
+//            return;
+//        }
+//
+//        final RpslObject originalObject = update.getReferenceObject();
+//        final CIString originalFirstDescription = originalObject.findAttributes(AttributeType.DESCR).get(0).getCleanValue();
+//        final CIString updatedFirstDescription = update.getUpdatedObject().findAttributes(AttributeType.DESCR).get(0).getCleanValue();
+//
+//        final boolean statusRequiresEndMntnerAuth = getStatus(update).requiresRsMaintainer();
+//        final boolean hasEndMntnerAuth = updateContext.getSubject(update).hasPrincipal(Principal.ENDUSER_MAINTAINER);
+//        if (statusRequiresEndMntnerAuth && !hasEndMntnerAuth && !originalFirstDescription.equals(updatedFirstDescription)) {
+//            updateContext.addMessage(update, UpdateMessages.authorisationRequiredForFirstAttrChange(AttributeType.DESCR));
+//        }
+        return;
     }
 }

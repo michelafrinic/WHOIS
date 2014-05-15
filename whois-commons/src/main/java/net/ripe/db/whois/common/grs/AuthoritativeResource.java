@@ -228,6 +228,14 @@ public class AuthoritativeResource {
         return autNums.equals(that.autNums) && inet6Ranges.equals(that.inet6Ranges) && inetRanges.equals(that.inetRanges);
     }
 
+    @Override
+    public int hashCode() {
+        int result = autNums.hashCode();
+        result = 31 * result + inetRanges.hashCode();
+        result = 31 * result + inet6Ranges.hashCode();
+        return result;
+    }
+
     public List<String> getResources() {
         return Lists.newArrayList(Iterables.concat(
                 Iterables.transform(autNums, new Function<CIString, String>() {
