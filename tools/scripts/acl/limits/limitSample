@@ -1,0 +1,6 @@
+{
+"prefix":"::1",
+"comment":"this is a limit example",
+"personObjectLimit":10,
+"unlimitedConnections":false
+}
