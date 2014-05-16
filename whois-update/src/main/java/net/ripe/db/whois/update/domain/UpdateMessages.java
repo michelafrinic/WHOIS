@@ -373,7 +373,7 @@ public final class UpdateMessages {
     }
 
     public static Message noMoreSpecificInetnumFound(final CharSequence domain, final CharSequence coveringInetnum) {
-        return new Message(Type.ERROR, "Error adding domain %s \nNo assignment or sub-allocation found for covering " +
+        return new Message(Type.ERROR, "Error adding domain \"%s\" - No assignment or sub-allocation found for covering " +
                 "inetnum %s", domain, coveringInetnum);
     }
 
