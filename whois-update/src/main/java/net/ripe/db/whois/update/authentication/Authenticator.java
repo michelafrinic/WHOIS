@@ -24,6 +24,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Array;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 
 @Component
@@ -100,11 +102,21 @@ public class Authenticator {
         }
     }
 
+    private boolean isHostMaster(Origin origin) {
+        boolean hostmaster = false;
+        try {
+            hostmaster = ipRanges.isHostmaster(IpInterval.asIpInterval(InetAddress.getByName(origin.getFrom())));
+        } catch (UnknownHostException e) {
+            loggerContext.log(new Message(Messages.Type.ERROR, "Error while parsing inet address"), e);
+        }
+        return hostmaster;
+    }
+
     public void authenticate(final Origin origin, final PreparedUpdate update, final UpdateContext updateContext) {
         final Subject subject;
         //TODO refactor
         if ( origin.isDefaultOverride() || performPgpOverrideAuthentication(origin,update, updateContext) ) {
-            subject = new Subject(Principal.OVERRIDE_MAINTAINER);
+            subject = new Subject(isHostMaster(origin), Principal.OVERRIDE_MAINTAINER);
         } else if (update.isOverride()) {
             subject = performOverrideAuthentication(origin, update, updateContext);
         } else {
@@ -115,7 +127,6 @@ public class Authenticator {
     }
 
     private boolean performPgpOverrideAuthentication(final Origin origin,final PreparedUpdate update, final UpdateContext updateContext){
-        final Set<Message> authenticationMessages = Sets.newLinkedHashSet();
 
         Collection<PgpCredential> offeredCredentials = new ArrayList<PgpCredential>();
         offeredCredentials.addAll(update.getCredentials().ofType(PgpCredential.class));
@@ -158,7 +169,7 @@ public class Authenticator {
                 final User user = userDao.getOverrideUser(username);
                 if (user.isValidPassword(possibleCredential.getPassword()) && user.getObjectTypes().contains(update.getType())) {
                     updateContext.addMessage(update, UpdateMessages.overrideAuthenticationUsed());
-                    return new Subject(Principal.OVERRIDE_MAINTAINER);
+                    return new Subject(isHostMaster(origin), Principal.OVERRIDE_MAINTAINER);
                 }
             } catch (EmptyResultDataAccessException ignore) {
                 loggerContext.logMessage(update, new Message(Messages.Type.INFO, "Unknown override user: %s", username));
@@ -211,7 +222,7 @@ public class Authenticator {
             }
         }
 
-        final Subject subject = new Subject(principals, passedAuthentications, failedAuthentications, pendingAuthentications);
+        final Subject subject = new Subject(isHostMaster(origin), principals, passedAuthentications, failedAuthentications, pendingAuthentications);
         if (!authenticationMessages.isEmpty()) {
             handleFailure(update, updateContext, subject, authenticationMessages);
         }

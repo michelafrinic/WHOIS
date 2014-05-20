@@ -558,4 +558,12 @@ public final class UpdateMessages {
     public static Message updateNotAllowed() {
         return new Message(Messages.Type.ERROR, "Whois update is not allowed on this server.");
     }
+
+    public static Message onlyHostMasterCanCreateSubAllocationWhenSAWNull() {
+        return new Message(Messages.Type.ERROR, "The sub allocation window is 0 for this organisation. Only the hostmaster can create a sub allocation.");
+    }
+
+    public static Message invalidPrefixLengthRange(int inetPrefixLength, int maxPrefixLength, int parentInetPrefixLength) {
+        return new Message(Messages.Type.ERROR, "The inetnum prefix length is %s. It must be between %s and %s (parent inetnum prefix length).", inetPrefixLength, maxPrefixLength, parentInetPrefixLength);
+    }
 }

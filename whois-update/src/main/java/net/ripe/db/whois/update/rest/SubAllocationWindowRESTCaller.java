@@ -75,9 +75,9 @@ public class SubAllocationWindowRESTCaller {
             // root
             Element customer = document.getDocumentElement();
             Node orgHandleNode = customer.getElementsByTagName(ORG_HANDLE).item(0);
-            String org_handle = orgHandleNode.getTextContent();
+            String orgHandle = orgHandleNode.getTextContent();
 
-            if (org_handle == null || "".equals(org_handle)) {
+            if (orgHandle == null || "".equals(orgHandle)) {
                 return null;
             }
 

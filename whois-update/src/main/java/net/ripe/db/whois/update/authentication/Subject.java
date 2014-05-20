@@ -18,17 +18,27 @@ public class Subject {
     private final Set<String> passedAuthentications;
     private final Set<String> failedAuthentications;
     private final Map<String, Collection<RpslObject>> pendingAuthentications;
+    private final boolean hostmaster;
 
-    static Subject EMPTY = new Subject();
+    static final Subject EMPTY = new Subject(false);
 
     Subject(final Principal... principals) {
-        this(principals.length == 0 ? Collections.<Principal>emptySet() : Sets.newHashSet(principals),
+        this(false, principals);
+    }
+
+    Subject(boolean hostmaster, final Principal... principals) {
+        this(hostmaster, principals.length == 0 ? Collections.<Principal>emptySet() : Sets.newHashSet(principals),
                 Collections.<String>emptySet(),
                 Collections.<String>emptySet(),
                 Collections.<String, Collection<RpslObject>>emptyMap());
     }
 
     Subject(final Set<Principal> principals, final Set<String> passedAuthentications, final Set<String> failedAuthentications, final Map<String, Collection<RpslObject>> pendingAuthentications) {
+        this(false, principals, passedAuthentications, failedAuthentications, pendingAuthentications);
+    }
+
+    Subject(boolean hostmaster, final Set<Principal> principals, final Set<String> passedAuthentications, final Set<String> failedAuthentications, final Map<String, Collection<RpslObject>> pendingAuthentications) {
+        this.hostmaster = hostmaster;
         this.principals = unmodifiableSet(principals);
         this.passedAuthentications = unmodifiableSet(passedAuthentications);
         this.failedAuthentications = unmodifiableSet(failedAuthentications);
@@ -57,5 +67,9 @@ public class Subject {
 
     public Set<RpslObject> getPendingAuthenticationCandidates() {
         return Sets.newLinkedHashSet(Iterables.concat(pendingAuthentications.values()));
+    }
+
+    public boolean isHostmaster() {
+        return hostmaster;
     }
 }

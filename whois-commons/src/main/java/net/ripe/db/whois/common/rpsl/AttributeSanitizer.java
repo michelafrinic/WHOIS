@@ -176,9 +176,9 @@ public class AttributeSanitizer {
     private class InetrtrSanitizer extends Sanitizer {
         @Override
         public String sanitize(final RpslObject object, final RpslAttribute attribute) {
-            final String inet_rtr = attribute.getCleanValue().toString();
-            if (inet_rtr.endsWith(".")) {
-                return inet_rtr.substring(0, inet_rtr.length() - 1);
+            final String inetRtr = attribute.getCleanValue().toString();
+            if (inetRtr.endsWith(".")) {
+                return inetRtr.substring(0, inetRtr.length() - 1);
             }
 
             return null;
