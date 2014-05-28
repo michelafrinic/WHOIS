@@ -1,8 +1,11 @@
 package net.ripe.db.whois.common.rpsl;
 
+import net.ripe.db.whois.common.domain.attrs.Inet6numStatus;
+import net.ripe.db.whois.common.domain.attrs.InetnumStatus;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class AttributeSyntaxTest {
@@ -1146,19 +1149,28 @@ public class AttributeSyntaxTest {
 
     @Test
     public void statusIp4Ip6() {
-        verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "SOME_INVALID_STATUS");
-
+        assertEquals(5, InetnumStatus.values().length);
+        verifySuccess(ObjectType.INETNUM, AttributeType.STATUS, "ALLOCATED PA");
+        verifySuccess(ObjectType.INETNUM, AttributeType.STATUS, "ALLOCATED UNSPECIFIED");
         verifySuccess(ObjectType.INETNUM, AttributeType.STATUS, "SUB-ALLOCATED PA");
-        verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "ALLOCATED-BY-LIR");
-        verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "ASSIGNED");
-        verifySuccess(ObjectType.INETNUM, AttributeType.STATUS, "ALLOCATED PI");
+        verifySuccess(ObjectType.INETNUM, AttributeType.STATUS, "ASSIGNED PA");
+        verifySuccess(ObjectType.INETNUM, AttributeType.STATUS, "ASSIGNED PI");
+
+        verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "SOME_INVALID_STATUS");
         verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "LIR-PARTITIONED PI");
         verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "ASSIGNED ANYCAST");
-
+        verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "ALLOCATED-BY-LIR");
+        verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "ASSIGNED");
         verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "AGGREGATED-BY-LIR");
-        verifyFailure(ObjectType.INET6NUM, AttributeType.STATUS, "AGGREGATED-BY-LIR");
+        verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "ALLOCATED PI");
 
-        verifySuccess(ObjectType.INETNUM, AttributeType.STATUS, "ALLOCATED PI");
+        assertEquals(4, Inet6numStatus.values().length);
+        verifySuccess(ObjectType.INET6NUM, AttributeType.STATUS, "ALLOCATED UNSPECIFIED");
+        verifySuccess(ObjectType.INET6NUM, AttributeType.STATUS, "ALLOCATED-BY-RIR");
+        verifySuccess(ObjectType.INET6NUM, AttributeType.STATUS, "ASSIGNED PA");
+        verifySuccess(ObjectType.INET6NUM, AttributeType.STATUS, "ASSIGNED PI");
+
+        verifyFailure(ObjectType.INET6NUM, AttributeType.STATUS, "AGGREGATED-BY-LIR");
         verifyFailure(ObjectType.INET6NUM, AttributeType.STATUS, "ALLOCATED PI");
     }
 

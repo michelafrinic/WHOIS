@@ -12,15 +12,12 @@ import static net.ripe.db.whois.common.domain.attrs.OrgType.*;
 
 public enum InetnumStatus implements InetStatus {
     ALLOCATED_PA("ALLOCATED PA", IANA, RIR, LIR),
-    ALLOCATED_PI("ALLOCATED PI", IANA, RIR, LIR),
     ALLOCATED_UNSPECIFIED("ALLOCATED UNSPECIFIED", IANA, RIR, LIR),
     SUB_ALLOCATED_PA("SUB-ALLOCATED PA", LIR, OTHER),
     ASSIGNED_PA("ASSIGNED PA", LIR, OTHER),
-    ASSIGNED_PI("ASSIGNED PI", LIR, OTHER, RIR),
-    EARLY_REGISTRATION("EARLY-REGISTRATION", LIR, OTHER),
-    NOT_SET("NOT-SET", LIR, OTHER);
+    ASSIGNED_PI("ASSIGNED PI", LIR, OTHER, RIR);
 
-    private static List<InetnumStatus> RS_MNTNER_STATUSES = Lists.newArrayList(EARLY_REGISTRATION, ALLOCATED_UNSPECIFIED);
+    private static List<InetnumStatus> RS_MNTNER_STATUSES = Lists.newArrayList(ALLOCATED_UNSPECIFIED);
 
     private static final Set<InetnumStatus> NEEDS_ORG_REFERENCE;
     private static final Map<InetStatus, List<InetStatus>> PARENT_STATUS;
@@ -28,17 +25,18 @@ public enum InetnumStatus implements InetStatus {
 
     static {
         PARENT_STATUS = Maps.newHashMap();
-        PARENT_STATUS.put(ALLOCATED_PI, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED));
+
+        // PARENT_STATUS.put(CHILDSTATUS, Lists.<InetStatus>newArrayList(PARENTSTATUS1, PARENTSTATUS2, ...));
+
         PARENT_STATUS.put(ALLOCATED_PA, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED));
         PARENT_STATUS.put(ALLOCATED_UNSPECIFIED, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED));
-        PARENT_STATUS.put(SUB_ALLOCATED_PA, Lists.<InetStatus>newArrayList(ALLOCATED_PA,SUB_ALLOCATED_PA, EARLY_REGISTRATION));
-        PARENT_STATUS.put(ASSIGNED_PA, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED, ALLOCATED_PA, SUB_ALLOCATED_PA, EARLY_REGISTRATION, ASSIGNED_PA));
-        PARENT_STATUS.put(EARLY_REGISTRATION, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED, EARLY_REGISTRATION));
-        PARENT_STATUS.put(ASSIGNED_PI, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED, ALLOCATED_PI, EARLY_REGISTRATION, ASSIGNED_PI));
+        PARENT_STATUS.put(SUB_ALLOCATED_PA, Lists.<InetStatus>newArrayList(ALLOCATED_PA, SUB_ALLOCATED_PA));
+        PARENT_STATUS.put(ASSIGNED_PA, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED, ALLOCATED_PA, SUB_ALLOCATED_PA, ASSIGNED_PA));
+        PARENT_STATUS.put(ASSIGNED_PI, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED, ASSIGNED_PI));
 
         NEEDS_PARENT_RS_MNTR = Maps.newHashMap();
-        NEEDS_PARENT_RS_MNTR.put(ASSIGNED_PI, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED, ALLOCATED_PI));
-        NEEDS_ORG_REFERENCE = Sets.newHashSet(ALLOCATED_PI, ALLOCATED_PA, ALLOCATED_UNSPECIFIED);
+        NEEDS_PARENT_RS_MNTR.put(ASSIGNED_PI, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED));
+        NEEDS_ORG_REFERENCE = Sets.newHashSet(ALLOCATED_PA, ALLOCATED_UNSPECIFIED);
     }
 
     private final CIString literalStatus;
@@ -82,7 +80,7 @@ public enum InetnumStatus implements InetStatus {
     @Override
     public boolean worksWithParentStatus(final InetStatus parent, final boolean objectHasRsMaintainer) {
         if (this.equals(InetnumStatus.ASSIGNED_PI) && objectHasRsMaintainer) {
-            ArrayList allowedParentStatus = Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED, ALLOCATED_PI);
+            ArrayList allowedParentStatus = Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED);
             return allowedParentStatus.contains(parent);
         }
         return PARENT_STATUS.get(this).contains(parent);
@@ -90,11 +88,7 @@ public enum InetnumStatus implements InetStatus {
 
     @Override
     public boolean worksWithParentInHierarchy(final InetStatus parentInHierarchyMaintainedByRs, final boolean parentHasRsMntLower) {
-        if (this.equals(InetnumStatus.ASSIGNED_PI) && parentInHierarchyMaintainedByRs.equals(InetnumStatus.ALLOCATED_PI)) {
-            if (parentHasRsMntLower) {
-                return false;
-            }
-        } else if (this.equals(InetnumStatus.ASSIGNED_PA) && parentInHierarchyMaintainedByRs.equals(InetnumStatus.ALLOCATED_PA)) {
+        if (this.equals(InetnumStatus.ASSIGNED_PA) && parentInHierarchyMaintainedByRs.equals(InetnumStatus.ALLOCATED_PA)) {
             return false;
         }
 

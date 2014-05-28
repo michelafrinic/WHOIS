@@ -29,6 +29,9 @@ public enum Inet6numStatus implements InetStatus {
 
     static {
         PARENT_STATUS = Maps.newHashMap();
+
+        // PARENT_STATUS.put(CHILDSTATUS, Lists.<InetStatus>newArrayList(PARENTSTATUS1, PARENTSTATUS2, ...));
+
         PARENT_STATUS.put(ALLOCATED_UNSPECIFIED, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED));
         PARENT_STATUS.put(ALLOCATED_BY_RIR, Lists.<InetStatus>newArrayList(ALLOCATED_UNSPECIFIED));
         PARENT_STATUS.put(ASSIGNED_PA, Lists.<InetStatus>newArrayList(ALLOCATED_BY_RIR));
