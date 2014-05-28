@@ -566,4 +566,32 @@ public final class UpdateMessages {
     public static Message invalidPrefixLengthRange(int inetPrefixLength, int maxPrefixLength, int parentInetPrefixLength) {
         return new Message(Messages.Type.ERROR, "The inetnum prefix length is %s. It must be between %s and %s (parent inetnum prefix length).", inetPrefixLength, maxPrefixLength, parentInetPrefixLength);
     }
+
+    public static Message assignedAnycastPrefixLengthMustBe(int requiredPrefixLength, int inetPrefixLength) {
+        return new Message(Messages.Type.ERROR, "The prefix length for and inetnum of type ASSIGNED ANYCAST must be /%s. This one is a /%s.", requiredPrefixLength, inetPrefixLength);
+    }
+
+    public static Message assignedAnycastCannotHaveChildren(String child) {
+        return new Message(Messages.Type.ERROR, "An inetnum of type ASSIGNED ANYCAST cannot have any more specific like %s.", child);
+    }
+
+    public static Message assignedAnycastEUInvalidParentStatus() {
+        return new Message(Messages.Type.ERROR, "An inetnum of type ASSIGNED ANYCAST created by an end-user can only have a parent of type ALLOCATED UNSPECIFIED or no parent at all.");
+    }
+
+    public static Message assignedAnycastEUInvalidMntByStatus(String powerMaintainer) {
+        return new Message(Messages.Type.ERROR, "An inetnum of type ASSIGNED ANYCAST created by an end-user must have a mnt-by attribute and be maintained by a power maintainer (ex. : %s).", powerMaintainer);
+    }
+
+    public static Message assignedAnycastLIRMustHaveParent() {
+        return new Message(Messages.Type.ERROR, "An inetnum of type ASSIGNED ANYCAST created by a LIR must have a parent inetnum.");
+    }
+
+    public static Message assignedAnycastLIRParentMustBeOfStatus(String requiredStatus) {
+        return new Message(Messages.Type.ERROR, "The parent of an inetnum of type ASSIGNED ANYCAST created by a LIR must be of status %s.", requiredStatus);
+    }
+
+    public static Message assignedAnycastLIRMaintainerMustBeLIRsMntLower() {
+        return new Message(Messages.Type.ERROR, "An inetnum of type ASSIGNED ANYCAST created by a LIR must be maintained by the mnt-lower of the LIR.");
+    }
 }

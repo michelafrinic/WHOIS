@@ -1149,16 +1149,16 @@ public class AttributeSyntaxTest {
 
     @Test
     public void statusIp4Ip6() {
-        assertEquals(5, InetnumStatus.values().length);
+        assertEquals(6, InetnumStatus.values().length);
         verifySuccess(ObjectType.INETNUM, AttributeType.STATUS, "ALLOCATED PA");
         verifySuccess(ObjectType.INETNUM, AttributeType.STATUS, "ALLOCATED UNSPECIFIED");
         verifySuccess(ObjectType.INETNUM, AttributeType.STATUS, "SUB-ALLOCATED PA");
         verifySuccess(ObjectType.INETNUM, AttributeType.STATUS, "ASSIGNED PA");
         verifySuccess(ObjectType.INETNUM, AttributeType.STATUS, "ASSIGNED PI");
+        verifySuccess(ObjectType.INETNUM, AttributeType.STATUS, "ASSIGNED ANYCAST");
 
         verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "SOME_INVALID_STATUS");
         verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "LIR-PARTITIONED PI");
-        verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "ASSIGNED ANYCAST");
         verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "ALLOCATED-BY-LIR");
         verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "ASSIGNED");
         verifyFailure(ObjectType.INETNUM, AttributeType.STATUS, "AGGREGATED-BY-LIR");
@@ -1175,7 +1175,6 @@ public class AttributeSyntaxTest {
     }
 
     @Test
-
     public void signature() throws Exception {
         verifyFailure(ObjectType.IRT, AttributeType.SIGNATURE, "PGPKEY-");
         verifyFailure(ObjectType.IRT, AttributeType.SIGNATURE, "A6D57ECE");
