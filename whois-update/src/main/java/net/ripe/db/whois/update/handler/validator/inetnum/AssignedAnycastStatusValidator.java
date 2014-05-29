@@ -106,9 +106,9 @@ public class AssignedAnycastStatusValidator implements BusinessRuleValidator {
         }
     }
 
-    private RpslObject findOrgReference(final PreparedUpdate update) {
+    private RpslObject findOrgReference(final RpslObject object) {
         RpslObject orgReference = null;
-        final List<RpslAttribute> updatedOrgAttributes = update.getUpdatedObject().findAttributes(AttributeType.ORG);
+        final List<RpslAttribute> updatedOrgAttributes = object.findAttributes(AttributeType.ORG);
         if (!updatedOrgAttributes.isEmpty()) {
             final RpslAttribute org = updatedOrgAttributes.get(0);
             if (org != null) {
@@ -119,6 +119,10 @@ public class AssignedAnycastStatusValidator implements BusinessRuleValidator {
             }
         }
         return orgReference;
+    }
+
+    private RpslObject findOrgReference(final PreparedUpdate update) {
+        return findOrgReference(update.getUpdatedObject());
     }
 
     private void continueCheckingForEndUser(PreparedUpdate update, UpdateContext updateContext, RpslObject updatedObject, Ipv4Resource ipv4Resource) {
@@ -169,9 +173,31 @@ public class AssignedAnycastStatusValidator implements BusinessRuleValidator {
         InetStatus parentStatus = InetStatusHelper.getStatus(parentObject);
 
         if (InetnumStatus.ALLOCATED_PA.equals(parentStatus)) {
-            checkHasMaintainerForLIR(update, updateContext, updatedObject, parentObject);
+            checkParentHasOrg(update, updateContext, updatedObject, parentObject);
         } else {
             updateContext.addMessage(update, UpdateMessages.assignedAnycastLIRParentMustBeOfStatus(InetnumStatus.ALLOCATED_PA.toString()));
+        }
+    }
+
+    private void checkParentHasOrg(PreparedUpdate update, UpdateContext updateContext, RpslObject updatedObject, RpslObject parentObject) {
+        RpslObject referencedOrganisationForParent = findOrgReference(parentObject);
+
+        if (referencedOrganisationForParent != null) {
+            checkParentOrgIsLIR(update, updateContext, updatedObject, parentObject, referencedOrganisationForParent);
+        } else {
+            updateContext.addMessage(update, UpdateMessages.assignedAnycastLIRParentMustHaveAReferencedOrg());
+        }
+    }
+
+    private void checkParentOrgIsLIR(PreparedUpdate update, UpdateContext updateContext, RpslObject updatedObject, RpslObject parentObject, RpslObject referencedOrganisationForParent) {
+
+        CIString orgTypeStr = referencedOrganisationForParent.findAttribute(AttributeType.ORG_TYPE).getCleanValue();
+        OrgType orgType = OrgType.getFor(orgTypeStr);
+
+        if (OrgType.LIR.equals(orgType)) {
+            checkHasMaintainerForLIR(update, updateContext, updatedObject, parentObject);
+        } else {
+            updateContext.addMessage(update, UpdateMessages.assignedAnycastLIRParentMustHaveAReferencedOrgOfTypeLIR());
         }
     }
 

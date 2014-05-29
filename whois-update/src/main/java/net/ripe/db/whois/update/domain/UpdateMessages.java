@@ -594,4 +594,12 @@ public final class UpdateMessages {
     public static Message assignedAnycastLIRMaintainerMustBeLIRsMntLower() {
         return new Message(Messages.Type.ERROR, "An inetnum of type ASSIGNED ANYCAST created by a LIR must be maintained by the mnt-lower of the LIR.");
     }
+
+    public static Message assignedAnycastLIRParentMustHaveAReferencedOrg() {
+        return new Message(Messages.Type.ERROR, "The parent of an inetnum of type ASSIGNED ANYCAST created by a LIR must have a referenced organisation.");
+    }
+
+    public static Message assignedAnycastLIRParentMustHaveAReferencedOrgOfTypeLIR() {
+        return new Message(Messages.Type.ERROR, "The organisation referenced in the parent of an inetnum of type ASSIGNED ANYCAST created by a LIR must be a LIR.");
+    }
 }
