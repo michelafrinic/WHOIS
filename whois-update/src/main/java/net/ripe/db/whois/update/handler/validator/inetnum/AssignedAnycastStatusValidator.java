@@ -8,7 +8,6 @@ import net.ripe.db.whois.common.dao.RpslObjectUpdateDao;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Ipv4Resource;
 import net.ripe.db.whois.common.domain.Maintainers;
-import net.ripe.db.whois.common.domain.attrs.Inet6numStatus;
 import net.ripe.db.whois.common.domain.attrs.InetStatus;
 import net.ripe.db.whois.common.domain.attrs.InetnumStatus;
 import net.ripe.db.whois.common.domain.attrs.OrgType;
@@ -23,7 +22,6 @@ import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
 import net.ripe.db.whois.update.domain.UpdateMessages;
 import net.ripe.db.whois.update.handler.validator.BusinessRuleValidator;
-import net.ripe.db.whois.update.rest.SubAllocationWindowRESTCaller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -210,7 +208,7 @@ public class AssignedAnycastStatusValidator implements BusinessRuleValidator {
         Set<CIString> mntLowerValues = updatedObject.getValuesForAttribute(AttributeType.MNT_LOWER);
         Set<CIString> mntLowerParent = parentObject.getValuesForAttribute(AttributeType.MNT_LOWER);
 
-        if (Sets.intersection(mntByValues, mntLowerParent).isEmpty() || Sets.intersection(mntLowerValues, mntLowerParent).isEmpty()) {
+        if (Sets.intersection(mntByValues, mntLowerParent).isEmpty() && Sets.intersection(mntLowerValues, mntLowerParent).isEmpty()) {
             updateContext.addMessage(update, UpdateMessages.assignedAnycastLIRMaintainerMustBeLIRsMntLower());
         }
     }
