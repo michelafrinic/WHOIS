@@ -123,7 +123,7 @@ public class AssignedAnycastStatusValidatorTest {
     }
 
     @Test
-    public void checkInetnumPIParentOfWrongStatusFails() {
+    public void checkInetnumEndUserParentOfWrongStatusFails() {
 
         InetnumStatus[] inetnumStatuses = InetnumStatus.values();
 
@@ -172,7 +172,7 @@ public class AssignedAnycastStatusValidatorTest {
     }
 
     @Test
-    public void checkInetnumPIWithoutMNntByFails() {
+    public void checkInetnumEndUserWithoutMNntByFails() {
 
         RpslObject inetnum = RpslObject.parse("" +
                 "inetnum:        102.100.255.0/24\n" +
@@ -215,7 +215,7 @@ public class AssignedAnycastStatusValidatorTest {
     }
 
     @Test
-    public void checkInetnumPINotAuthentifiedByAPowerMaintainerFails() {
+    public void checkInetnumEndUserNotAuthentifiedByAPowerMaintainerFails() {
 
         RpslObject inetnum = RpslObject.parse("" +
                 "inetnum:        102.100.255.0/24\n" +
@@ -259,7 +259,7 @@ public class AssignedAnycastStatusValidatorTest {
     }
 
     @Test
-    public void checkInetnumWithoutParentPISuccess() {
+    public void checkInetnumWithoutParentEndUserSuccess() {
 
         RpslObject inetnum = RpslObject.parse("" +
                 "inetnum:        102.100.255.0/24\n" +
@@ -294,7 +294,7 @@ public class AssignedAnycastStatusValidatorTest {
     }
 
     @Test
-    public void checkInetnumPISuccess() {
+    public void checkInetnumEndUserSuccess() {
 
         RpslObject inetnum = RpslObject.parse("" +
                 "inetnum:        102.100.255.0/24\n" +
