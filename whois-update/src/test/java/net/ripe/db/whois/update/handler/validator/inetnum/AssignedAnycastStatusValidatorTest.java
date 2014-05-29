@@ -21,6 +21,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -68,5 +71,52 @@ public class AssignedAnycastStatusValidatorTest {
                 verifyZeroInteractions(updateContext);
             }
         }
+    }
+
+    @Test
+    public void checkWrongPrefixLength1() {
+        RpslObject inetnum = RpslObject.parse("" +
+                "inetnum:        102.100.255.128/26\n" +
+                "netname:        AFRINIC\n" +
+                "status:         ASSIGNED ANYCAST");
+
+        when(update.getUpdatedObject()).thenReturn(inetnum);
+
+        subject.validate(update, updateContext);
+
+        verify(updateContext).addMessage(update, UpdateMessages.assignedAnycastPrefixLengthMustBe(AssignedAnycastStatusValidator.REQUIRED_PREFIX_LENGTH, 26));
+    }
+
+    @Test
+    public void checkWrongPrefixLength2() {
+        RpslObject inetnum = RpslObject.parse("" +
+                "inetnum:        102.100.206.0/23\n" +
+                "netname:        AFRINIC\n" +
+                "status:         ASSIGNED ANYCAST");
+
+        when(update.getUpdatedObject()).thenReturn(inetnum);
+
+        subject.validate(update, updateContext);
+
+        verify(updateContext).addMessage(update, UpdateMessages.assignedAnycastPrefixLengthMustBe(AssignedAnycastStatusValidator.REQUIRED_PREFIX_LENGTH, 23));
+    }
+
+    @Test
+    public void checkInetnumWithChildrenFails() {
+        RpslObject inetnum = RpslObject.parse("" +
+                "inetnum:        102.100.255.0/24\n" +
+                "netname:        AFRINIC\n" +
+                "status:         ASSIGNED ANYCAST");
+
+        Ipv4Entry ipv4Entry = new Ipv4Entry(Ipv4Resource.parse("102.100.255.1/32"), 1);
+        List<Ipv4Entry> children = new ArrayList<Ipv4Entry>();
+        children.add(ipv4Entry);
+
+        when(update.getUpdatedObject()).thenReturn(inetnum);
+        when(ipv4Tree.findAllMoreSpecific(any(Ipv4Resource.class))).thenReturn(children);
+
+        subject.validate(update, updateContext);
+
+        verify(updateContext).addMessage(update, UpdateMessages.assignedAnycastCannotHaveChildren("102.100.255.1/32"));
     }
 }

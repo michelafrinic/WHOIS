@@ -33,7 +33,7 @@ import java.util.Set;
 
 @Component
 public class AssignedAnycastStatusValidator implements BusinessRuleValidator {
-    private static final int REQUIRED_PREFIX_LENGTH = 24;
+    public static final int REQUIRED_PREFIX_LENGTH = 24;
 
     private final RpslObjectUpdateDao rpslObjectUpdateDao;
     private final RpslObjectDao rpslObjectDao;
