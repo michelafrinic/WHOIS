@@ -130,15 +130,19 @@ public class AssignedAnycastStatusValidator implements BusinessRuleValidator {
     }
 
     private void checkNoParentOrParentOfCorrectTypeForEndUser(PreparedUpdate update, UpdateContext updateContext, RpslObject updatedObject, Ipv4Resource ipv4Resource) {
-        Ipv4Entry parentEntry = ipv4Tree.findFirstLessSpecific(ipv4Resource).get(0);
+        List<Ipv4Entry> parents = ipv4Tree.findFirstLessSpecific(ipv4Resource);
 
-        if (parentEntry != null) {
-            RpslObject parentObject = rpslObjectDao.getById(parentEntry.getObjectId());
-            InetStatus parentStatus = InetStatusHelper.getStatus(parentObject);
+        if(!parents.isEmpty()) {
+            Ipv4Entry parentEntry = parents.get(0);
 
-            if (parentStatus == null || !InetnumStatus.ALLOCATED_UNSPECIFIED.equals(parentStatus)) {
-                updateContext.addMessage(update, UpdateMessages.assignedAnycastEUInvalidParentStatus());
-                return;
+            if (parentEntry != null) {
+                RpslObject parentObject = rpslObjectDao.getById(parentEntry.getObjectId());
+                InetStatus parentStatus = InetStatusHelper.getStatus(parentObject);
+
+                if (parentStatus == null || !InetnumStatus.ALLOCATED_UNSPECIFIED.equals(parentStatus)) {
+                    updateContext.addMessage(update, UpdateMessages.assignedAnycastEUInvalidParentStatus());
+                    return;
+                }
             }
         }
 
