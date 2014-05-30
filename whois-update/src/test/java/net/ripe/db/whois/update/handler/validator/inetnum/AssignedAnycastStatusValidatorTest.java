@@ -52,7 +52,7 @@ public class AssignedAnycastStatusValidatorTest {
 
     @Test
     public void getActions() {
-        assertThat(subject.getActions(), contains(Action.CREATE));
+        assertThat(subject.getActions(), contains(Action.CREATE,Action.MODIFY));
     }
 
     @Test

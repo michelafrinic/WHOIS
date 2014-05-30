@@ -48,7 +48,7 @@ public class AssignedAnycastStatusValidator implements BusinessRuleValidator {
 
     @Override
     public List<Action> getActions() {
-        return Lists.newArrayList(Action.CREATE);
+        return Lists.newArrayList(Action.CREATE,Action.MODIFY);
     }
 
     @Override
