@@ -130,7 +130,7 @@ public class AssignedAnycastStatusValidator implements BusinessRuleValidator {
     private void checkNoParentOrParentOfCorrectTypeForEndUser(PreparedUpdate update, UpdateContext updateContext, RpslObject updatedObject, Ipv4Resource ipv4Resource) {
         List<Ipv4Entry> parents = ipv4Tree.findFirstLessSpecific(ipv4Resource);
 
-        if(!parents.isEmpty()) {
+        if (!parents.isEmpty()) {
             Ipv4Entry parentEntry = parents.get(0);
 
             if (parentEntry != null) {
@@ -196,20 +196,8 @@ public class AssignedAnycastStatusValidator implements BusinessRuleValidator {
         CIString orgTypeStr = referencedOrganisationForParent.findAttribute(AttributeType.ORG_TYPE).getCleanValue();
         OrgType orgType = OrgType.getFor(orgTypeStr);
 
-        if (OrgType.LIR.equals(orgType)) {
-            checkHasMaintainerForLIR(update, updateContext, updatedObject, parentObject);
-        } else {
+        if (!OrgType.LIR.equals(orgType)) {
             updateContext.addMessage(update, UpdateMessages.assignedAnycastLIRParentMustHaveAReferencedOrgOfTypeLIR());
-        }
-    }
-
-    private void checkHasMaintainerForLIR(PreparedUpdate update, UpdateContext updateContext, RpslObject updatedObject, RpslObject parentObject) {
-        Set<CIString> mntByValues = updatedObject.getValuesForAttribute(AttributeType.MNT_BY);
-        Set<CIString> mntLowerValues = updatedObject.getValuesForAttribute(AttributeType.MNT_LOWER);
-        Set<CIString> mntLowerParent = parentObject.getValuesForAttribute(AttributeType.MNT_LOWER);
-
-        if (Sets.intersection(mntByValues, mntLowerParent).isEmpty() && Sets.intersection(mntLowerValues, mntLowerParent).isEmpty()) {
-            updateContext.addMessage(update, UpdateMessages.assignedAnycastLIRMaintainerMustBeLIRsMntLower());
         }
     }
 }
