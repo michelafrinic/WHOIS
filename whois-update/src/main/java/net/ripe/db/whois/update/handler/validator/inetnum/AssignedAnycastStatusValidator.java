@@ -162,9 +162,10 @@ public class AssignedAnycastStatusValidator implements BusinessRuleValidator {
     }
 
     private void checkHasParentForLIR(PreparedUpdate update, UpdateContext updateContext, RpslObject updatedObject, Ipv4Resource ipv4Resource) {
-        Ipv4Entry parentEntry = ipv4Tree.findFirstLessSpecific(ipv4Resource).get(0);
-        if (parentEntry != null) {
-            checkParentOfCorrectTypeForLIR(update, updateContext, updatedObject, parentEntry);
+        List<Ipv4Entry> ipv4EntriesList = ipv4Tree.findFirstLessSpecific(ipv4Resource);
+
+        if (!ipv4EntriesList.isEmpty()) {
+            checkParentOfCorrectTypeForLIR(update, updateContext, updatedObject, ipv4EntriesList.get(0));
         } else {
             updateContext.addMessage(update, UpdateMessages.assignedAnycastLIRMustHaveParent());
         }

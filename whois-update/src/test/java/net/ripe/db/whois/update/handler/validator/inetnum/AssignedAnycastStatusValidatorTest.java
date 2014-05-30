@@ -6,11 +6,13 @@ import net.ripe.db.whois.common.dao.RpslObjectUpdateDao;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Ipv4Resource;
 import net.ripe.db.whois.common.domain.Maintainers;
+import net.ripe.db.whois.common.domain.attrs.InetStatus;
 import net.ripe.db.whois.common.domain.attrs.InetnumStatus;
 import net.ripe.db.whois.common.iptree.Ipv4Entry;
 import net.ripe.db.whois.common.iptree.Ipv4Tree;
 import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.update.domain.*;
 import org.junit.Test;
@@ -39,6 +41,8 @@ public class AssignedAnycastStatusValidatorTest {
     RpslObjectUpdateDao rpslObjectUpdateDao;
     @Mock
     RpslObjectDao rpslObjectDao;
+    @Mock
+    RpslObject rpslObject;
     @Mock
     Ipv4Tree ipv4Tree;
     @Mock
@@ -528,4 +532,185 @@ public class AssignedAnycastStatusValidatorTest {
         // Verify that no error message has been generated
         verifyZeroInteractions(updateContext);
     }
+
+
+    @Test
+    public void validate_LirFailure_InetnumHasNoParent() {
+
+        RpslObject whoisObject = RpslObject.parse("" +
+                "inetnum:        102.101.255.0/24\n" +
+                "status:         ASSIGNED ANYCAST\n" +
+                "org:            ORG-EB2-AFRINIC\n" +
+                "mnt-by:         AFRINIC-HM-MNT\n" +
+                "");
+        when(update.getUpdatedObject()).thenReturn(whoisObject);
+
+        // Mock behaviour: inetnum has no parent
+        when(ipv4Tree.findAllMoreSpecific(any(Ipv4Resource.class))).thenReturn(new ArrayList<Ipv4Entry>());
+
+        // Mock behaviour: inetnum.org.org-type = LIR
+        CIString referencedOrgKey = CIString.ciString("ORG-EB2-AFRINIC");
+        RpslObjectInfo referencedOrgInfo = new RpslObjectInfo(1230, ObjectType.ORGANISATION, referencedOrgKey);
+        RpslObject referencedOrg = RpslObject.parse("" +
+                "organisation:   ORG-EB2-AFRINIC\n" +
+                "org-type:       LIR\n" +
+                "");
+        when(rpslObjectUpdateDao.getAttributeReference(AttributeType.ORG, referencedOrgKey))
+                .thenReturn(referencedOrgInfo);
+        when(rpslObjectDao.getByKey(ObjectType.ORGANISATION, referencedOrgInfo.getKey()))
+                .thenReturn(referencedOrg);
+
+        when(ipv4Tree.findFirstLessSpecific(any(Ipv4Resource.class))).thenReturn(new ArrayList<Ipv4Entry>());
+
+
+        // Test
+        subject.validate(update, updateContext);
+
+        // Verify that
+        verify(updateContext).addMessage(update, UpdateMessages.assignedAnycastLIRMustHaveParent());
+    }
+
+
+    @Test
+    public void validate_LirFailure_InetnumHasParentOtherThanAllocatedPA() {
+
+        RpslObject whoisObject = RpslObject.parse("" +
+                "inetnum:        102.101.255.0/24\n" +
+                "status:         ASSIGNED ANYCAST\n" +
+                "org:            ORG-EB2-AFRINIC\n" +
+                "mnt-by:         AFRINIC-HM-MNT\n" +
+                "");
+        when(update.getUpdatedObject()).thenReturn(whoisObject);
+
+        // Mock behaviour: inetnum has no parent
+        when(ipv4Tree.findAllMoreSpecific(any(Ipv4Resource.class))).thenReturn(new ArrayList<Ipv4Entry>());
+
+        // Mock behaviour: inetnum.org.org-type = LIR
+        CIString referencedOrgKey = CIString.ciString("ORG-EB2-AFRINIC");
+        RpslObjectInfo referencedOrgInfo = new RpslObjectInfo(1230, ObjectType.ORGANISATION, referencedOrgKey);
+        RpslObject referencedOrg = RpslObject.parse("" +
+                "organisation:   ORG-EB2-AFRINIC\n" +
+                "org-type:       LIR\n" +
+                "");
+        when(rpslObjectUpdateDao.getAttributeReference(AttributeType.ORG, referencedOrgKey))
+                .thenReturn(referencedOrgInfo);
+        when(rpslObjectDao.getByKey(ObjectType.ORGANISATION, referencedOrgInfo.getKey()))
+                .thenReturn(referencedOrg);
+
+
+        Ipv4Entry parentIpTreeEntry = new Ipv4Entry(Ipv4Resource.parse("102.0.0.0/8"), 1231);
+        List<Ipv4Entry> parentIpTreeEntryInList = new ArrayList<Ipv4Entry>();
+        parentIpTreeEntryInList.add(parentIpTreeEntry);
+        RpslObject parentInetnum = RpslObject.parse("" +
+                "inetnum:        102.0.0.0 - 102.255.255.255\n" +
+                "status:         ASSIGNED PI\n" +
+                "mnt-lower:      AFRINIC-HM-MNT\n" +
+                "org:            ORG-AFNC1-AFRINIC\n" +
+                "");
+
+        when(ipv4Tree.findFirstLessSpecific(any(Ipv4Resource.class))).thenReturn(parentIpTreeEntryInList);
+
+        when(rpslObjectDao.getById(anyInt())).thenReturn(parentInetnum);
+
+        // Test
+        subject.validate(update, updateContext);
+
+        // Verify that
+        verify(updateContext).addMessage(update, UpdateMessages.assignedAnycastLIRParentMustBeOfStatus(InetnumStatus.ALLOCATED_PA.toString()));
+    }
+
+    @Test
+    public void validate_LirFailure_InetnumParentHasNoOrg() {
+
+        RpslObject whoisObject = RpslObject.parse("" +
+                "inetnum:        102.101.255.0/24\n" +
+                "status:         ASSIGNED ANYCAST\n" +
+                "org:            ORG-EB2-AFRINIC\n" +
+                "mnt-by:         AFRINIC-HM-MNT\n" +
+                "");
+        when(update.getUpdatedObject()).thenReturn(whoisObject);
+
+        // Mock behaviour: inetnum has no parent
+        when(ipv4Tree.findAllMoreSpecific(any(Ipv4Resource.class))).thenReturn(new ArrayList<Ipv4Entry>());
+
+        Ipv4Entry parentIpTreeEntry = new Ipv4Entry(Ipv4Resource.parse("102.0.0.0/8"), 1231);
+        List<Ipv4Entry> parentIpTreeEntryInList = new ArrayList<Ipv4Entry>();
+        parentIpTreeEntryInList.add(parentIpTreeEntry);
+        RpslObject parentInetnum = RpslObject.parse("" +
+                "inetnum:        102.0.0.0 - 102.255.255.255\n" +
+                "status:         ALLOCATED PA\n" +
+                "mnt-lower:      AFRINIC-HM-MNT\n" +
+                "");
+
+        when(ipv4Tree.findFirstLessSpecific(any(Ipv4Resource.class))).thenReturn(parentIpTreeEntryInList);
+
+        when(rpslObjectDao.getById(anyInt())).thenReturn(parentInetnum);
+
+        when(rpslObject.findAttributes(any(AttributeType.class))).thenReturn(new ArrayList<RpslAttribute>());
+
+        // Test
+        subject.validate(update, updateContext);
+
+        // Verify that
+        verify(updateContext).addMessage(update, UpdateMessages.assignedAnycastLIRParentMustHaveAReferencedOrg());
+    }
+
+    @Test
+    public void validate_LirFailure_InetnumHasParentOrgTypeNotLIR() {
+
+        RpslObject whoisObject = RpslObject.parse("" +
+                "inetnum:        102.101.255.0/24\n" +
+                "status:         ASSIGNED ANYCAST\n" +
+                "org:            ORG-EB2-AFRINIC\n" +
+                "mnt-by:         AFRINIC-HM-MNT\n" +
+                "");
+        when(update.getUpdatedObject()).thenReturn(whoisObject);
+
+        // Mock behaviour: inetnum has no parent
+        when(ipv4Tree.findAllMoreSpecific(any(Ipv4Resource.class))).thenReturn(new ArrayList<Ipv4Entry>());
+
+        // Mock behaviour: inetnum.org.org-type = LIR
+        CIString referencedOrgKey = CIString.ciString("ORG-EB2-AFRINIC");
+        RpslObjectInfo referencedOrgInfo = new RpslObjectInfo(1230, ObjectType.ORGANISATION, referencedOrgKey);
+        RpslObject referencedOrg = RpslObject.parse("" +
+                "organisation:   ORG-EB2-AFRINIC\n" +
+                "org-type:       EU_AS\n" +
+                "");
+        when(rpslObjectUpdateDao.getAttributeReference(AttributeType.ORG, referencedOrgKey))
+                .thenReturn(referencedOrgInfo);
+        when(rpslObjectDao.getByKey(ObjectType.ORGANISATION, referencedOrgInfo.getKey()))
+                .thenReturn(referencedOrg);
+
+
+        Ipv4Entry parentIpTreeEntry = new Ipv4Entry(Ipv4Resource.parse("102.0.0.0/8"), 1231);
+        List<Ipv4Entry> parentIpTreeEntryInList = new ArrayList<Ipv4Entry>();
+        parentIpTreeEntryInList.add(parentIpTreeEntry);
+        RpslObject parentInetnum = RpslObject.parse("" +
+                "inetnum:        102.0.0.0 - 102.255.255.255\n" +
+                "status:         ALLOCATED PA\n" +
+                "mnt-lower:      AFRINIC-HM-MNT\n" +
+                "org:            ORG-EB2-AFRINIC\n" +
+                "");
+
+        when(ipv4Tree.findFirstLessSpecific(any(Ipv4Resource.class))).thenReturn(parentIpTreeEntryInList);
+
+        when(rpslObjectDao.getById(anyInt())).thenReturn(parentInetnum);
+
+        List<RpslAttribute> rpslAttributeList = new ArrayList<RpslAttribute>();
+
+        rpslAttributeList.add(new RpslAttribute("ORGANISATION", "ORG-EB2-AFRINIC"));
+        when(rpslObject.findAttributes(AttributeType.ORG)).thenReturn(rpslAttributeList);
+        when(rpslObjectUpdateDao.getAttributeReference(any(AttributeType.class), any(CIString.class))).thenReturn(new RpslObjectInfo(1,ObjectType.ORGANISATION,"ORG-EB2-AFRINIC"));
+        when(rpslObjectDao.getByKey(ObjectType.ORGANISATION, "ORG-EB2-AFRINIC")).thenReturn(referencedOrg);
+
+        // Test
+        subject.validate(update, updateContext);
+
+        // Verify that
+        verify(updateContext).addMessage(update, UpdateMessages.assignedAnycastLIRParentMustHaveAReferencedOrgOfTypeLIR());
+    }
+
+
+
+
 }
