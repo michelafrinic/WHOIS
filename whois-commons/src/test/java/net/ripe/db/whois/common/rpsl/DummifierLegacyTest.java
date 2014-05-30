@@ -1,6 +1,7 @@
 package net.ripe.db.whois.common.rpsl;
 
 import com.google.common.collect.Lists;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -204,5 +205,28 @@ public class DummifierLegacyTest {
                 "remarks:        * To view the original object, please query the RIPE Database at:\n" +
                 "remarks:        * http://www.ripe.net/whois\n" +
                 "remarks:        ****************************\n"));
+    }
+
+    @Test
+    public void invalid_source() {
+        final RpslObject rpslObject = RpslObject.parse(1, "" +
+                "role:          Test Role\n" +
+                "nic-hdl:       TR1-TEST\n" +
+                "abuse-mailbox: abuse@mailbox.com\n" +
+                "source:        AMREESH");
+
+        RpslObject dummy = subject.dummify(3, rpslObject);
+        Assert.assertEquals(rpslObject.toString(), dummy.toString());
+    }
+
+    @Test
+    public void no_source() {
+        final RpslObject rpslObject = RpslObject.parse(1, "" +
+                "role:          Test Role\n" +
+                "nic-hdl:       TR1-TEST\n" +
+                "abuse-mailbox: abuse@mailbox.com");
+
+        RpslObject dummy = subject.dummify(3, rpslObject);
+        Assert.assertEquals(rpslObject.toString(), dummy.toString());
     }
 }

@@ -179,10 +179,10 @@ public class DummifierLegacy implements Dummifier {
     }
 
     private static List<RpslAttribute> getDummificationRemarks(final RpslObject rpslObject) {
-        CIString sourceCI = rpslObject.getValueForAttribute(AttributeType.SOURCE);
+        boolean hasSource = rpslObject.containsAttribute(AttributeType.SOURCE);
 
-        if(sourceCI != null) {
-            final String source = sourceCI.toLowerCase();
+        if(hasSource) {
+            final String source = rpslObject.getValueForAttribute(AttributeType.SOURCE).toLowerCase();
             switch (source) {
                 case "ripe":
                 case "ripe-grs":
