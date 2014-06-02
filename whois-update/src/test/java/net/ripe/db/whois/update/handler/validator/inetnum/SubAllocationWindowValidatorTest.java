@@ -240,7 +240,7 @@ public class SubAllocationWindowValidatorTest {
         when(ipv4Tree.findFirstLessSpecific(any(Ipv4Resource.class))).thenReturn(Lists.<Ipv4Entry>newArrayList(entry));
 
         subject.validate(update, updateContext);
-        verify(updateContext).addMessage(update, UpdateMessages.invalidPrefixLengthRange(32, 30, 16));
+        verify(updateContext).addMessage(update, UpdateMessages.invalidPrefixLengthRange(32, 24, 16));
     }
 
     @Test
@@ -266,7 +266,7 @@ public class SubAllocationWindowValidatorTest {
         when(ipv4Tree.findFirstLessSpecific(any(Ipv4Resource.class))).thenReturn(Lists.<Ipv4Entry>newArrayList(entry));
 
         subject.validate(update, updateContext);
-        verify(updateContext).addMessage(update, UpdateMessages.invalidPrefixLengthRange(8, 30, 16));
+        verify(updateContext).addMessage(update, UpdateMessages.invalidPrefixLengthRange(8, 24, 16));
     }
 
     @Test

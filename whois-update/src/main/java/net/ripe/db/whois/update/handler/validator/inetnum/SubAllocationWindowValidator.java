@@ -33,7 +33,7 @@ import static net.ripe.db.whois.update.handler.validator.inetnum.InetStatusHelpe
 
 @Component
 public class SubAllocationWindowValidator implements BusinessRuleValidator {
-    private static final int MAX_PREFIX_LENGTH = 30;
+    private static final int MAX_PREFIX_LENGTH = 24;
 
     private final SubAllocationWindowRESTCaller subAllocationWindowRESTCaller;
     private final RpslObjectUpdateDao rpslObjectUpdateDao;
