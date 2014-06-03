@@ -91,6 +91,7 @@ public final class IndexStrategies {
                 new IndexWithName(AttributeType.ORG_NAME, "org_name"),
                 new IndexWithOrigin(AttributeType.ORIGIN),
                 new Unindexed(AttributeType.OWNER),
+                new Unindexed(AttributeType.PARENT),
                 new Unindexed(AttributeType.PEER),
                 new Unindexed(AttributeType.PEERING),
                 new IndexWithValue(AttributeType.PEERING_SET, "peering_set", "peering_set"),

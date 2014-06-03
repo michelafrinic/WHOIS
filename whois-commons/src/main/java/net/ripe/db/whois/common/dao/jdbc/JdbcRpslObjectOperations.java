@@ -7,6 +7,7 @@ import net.ripe.db.whois.common.dao.RpslObjectUpdateInfo;
 import net.ripe.db.whois.common.dao.jdbc.domain.ObjectTypeIds;
 import net.ripe.db.whois.common.dao.jdbc.index.IndexStrategies;
 import net.ripe.db.whois.common.dao.jdbc.index.IndexStrategy;
+import net.ripe.db.whois.common.dao.jdbc.index.Unindexed;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.serials.Operation;
 import net.ripe.db.whois.common.domain.serials.SerialEntry;
@@ -121,14 +122,12 @@ public class JdbcRpslObjectOperations {
         final ObjectTemplate objectTemplate = ObjectTemplate.getTemplate(rpslObjectInfo.getObjectType());
 
         for (AttributeTemplate attributeTemplate : objectTemplate.getAttributeTemplates()) {
-            // don't try to delete from tables with generated attribute types
-            if(!attributeTemplate.getRequirement().equals(GENERATED)) {
-                IndexStrategy indexStrategy = IndexStrategies.get(attributeTemplate.getAttributeType());
-                if (indexStrategy != null) {
-                    indexStrategy.removeFromIndex(jdbcTemplate, rpslObjectInfo);
-                } else {
-                    throw new IllegalArgumentException("No IndexStrategy for attribute template : " + attributeTemplate.getAttributeType().getName());
-                }
+            // don't try to delete from tables where attribute types have Unindexed as IndexStrategy, i.e not in table
+            IndexStrategy indexStrategy = IndexStrategies.get(attributeTemplate.getAttributeType());
+            if (indexStrategy == null){
+                throw new IllegalArgumentException("No IndexStrategy for attribute template : " + attributeTemplate.getAttributeType().getName());
+            }else if( !(indexStrategy instanceof Unindexed)){
+                indexStrategy.removeFromIndex(jdbcTemplate, rpslObjectInfo);
             }
         }
     }
