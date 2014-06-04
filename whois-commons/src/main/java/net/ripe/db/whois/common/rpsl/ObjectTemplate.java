@@ -58,8 +58,7 @@ public class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(AUT_NUM, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(AS_NAME, MANDATORY, SINGLE),
                         new AttributeTemplate(DESCR, MANDATORY, MULTIPLE),
-                        //new AttributeTemplate(MEMBER_OF, OPTIONAL, MULTIPLE, INVERSE_KEY),/*-AFRINIC-*/
-                        new AttributeTemplate(MEMBER_OF, OPTIONAL, MULTIPLE),/*-AFRINIC-*/
+                        new AttributeTemplate(MEMBER_OF, OPTIONAL, MULTIPLE),
                         new AttributeTemplate(IMPORT, OPTIONAL, MULTIPLE),
                         new AttributeTemplate(MP_IMPORT, OPTIONAL, MULTIPLE),
                         new AttributeTemplate(EXPORT, OPTIONAL, MULTIPLE),
@@ -67,11 +66,11 @@ public class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(DEFAULT, OPTIONAL, MULTIPLE),
                         new AttributeTemplate(MP_DEFAULT, OPTIONAL, MULTIPLE),
                         new AttributeTemplate(REMARKS, OPTIONAL, MULTIPLE),
-                        new AttributeTemplate(ORG, OPTIONAL, SINGLE, INVERSE_KEY),
+                        new AttributeTemplate(ORG, MANDATORY, SINGLE, INVERSE_KEY),
                         new AttributeTemplate(ADMIN_C, MANDATORY, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(TECH_C, MANDATORY, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(NOTIFY, OPTIONAL, MULTIPLE, INVERSE_KEY),
-                        new AttributeTemplate(MNT_IRT, OPTIONAL, MULTIPLE, INVERSE_KEY),/*-AFRINIC-*/
+                        new AttributeTemplate(MNT_IRT, OPTIONAL, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(MNT_LOWER, OPTIONAL, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(MNT_ROUTES, OPTIONAL, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(MNT_BY, MANDATORY, MULTIPLE, INVERSE_KEY),
@@ -101,7 +100,7 @@ public class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(ADMIN_C, MANDATORY, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(TECH_C, MANDATORY, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(ZONE_C, MANDATORY, MULTIPLE, INVERSE_KEY),
-                        new AttributeTemplate(NSERVER, OPTIONAL, MULTIPLE, INVERSE_KEY),
+                        new AttributeTemplate(NSERVER, MANDATORY, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(DS_RDATA, OPTIONAL, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(SUB_DOM, OPTIONAL, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(DOM_NET, OPTIONAL, MULTIPLE),

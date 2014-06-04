@@ -709,8 +709,4 @@ public class AssignedAnycastStatusValidatorTest {
         // Verify that
         verify(updateContext).addMessage(update, UpdateMessages.assignedAnycastLIRParentMustHaveAReferencedOrgOfTypeLIR());
     }
-
-
-
-
 }

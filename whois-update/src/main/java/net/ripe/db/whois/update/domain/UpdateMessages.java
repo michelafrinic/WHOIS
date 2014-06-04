@@ -598,4 +598,8 @@ public final class UpdateMessages {
     public static Message assignedAnycastLIRParentMustHaveAReferencedOrgOfTypeLIR() {
         return new Message(Messages.Type.ERROR, "The organisation referenced in the parent of an inetnum of type ASSIGNED ANYCAST created by a LIR must be a LIR.");
     }
+
+    public static Message invalidMntByStatus(String powerMaintainer) {
+        return new Message(Messages.Type.ERROR, "An autnum must be maintained by a power maintainer (ex. : %s).", powerMaintainer);
+    }
 }
