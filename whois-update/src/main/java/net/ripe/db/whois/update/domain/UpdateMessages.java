@@ -602,4 +602,8 @@ public final class UpdateMessages {
     public static Message invalidMntByStatus(String powerMaintainer) {
         return new Message(Messages.Type.ERROR, "An autnum must be maintained by a power maintainer (ex. : %s).", powerMaintainer);
     }
+
+    public static Message domainMustHaveAValidParentInetnum() {
+        return new Message(Messages.Type.ERROR, "A domain object must always have a valid covering inetnum.");
+    }
 }

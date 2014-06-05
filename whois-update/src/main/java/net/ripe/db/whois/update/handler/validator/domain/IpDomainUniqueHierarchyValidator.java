@@ -99,13 +99,13 @@ public class IpDomainUniqueHierarchyValidator implements BusinessRuleValidator {
     }
 
 
-    @Value("${whois.domain.exclude.ipv4}")
+    @Value("${whois.inetnum.exclude.ipv4}")
     public void setIpv4ParentDomainToExclude(final String[] ipv4ParentDomainToExclude) {
         this.ipv4ParentDomainToExclude = new String[ipv4ParentDomainToExclude.length];
         System.arraycopy(ipv4ParentDomainToExclude, 0, this.ipv4ParentDomainToExclude, 0, ipv4ParentDomainToExclude.length);
     }
 
-    @Value("${whois.domain.exclude.ipv6}")
+    @Value("${whois.inetnum.exclude.ipv6}")
     public void setIpv6ParentDomainToExclude(final String[] ipv6ParentDomainToExclude) {
         this.ipv6ParentDomainToExclude = new String[ipv6ParentDomainToExclude.length];
         System.arraycopy(ipv6ParentDomainToExclude, 0, this.ipv6ParentDomainToExclude, 0, ipv6ParentDomainToExclude.length);

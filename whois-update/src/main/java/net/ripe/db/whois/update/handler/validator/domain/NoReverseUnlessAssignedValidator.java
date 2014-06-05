@@ -71,7 +71,7 @@ public class NoReverseUnlessAssignedValidator implements BusinessRuleValidator {
 
         final Domain domain = Domain.parse(update.getUpdatedObject().getKey());
 
-        final IpEntry coveringInetnum = getExactOrFirstLessSpecificInetnum(domain);
+        final IpEntry coveringInetnum = getExactOrFirstLessSpecificInetnum(update, updateContext, domain);
 
         final InetStatus coveringInetStatus = getInetStatusFromIpEntry(coveringInetnum, domain);
 
@@ -95,23 +95,25 @@ public class NoReverseUnlessAssignedValidator implements BusinessRuleValidator {
 
         final Domain domain = Domain.parse(update.getUpdatedObject().getKey());
 
-        final IpEntry coveringInetnum = getExactOrFirstLessSpecificInetnum(domain);
+        final IpEntry coveringInetnum = getExactOrFirstLessSpecificInetnum(update, updateContext, domain);
 
-        final InetStatus coveringInetStatus = getInetStatusFromIpEntry(coveringInetnum, domain);
+        if(coveringInetnum != null) {
+            final InetStatus coveringInetStatus = getInetStatusFromIpEntry(coveringInetnum, domain);
 
-        if (    ((InetnumStatus)coveringInetStatus).compareTo(InetnumStatus.ASSIGNED_PA) == 0 ||
-                ((InetnumStatus)coveringInetStatus).compareTo(InetnumStatus.ASSIGNED_PI) == 0 ||
-                ((InetnumStatus)coveringInetStatus).compareTo(InetnumStatus.SUB_ALLOCATED_PA) == 0
-           ){
-            return;
-        }
+            if (((InetnumStatus) coveringInetStatus).compareTo(InetnumStatus.ASSIGNED_PA) == 0 ||
+                    ((InetnumStatus) coveringInetStatus).compareTo(InetnumStatus.ASSIGNED_PI) == 0 ||
+                    ((InetnumStatus) coveringInetStatus).compareTo(InetnumStatus.SUB_ALLOCATED_PA) == 0
+                    ) {
+                return;
+            }
 
-        if (  ((InetnumStatus)coveringInetStatus).compareTo(InetnumStatus.ALLOCATED_PA) == 0 ) {
-            final List<IpEntry> childEntries = getFirstMoreSpecificInetnum(coveringInetnum, domain);
+            if (((InetnumStatus) coveringInetStatus).compareTo(InetnumStatus.ALLOCATED_PA) == 0) {
+                final List<IpEntry> childEntries = getFirstMoreSpecificInetnum(coveringInetnum, domain);
 
-            if (childEntries.isEmpty()) {
-                updateContext.addMessage(update, UpdateMessages.noMoreSpecificInetnumFound(domain.getValue(),
-                        coveringInetnum.getKey().toString()));
+                if (childEntries.isEmpty()) {
+                    updateContext.addMessage(update, UpdateMessages.noMoreSpecificInetnumFound(domain.getValue(),
+                            coveringInetnum.getKey().toString()));
+                }
             }
         }
     }
@@ -152,23 +154,26 @@ public class NoReverseUnlessAssignedValidator implements BusinessRuleValidator {
     }
 
 
-    private IpEntry getExactOrFirstLessSpecificInetnum(final Domain domain) {
-        List<IpEntry> parentEntries = new ArrayList<>();
+    private IpEntry getExactOrFirstLessSpecificInetnum(final PreparedUpdate update, final UpdateContext updateContext, final Domain domain) {
+        IpEntry ipEntry = null;
 
         if (domain.getType() == Domain.Type.INADDR) {
-            parentEntries.addAll(ipv4Tree.findExactOrFirstLessSpecific(Ipv4Resource.parse(domain.getReverseIp().toString())));
+            List<Ipv4Entry> parents = ExcludedResources.removeV4Excluded(ipv4Tree.findExactOrFirstLessSpecific(Ipv4Resource.parse(domain.getReverseIp().toString())));
+            if(!parents.isEmpty()) {
+                ipEntry = parents.get(0);
+            }
         }
         else {
-            parentEntries.addAll(ipv6Tree.findExactOrFirstLessSpecific(Ipv6Resource.parse(domain.getReverseIp().toString())));
+            List<Ipv6Entry> parents = ExcludedResources.removeV6Excluded(ipv6Tree.findExactOrFirstLessSpecific(Ipv6Resource.parse(domain.getReverseIp().toString())));
+            if(!parents.isEmpty()) {
+                ipEntry = parents.get(0);
+            }
         }
 
-        if (!parentEntries.isEmpty()) {
-            return parentEntries.get(0);
+        if (ipEntry == null) {
+            updateContext.addMessage(update, UpdateMessages.domainMustHaveAValidParentInetnum());
         }
-
-        Validate.notEmpty(parentEntries, "Should always have a parent");
-        return null;
-
+        return ipEntry;
     }
 
     private List<IpEntry> getFirstMoreSpecificInetnum(final IpEntry ipEntry, final Domain domain) {

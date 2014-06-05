@@ -339,7 +339,7 @@ public class NoReverseUnlessAssignedValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, UpdateMessages.noMoreSpecificInetnumFound("1.4.f.f.f.0.c.2.ip6.arpa","2c0f:ff40::/26"));
+        verify(updateContext).addMessage(update, UpdateMessages.noMoreSpecificInetnumFound("1.4.f.f.f.0.c.2.ip6.arpa", "2c0f:ff40::/26"));
 
     }
 
@@ -390,5 +390,19 @@ public class NoReverseUnlessAssignedValidatorTest {
 
         verifyNoMoreInteractions(updateContext);
     }
+
+    @Test
+    public void validateNoParentFails() {
+
+        when(update.getUpdatedObject()).thenReturn(RpslObject.parse("" +
+                "domain: 100.11.in-addr.arpa"));
+
+        when(ipv4Tree.findExactOrFirstLessSpecific(Ipv4Resource.parse("11.100.0.0/16"))).thenReturn(new ArrayList<Ipv4Entry>());
+
+        subject.validate(update, updateContext);
+
+        verify(updateContext).addMessage(update, UpdateMessages.domainMustHaveAValidParentInetnum());
+    }
+
 
 }
