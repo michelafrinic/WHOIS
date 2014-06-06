@@ -73,20 +73,22 @@ public class NoReverseUnlessAssignedValidator implements BusinessRuleValidator {
 
         final IpEntry coveringInetnum = getExactOrFirstLessSpecificInetnum(update, updateContext, domain);
 
-        final InetStatus coveringInetStatus = getInetStatusFromIpEntry(coveringInetnum, domain);
+        if(coveringInetnum != null) {
+            final InetStatus coveringInetStatus = getInetStatusFromIpEntry(coveringInetnum, domain);
 
-        if (    ((Inet6numStatus)coveringInetStatus).compareTo(Inet6numStatus.ASSIGNED_PA) == 0 ||
-                ((Inet6numStatus)coveringInetStatus).compareTo(Inet6numStatus.ASSIGNED_PI) == 0
-                ){
-            return;
-        }
+            if (((Inet6numStatus) coveringInetStatus).compareTo(Inet6numStatus.ASSIGNED_PA) == 0 ||
+                    ((Inet6numStatus) coveringInetStatus).compareTo(Inet6numStatus.ASSIGNED_PI) == 0
+                    ) {
+                return;
+            }
 
-        if (  ((Inet6numStatus)coveringInetStatus).compareTo(Inet6numStatus.ALLOCATED_BY_RIR) == 0 ) {
-            final List<IpEntry> childEntries = getFirstMoreSpecificInetnum(coveringInetnum, domain);
+            if (((Inet6numStatus) coveringInetStatus).compareTo(Inet6numStatus.ALLOCATED_BY_RIR) == 0) {
+                final List<IpEntry> childEntries = getFirstMoreSpecificInetnum(coveringInetnum, domain);
 
-            if (childEntries.isEmpty()) {
-                updateContext.addMessage(update, UpdateMessages.noMoreSpecificInetnumFound(domain.getValue(),
-                        coveringInetnum.getKey().toString()));
+                if (childEntries.isEmpty()) {
+                    updateContext.addMessage(update, UpdateMessages.noMoreSpecificInetnumFound(domain.getValue(),
+                            coveringInetnum.getKey().toString()));
+                }
             }
         }
     }
