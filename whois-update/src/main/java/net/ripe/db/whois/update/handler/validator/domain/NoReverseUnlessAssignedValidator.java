@@ -33,12 +33,14 @@ public class NoReverseUnlessAssignedValidator implements BusinessRuleValidator {
     private final Ipv4Tree ipv4Tree;
     private final Ipv6Tree ipv6Tree;
     private final RpslObjectDao objectDao;
+    private final ExcludedResources excludedResources;
 
     @Autowired
-    public NoReverseUnlessAssignedValidator(final Ipv4Tree ipv4Tree, final Ipv6Tree ipv6Tree, final RpslObjectDao objectDao) {
+    public NoReverseUnlessAssignedValidator(final Ipv4Tree ipv4Tree, final Ipv6Tree ipv6Tree, final RpslObjectDao objectDao, final ExcludedResources excludedResources) {
         this.ipv4Tree = ipv4Tree;
         this.ipv6Tree = ipv6Tree;
         this.objectDao = objectDao;
+        this.excludedResources = excludedResources;
     }
 
     @Override
@@ -155,21 +157,20 @@ public class NoReverseUnlessAssignedValidator implements BusinessRuleValidator {
         }
     }
 
-
     private IpEntry getExactOrFirstLessSpecificInetnum(final PreparedUpdate update, final UpdateContext updateContext, final Domain domain) {
         IpEntry ipEntry = null;
+        List<IpEntry> parents = new ArrayList<IpEntry>();
+        String domainReverseIp = domain.getReverseIp().toString();
 
         if (domain.getType() == Domain.Type.INADDR) {
-            List<Ipv4Entry> parents = ExcludedResources.removeV4Excluded(ipv4Tree.findExactOrFirstLessSpecific(Ipv4Resource.parse(domain.getReverseIp().toString())));
-            if(!parents.isEmpty()) {
-                ipEntry = parents.get(0);
-            }
+            parents.addAll(excludedResources.removeV4Excluded(ipv4Tree.findExactOrFirstLessSpecific(Ipv4Resource.parse(domainReverseIp))));
         }
         else {
-            List<Ipv6Entry> parents = ExcludedResources.removeV6Excluded(ipv6Tree.findExactOrFirstLessSpecific(Ipv6Resource.parse(domain.getReverseIp().toString())));
-            if(!parents.isEmpty()) {
-                ipEntry = parents.get(0);
-            }
+            parents.addAll(excludedResources.removeV6Excluded(ipv6Tree.findExactOrFirstLessSpecific(Ipv6Resource.parse(domainReverseIp))));
+        }
+
+        if(!parents.isEmpty()) {
+            ipEntry = parents.get(0);
         }
 
         if (ipEntry == null) {
