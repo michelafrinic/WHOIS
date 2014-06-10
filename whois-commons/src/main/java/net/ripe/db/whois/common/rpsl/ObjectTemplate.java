@@ -246,7 +246,6 @@ public class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(ORG, OPTIONAL, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(ADMIN_C, OPTIONAL, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(TECH_C, OPTIONAL, MULTIPLE, INVERSE_KEY),
-                        //new AttributeTemplate(ABUSE_C, OPTIONAL, SINGLE, INVERSE_KEY),/*-AFRINIC-*/
                         new AttributeTemplate(REF_NFY, OPTIONAL, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(MNT_REF, MANDATORY, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(NOTIFY, OPTIONAL, MULTIPLE, INVERSE_KEY),
