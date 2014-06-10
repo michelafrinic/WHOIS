@@ -37,11 +37,11 @@ public class ExcludedResourcesTest {
         ExcludedResources excludedResources = new ExcludedResources(excludedV4Resources, excludedV6Resources);
 
         Assert.assertFalse(excludedResources.isExcluded((Ipv4Entry) null));
-        Assert.assertFalse(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("0/0"), 1)));
+        Assert.assertTrue(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("0/0"), 1)));
         Assert.assertFalse(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("11.100.0.0/16"), 1)));
 
         Assert.assertFalse(excludedResources.isExcluded((Ipv6Entry) null));
-        Assert.assertFalse(excludedResources.isExcluded(new Ipv6Entry(Ipv6Resource.parse("0::/0"), 1)));
+        Assert.assertTrue(excludedResources.isExcluded(new Ipv6Entry(Ipv6Resource.parse("0::/0"), 1)));
         Assert.assertFalse(excludedResources.isExcluded(new Ipv6Entry(Ipv6Resource.parse("2c0f:f930::/32"), 1)));
     }
 
@@ -76,5 +76,17 @@ public class ExcludedResourcesTest {
 
         Assert.assertEquals(filteredList.size(), 1);
         Assert.assertEquals(filteredList.get(0), new Ipv4Entry(Ipv4Resource.parse("11.100.0.0/16"), 3));
+    }
+
+    @Test
+    public void testRootIsAlwaysExcluded() {
+        String [] excludedV4Resources = { "196/0"}; // considered as root
+        String [] excludedV6Resources = {};
+
+        ExcludedResources excludedResources = new ExcludedResources(excludedV4Resources, excludedV6Resources);
+
+        Assert.assertTrue(excludedResources.isExcluded((Ipv4Entry) null));
+        Assert.assertTrue(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("0/0"), 1)));
+        Assert.assertTrue(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("11.100.0.0/16"), 1)));
     }
 }
