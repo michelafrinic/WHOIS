@@ -85,7 +85,7 @@ public class ExcludedResourcesTest {
 
         ExcludedResources excludedResources = new ExcludedResources(excludedV4Resources, excludedV6Resources);
 
-        Assert.assertTrue(excludedResources.isExcluded((Ipv4Entry) null));
+        Assert.assertFalse(excludedResources.isExcluded((Ipv4Entry) null));
         Assert.assertTrue(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("0/0"), 1)));
         Assert.assertTrue(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("11.100.0.0/16"), 1)));
     }
