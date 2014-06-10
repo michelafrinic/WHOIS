@@ -4,10 +4,7 @@ import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.domain.Ipv4Resource;
 import net.ripe.db.whois.common.domain.Ipv6Resource;
-import net.ripe.db.whois.common.iptree.Ipv4DomainTree;
-import net.ripe.db.whois.common.iptree.Ipv4Entry;
-import net.ripe.db.whois.common.iptree.Ipv6DomainTree;
-import net.ripe.db.whois.common.iptree.Ipv6Entry;
+import net.ripe.db.whois.common.iptree.*;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.update.domain.Action;
@@ -34,6 +31,8 @@ public class IpDomainUniqueHierarchyValidatorTest {
 
     @Mock Ipv4DomainTree ipv4DomainTree;
     @Mock Ipv6DomainTree ipv6DomainTree;
+    @Mock
+    ExcludedResources excludedResources;
     @InjectMocks IpDomainUniqueHierarchyValidator subject;
 
     @Test
@@ -88,11 +87,10 @@ public class IpDomainUniqueHierarchyValidatorTest {
                 "domain: 200.193.196.in-addr.arpa"));
 
         final Ipv4Resource lessSpecific = Ipv4Resource.parse("196/8");
+        Ipv4Entry ipv4Entry = new Ipv4Entry(lessSpecific, 1);
 
-        String [] exclude = {"196/8"};
-        subject.setIpv4ParentDomainToExclude(exclude);
-
-        when(ipv4DomainTree.findFirstLessSpecific(Ipv4Resource.parse("196.193.200.0/24"))).thenReturn(Lists.newArrayList(new Ipv4Entry(lessSpecific, 1)));
+        when(ipv4DomainTree.findFirstLessSpecific(Ipv4Resource.parse("196.193.200.0/24"))).thenReturn(Lists.newArrayList(ipv4Entry));
+        when(excludedResources.isExcluded(ipv4Entry)).thenReturn(true);
 
         subject.validate(update, updateContext);
 
@@ -120,10 +118,10 @@ public class IpDomainUniqueHierarchyValidatorTest {
                 "domain: 140.192.196.in-addr.arpa"));
 
         final Ipv4Resource lessSpecific = Ipv4Resource.parse("196/8");
-        String [] exclude = {"196/8"};
-        subject.setIpv4ParentDomainToExclude(exclude);
+        Ipv4Entry ipv4Entry = new Ipv4Entry(lessSpecific, 1);
 
-        when(ipv4DomainTree.findFirstLessSpecific(Ipv4Resource.parse("196.192.140.0/24"))).thenReturn(Lists.newArrayList(new Ipv4Entry(lessSpecific, 1)));
+        when(ipv4DomainTree.findFirstLessSpecific(Ipv4Resource.parse("196.192.140.0/24"))).thenReturn(Lists.newArrayList(ipv4Entry));
+        when(excludedResources.isExcluded(ipv4Entry)).thenReturn(true);
 
         subject.validate(update, updateContext);
 
@@ -142,10 +140,8 @@ public class IpDomainUniqueHierarchyValidatorTest {
         final List<Ipv6Entry> ipv6EntryList = new ArrayList<>();
         ipv6EntryList.add(ipv6Entry);
 
-        String [] exclude = {"2001:4300::/24"};
-        subject.setIpv6ParentDomainToExclude(exclude);
-
         when(ipv6DomainTree.findFirstLessSpecific(Ipv6Resource.parse("2001:4300::/48"))).thenReturn(ipv6EntryList);
+        when(excludedResources.isExcluded(ipv6Entry)).thenReturn(true);
 
         subject.validate(update, updateContext);
 

@@ -12,9 +12,7 @@ import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
 import net.ripe.db.whois.update.domain.UpdateMessages;
 import net.ripe.db.whois.update.handler.validator.BusinessRuleValidator;
-import org.bouncycastle.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -23,13 +21,13 @@ import java.util.List;
 public class IpDomainUniqueHierarchyValidator implements BusinessRuleValidator {
     private final Ipv4DomainTree ipv4DomainTree;
     private final Ipv6DomainTree ipv6DomainTree;
-    private String [] ipv4ParentDomainToExclude;
-    private String [] ipv6ParentDomainToExclude;
+    private final ExcludedResources excludedResources;
 
     @Autowired
-    public IpDomainUniqueHierarchyValidator(final Ipv4DomainTree ipv4DomainTree, final Ipv6DomainTree ipv6DomainTree) {
+    public IpDomainUniqueHierarchyValidator(final Ipv4DomainTree ipv4DomainTree, final Ipv6DomainTree ipv6DomainTree, final ExcludedResources excludedResources) {
         this.ipv4DomainTree = ipv4DomainTree;
         this.ipv6DomainTree = ipv6DomainTree;
+        this.excludedResources = excludedResources;
     }
 
     @Override
@@ -60,22 +58,15 @@ public class IpDomainUniqueHierarchyValidator implements BusinessRuleValidator {
             if(domain.getType() == Domain.Type.INADDR) {
                 Ipv4Entry entry = (Ipv4Entry) ipEntry;
 
-                for (int i=0; i<ipv4ParentDomainToExclude.length;i++) {
-                    if (entry.getKey().intersects(Ipv4Resource.parse(ipv4ParentDomainToExclude[i]))) {
-                        return;
-                    }
+                if(excludedResources.isExcluded(entry)) {
+                    return;
                 }
-
-
             }else {
                 Ipv6Entry entry = (Ipv6Entry) ipEntry;
 
-                for (int i=0; i<ipv6ParentDomainToExclude.length;i++) {
-                    if (entry.getKey().intersects(Ipv6Resource.parse(ipv6ParentDomainToExclude[i]))) {
-                        return;
-                    }
+                if(excludedResources.isExcluded(entry)) {
+                    return;
                 }
-
             }
 
             updateContext.addMessage(update, UpdateMessages.lessSpecificDomainFound(ipEntry.getKey().toString()));
@@ -96,18 +87,5 @@ public class IpDomainUniqueHierarchyValidator implements BusinessRuleValidator {
         }
 
         throw new IllegalArgumentException("Unexpected reverse ip: " + reverseIp);
-    }
-
-
-    @Value("${whois.inetnum.exclude.ipv4}")
-    public void setIpv4ParentDomainToExclude(final String[] ipv4ParentDomainToExclude) {
-        this.ipv4ParentDomainToExclude = new String[ipv4ParentDomainToExclude.length];
-        System.arraycopy(ipv4ParentDomainToExclude, 0, this.ipv4ParentDomainToExclude, 0, ipv4ParentDomainToExclude.length);
-    }
-
-    @Value("${whois.inetnum.exclude.ipv6}")
-    public void setIpv6ParentDomainToExclude(final String[] ipv6ParentDomainToExclude) {
-        this.ipv6ParentDomainToExclude = new String[ipv6ParentDomainToExclude.length];
-        System.arraycopy(ipv6ParentDomainToExclude, 0, this.ipv6ParentDomainToExclude, 0, ipv6ParentDomainToExclude.length);
     }
 }
