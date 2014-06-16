@@ -257,11 +257,6 @@ public class Ipv4ResourceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void reverse_dash_not_in_fourth_octet() {
-        Ipv4Resource.parseReverseDomain("1-1.1.1.in-addr.arpa");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
     public void reverse_non_numeric_input() {
         Ipv4Resource.parseReverseDomain("1-1.b.a.in-addr.arpa");
     }
@@ -276,7 +271,6 @@ public class Ipv4ResourceTest {
         assertThat(Ipv4Resource.parseReverseDomain("111.in-addr.arpa").toString(), is("111.0.0.0/8"));
         assertThat(Ipv4Resource.parseReverseDomain("22.111.in-addr.arpa").toString(), is("111.22.0.0/16"));
         assertThat(Ipv4Resource.parseReverseDomain("3.22.111.in-addr.arpa").toString(), is("111.22.3.0/24"));
-        assertThat(Ipv4Resource.parseReverseDomain("4.3.22.111.in-addr.arpa").toString(), is("111.22.3.4/32"));
     }
 
     @Test
@@ -284,12 +278,13 @@ public class Ipv4ResourceTest {
         assertThat(Ipv4Resource.parseReverseDomain("111.in-addr.arpa.").toString(), is("111.0.0.0/8"));
         assertThat(Ipv4Resource.parseReverseDomain("22.111.In-addr.arpa.").toString(), is("111.22.0.0/16"));
         assertThat(Ipv4Resource.parseReverseDomain("3.22.111.iN-aDdR.aRpA.").toString(), is("111.22.3.0/24"));
-        assertThat(Ipv4Resource.parseReverseDomain("4.3.22.111.IN-ADDR.ARPA.").toString(), is("111.22.3.4/32"));
     }
 
     @Test
     public void reverse_with_range() {
-        assertThat(Ipv4Resource.parseReverseDomain("44-55.33.22.11.in-addr.arpa.").toString(), is("11.22.33.44 - 11.22.33.55"));
+        assertThat(Ipv4Resource.parseReverseDomain("11-13.in-addr.arpa.").toString(), is("11.0.0.0 - 13.255.255.255"));
+        assertThat(Ipv4Resource.parseReverseDomain("22-55.11.in-addr.arpa.").toString(), is("11.22.0.0 - 11.55.255.255"));
+        assertThat(Ipv4Resource.parseReverseDomain("33-55.22.11.in-addr.arpa.").toString(), is("11.22.33.0 - 11.22.55.255"));
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -22,13 +22,13 @@ public class Domain {
     private final CIString value;
     private final IpInterval<?> reverseIp;
     private final Type type;
-    private final boolean isDashNotation;
+    private final boolean dashNotation;
 
     public Domain(final CIString value, final IpInterval<?> reverseIp, final Type type, final boolean dashNotation) {
         this.value = value;
         this.reverseIp = reverseIp;
         this.type = type;
-        this.isDashNotation = dashNotation;
+        this.dashNotation = dashNotation;
     }
 
     public CIString getValue() {
@@ -44,8 +44,12 @@ public class Domain {
         return reverseIp;
     }
 
+    public boolean isDashNotation() {
+        return dashNotation;
+    }
+
     public boolean endsWithDomain(final CIString hostname) {
-        if (!isDashNotation || !(reverseIp instanceof Ipv4Resource)) {
+        if (!dashNotation || !(reverseIp instanceof Ipv4Resource)) {
             return hostname.endsWith(value);
         }
 
@@ -117,12 +121,7 @@ public class Domain {
         final int firstDash = value.indexOf('-');
         if (firstDash > 0) {
             final int firstDot = value.indexOf('.');
-            if (firstDash < firstDot) { // has dash notation
-                if (rangeLength == 255) {
-                    throw new AttributeParseException("Invalid use of dash notation", value);
-                }
-                return true;
-            }
+            return (firstDash < firstDot);
         }
         return false;
     }

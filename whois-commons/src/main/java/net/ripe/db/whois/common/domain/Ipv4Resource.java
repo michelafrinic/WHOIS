@@ -31,6 +31,8 @@ public final class Ipv4Resource extends IpInterval<Ipv4Resource> implements Comp
 
     private static final long MINIMUM_NUMBER = 0;
     private static final long MAXIMUM_NUMBER = (1L << 32) - 1;
+    private static final int MAX_OCTETS = 3;
+    private static final int MAX_OCTETS_FOR_IPV4 = 4;
 
     /**
      * The IPv4 interval that includes all IPv4 addresses (0.0.0.0/0 in CIDR
@@ -44,9 +46,12 @@ public final class Ipv4Resource extends IpInterval<Ipv4Resource> implements Comp
     private final int begin;
     private final int end;
 
+    int range;
+
     private Ipv4Resource(int begin, int end) {
         this.begin = begin;
         this.end = end;
+        range = this.end - this.begin;
     }
 
     /**
@@ -69,16 +74,17 @@ public final class Ipv4Resource extends IpInterval<Ipv4Resource> implements Comp
             throw new IllegalArgumentException("End: " + end + " out of range");
         }
 
-        this.begin = (int)begin;
-        this.end = (int)end;
+        this.begin = (int) begin;
+        this.end = (int) end;
+        range = this.end - this.begin;
     }
 
     public Ipv4Resource(InetAddress inetAddress) {
         if (!(inetAddress instanceof Inet4Address)) {
-            throw new IllegalArgumentException("Not an IPv4 address: "+inetAddress);
+            throw new IllegalArgumentException("Not an IPv4 address: " + inetAddress);
         }
         byte[] addressArray = inetAddress.getAddress();
-        int address  = addressArray[3] & 0xFF;
+        int address = addressArray[3] & 0xFF;
         address |= ((addressArray[2] << 8) & 0xFF00);
         address |= ((addressArray[1] << 16) & 0xFF0000);
         address |= ((addressArray[0] << 24) & 0xFF000000);
@@ -90,18 +96,39 @@ public final class Ipv4Resource extends IpInterval<Ipv4Resource> implements Comp
         return parse(resource.toString());
     }
 
+    private static Ipv4Resource parseDomainWithSlash(final String resource) {
+        int indexOfSlash = resource.indexOf('/');
+        int begin = textToNumericFormat(resource.substring(0, indexOfSlash).trim());
+
+        int prefixLength = Integer.parseInt(resource.substring(indexOfSlash + 1, resource.length()).trim());
+        if (prefixLength < 0 || prefixLength > 32) {
+            throw new IllegalArgumentException("prefix length " + prefixLength + " is invalid");
+        }
+        int mask = (int) ((1L << (32 - prefixLength)) - 1);
+        int end = begin | mask;
+        begin = begin & ~mask;
+        return new Ipv4Resource(begin, end);
+    }
+
+    private static Ipv4Resource parseSpecificReverseDomain(final String resource) {
+        Ipv4Resource ipv4Resource = null;
+        final int indexOfDash = resource.indexOf('-');
+
+        if (indexOfDash >= 0) {
+            Ipv4Resource start = parseDomainWithSlash(resource.substring(0, indexOfDash).trim());
+            Ipv4Resource end = parseDomainWithSlash(resource.substring(indexOfDash + 1, resource.length()).trim());
+            ipv4Resource = new Ipv4Resource(start.begin(), end.end());
+        } else {
+            ipv4Resource = parseDomainWithSlash(resource);
+        }
+
+        return ipv4Resource;
+    }
+
     public static Ipv4Resource parse(final String resource) {
         final int indexOfSlash = resource.indexOf('/');
         if (indexOfSlash >= 0) {
-            int begin = textToNumericFormat(resource.substring(0, indexOfSlash).trim());
-            int prefixLength = Integer.parseInt(resource.substring(indexOfSlash+1, resource.length()).trim());
-            if (prefixLength < 0 || prefixLength > 32) {
-                throw new IllegalArgumentException("prefix length "+prefixLength+" is invalid");
-            }
-            int mask = (int)((1L << (32-prefixLength)) - 1);
-            int end = begin | mask;
-            begin = begin & ~mask;
-            return new Ipv4Resource(begin, end);
+            return parseDomainWithSlash(resource);
         }
 
         final int indexOfDash = resource.indexOf('-');
@@ -137,13 +164,12 @@ public final class Ipv4Resource extends IpInterval<Ipv4Resource> implements Comp
         cleanAddress = cleanAddress.substring(0, cleanAddress.length() - IPV4_REVERSE_DOMAIN.length());
 
         final ArrayList<String> reverseParts = Lists.newArrayList(SPLIT_ON_DOT.split(cleanAddress));
-        Validate.isTrue(!reverseParts.isEmpty() && reverseParts.size() <= 4, "Reverse address doesn't have between 1 and 4 octets: ", address);
+        Validate.isTrue(!reverseParts.isEmpty() && reverseParts.size() <= MAX_OCTETS, "Reverse address doesn't have between 1 and " + MAX_OCTETS + " octets: ", address);
 
         final List<String> parts = Lists.reverse(reverseParts);
 
         boolean hasDash = false;
         if (cleanAddress.contains("-")) {
-            Validate.isTrue(reverseParts.size() == 4 && reverseParts.get(0).contains("-"), "Dash notation not in 4th octet: ", address);
             Validate.isTrue(cleanAddress.indexOf('-') == cleanAddress.lastIndexOf('-'), "Only one dash allowed: ", address);
             hasDash = true;
         }
@@ -159,20 +185,21 @@ public final class Ipv4Resource extends IpInterval<Ipv4Resource> implements Comp
             builder.append(part);
         }
 
+        String cidrSize = "/" + parts.size() * 8;
         if (hasDash) {
             // [EB]: Some magic here, copy the 'start' of the string before the '-'
             // to get an expanded range: [1.1.1.]1-2 becomes 1.1.1.1-[1.1.1.]2
             int range = builder.indexOf("-");
             if (range != -1) {
                 builder.insert(range + 1, builder.substring(0, builder.lastIndexOf(".") + 1));
+                builder.insert(range, cidrSize);
+                builder.append(cidrSize);
             }
+        } else {
+            builder.append(cidrSize);
         }
 
-        if (parts.size() < 4) {
-            builder.append('/').append(parts.size() * 8);
-        }
-
-        return parse(builder.toString());
+        return parseSpecificReverseDomain(builder.toString());
     }
 
     @Override
@@ -230,28 +257,30 @@ public final class Ipv4Resource extends IpInterval<Ipv4Resource> implements Comp
         return this.begin == that.begin && this.end == that.end;
     }
 
-    /** Only if x != 0 */
+    /**
+     * Only if x != 0
+     */
     private static boolean isPowerOfTwo(int x) {
         return (x & (x - 1)) == 0;
     }
 
     private static String numericToTextFormat(int src) {
-        return (src>>24 & 0xff) + "." + (src>>16 & 0xff) + "." + (src>>8 & 0xff) + "." + (src & 0xff);
+        return (src >> 24 & 0xff) + "." + (src >> 16 & 0xff) + "." + (src >> 8 & 0xff) + "." + (src & 0xff);
     }
 
     private static int textToNumericFormat(String src) {
         int result = 0;
         Iterator<String> it = IPV4_TEXT_SPLITTER.split(src).iterator();
-        for (int octet = 0; octet < 4; octet++) {
+        for (int octet = 0; octet < MAX_OCTETS_FOR_IPV4; octet++) {
             result <<= 8;
             int value = it.hasNext() ? Integer.parseInt(it.next()) : 0;
             if (value < 0 || value > 255) {
-                throw new IllegalArgumentException(src+" is not a valid ipv4 address");
+                throw new IllegalArgumentException(src + " is not a valid ipv4 address");
             }
             result |= value & 0xff;
         }
         if (it.hasNext()) {
-            throw new IllegalArgumentException(src+" has more than 4 octets");
+            throw new IllegalArgumentException(src + " has more than " + MAX_OCTETS_FOR_IPV4 + " octets");
         }
         return result;
     }
@@ -310,7 +339,7 @@ public final class Ipv4Resource extends IpInterval<Ipv4Resource> implements Comp
     public int getPrefixLength() {
         // see if we can convert to nice prefix
         if (isPowerOfTwo(end - begin + 1)) {
-            return 32-Integer.numberOfTrailingZeros(end - begin + 1);
+            return 32 - Integer.numberOfTrailingZeros(end - begin + 1);
         } else {
             return -1;
         }

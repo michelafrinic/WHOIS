@@ -26,32 +26,31 @@ public class DomainTest {
 
     @Test
     public void ipv4_dash() {
-        final Domain domain = Domain.parse("0-127.10.10.10.in-addr.arpa");
-        assertThat(domain.getValue(), is(ciString("0-127.10.10.10.in-addr.arpa")));
-        assertThat((Ipv4Resource) domain.getReverseIp(), is(Ipv4Resource.parse("10.10.10.0/25")));
+        final Domain domain = Domain.parse("0-127.10.10.in-addr.arpa");
+        assertThat(domain.getValue(), is(ciString("0-127.10.10.in-addr.arpa")));
+        assertThat((Ipv4Resource) domain.getReverseIp(), is(Ipv4Resource.parse("10.10.0.0/17")));
         assertThat(domain.getType(), is(Domain.Type.INADDR));
     }
 
     @Test(expected = AttributeParseException.class)
     public void ipv4_dash_invalid_position() {
-        Domain.parse("0-127.10.10.in-addr.arpa");
-    }
-
-    @Test(expected = AttributeParseException.class)
-    public void ipv4_dash_range_0_255() {
-        Domain.parse("0-255.10.10.in-addr.arpa");
-    }
-
-    @Test(expected = AttributeParseException.class)
-    public void ipv4_dash_range_start_is_range_end() {
-        Domain.parse("1-1.10.10.in-addr.arpa");
+        Domain.parse("0-127.10.10.10.in-addr.arpa");
     }
 
     @Test
-    public void ipv4_dash_non_prefix_range() {
-        final Domain domain = Domain.parse("1-2.10.10.10.in-addr.arpa");
-        assertThat(domain.getValue(), is(ciString("1-2.10.10.10.in-addr.arpa")));
-        assertThat((Ipv4Resource) domain.getReverseIp(), is(Ipv4Resource.parse("10.10.10.1-10.10.10.2")));
+    public void ipv4_dash_non_prefix_range1() {
+        final Domain domain = Domain.parse("0-2.10.10.in-addr.arpa");
+        assertThat(domain.getValue(), is(ciString("0-2.10.10.in-addr.arpa")));
+        Ipv4Resource ipv4Resource = Ipv4Resource.parse("10.10.0.0 - 10.10.2.255");
+        assertThat((Ipv4Resource) domain.getReverseIp(), is(ipv4Resource));
+        assertThat(domain.getType(), is(Domain.Type.INADDR));
+    }
+
+    @Test
+    public void ipv4_dash_non_prefix_range2() {
+        final Domain domain = Domain.parse("1-3.10.10.in-addr.arpa");
+        assertThat(domain.getValue(), is(ciString("1-3.10.10.in-addr.arpa")));
+        assertThat((Ipv4Resource) domain.getReverseIp(), is(Ipv4Resource.parse("10.10.1.0-10.10.3.255")));
         assertThat(domain.getType(), is(Domain.Type.INADDR));
     }
 
@@ -132,26 +131,26 @@ public class DomainTest {
 
     @Test
     public void end_with_domain_ipv4_dash() {
-        final Domain domain = Domain.parse("1-10.200.193.193.in-addr.arpa");
-        assertThat(domain.endsWithDomain(ciString("n.s.5.200.193.193.in-addr.arpa")), is(true));
+        final Domain domain = Domain.parse("1-10.193.193.in-addr.arpa");
+        assertThat(domain.endsWithDomain(ciString("n.s.5.193.193.in-addr.arpa")), is(true));
     }
 
     @Test
     public void end_with_domain_ipv4_dash_no_match() {
-        final Domain domain = Domain.parse("1-10.200.193.193.in-addr.arpa");
+        final Domain domain = Domain.parse("200-204.193.193.in-addr.arpa");
         assertThat(domain.endsWithDomain(ciString("n.s.5.200a193.193.in-addr.arpa")), is(false));
     }
 
     @Test
     public void end_with_domain_ipv4_dash_outside_range_lower() {
-        final Domain domain = Domain.parse("1-10.200.193.193.in-addr.arpa");
-        assertThat(domain.endsWithDomain(ciString("n.s.0.200.193.193.in-addr.arpa")), is(false));
+        final Domain domain = Domain.parse("200-205.193.193.in-addr.arpa");
+        assertThat(domain.endsWithDomain(ciString("n.s.0.200.192.193.in-addr.arpa")), is(false));
     }
 
     @Test
     public void end_with_domain_ipv4_dash_outside_range_upper() {
-        final Domain domain = Domain.parse("1-10.200.193.193.in-addr.arpa");
-        assertThat(domain.endsWithDomain(ciString("n.s.100.200.193.193.in-addr.arpa")), is(false));
+        final Domain domain = Domain.parse("200-205.193.193.in-addr.arpa");
+        assertThat(domain.endsWithDomain(ciString("n.s.0.0.194.193.in-addr.arpa")), is(false));
     }
 
     @Test
