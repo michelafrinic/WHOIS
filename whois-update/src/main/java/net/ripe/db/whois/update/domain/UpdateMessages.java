@@ -606,4 +606,8 @@ public final class UpdateMessages {
     public static Message domainMustHaveAValidParentInetnum() {
         return new Message(Messages.Type.ERROR, "A domain object must always have a valid covering inetnum.");
     }
+
+    public static Message noDashNotationIfDsRData() {
+        return new Message(Messages.Type.ERROR, "The dash notation is not allowed if " + AttributeType.DS_RDATA.getName() + " is specified.");
+    }
 }
