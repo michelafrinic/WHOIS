@@ -27,11 +27,6 @@ import java.util.List;
 @Component
 public class NoDashNotationIfDsRDataValidator implements BusinessRuleValidator {
 
-
-    @Autowired
-    public NoDashNotationIfDsRDataValidator() {
-    }
-
     @Override
     public List<Action> getActions() {
         return Lists.newArrayList(Action.CREATE);
