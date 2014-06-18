@@ -46,12 +46,9 @@ public final class Ipv4Resource extends IpInterval<Ipv4Resource> implements Comp
     private final int begin;
     private final int end;
 
-    int range;
-
     private Ipv4Resource(int begin, int end) {
         this.begin = begin;
         this.end = end;
-        range = this.end - this.begin;
     }
 
     /**
@@ -76,7 +73,6 @@ public final class Ipv4Resource extends IpInterval<Ipv4Resource> implements Comp
 
         this.begin = (int) begin;
         this.end = (int) end;
-        range = this.end - this.begin;
     }
 
     public Ipv4Resource(InetAddress inetAddress) {

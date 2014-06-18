@@ -58,7 +58,7 @@ public class ExcludedResources {
             }
 
             for (Ipv4Resource resource : ipv4ResourcesToExclude) {
-                if (resource.contains(entry.getKey())) {
+                if (resource.equals(entry.getKey())) {
                     return true;
                 }
             }
@@ -74,7 +74,7 @@ public class ExcludedResources {
             }
 
             for (Ipv6Resource resource : ipv6ResourcesToExclude) {
-                if (resource.contains(entry.getKey())) {
+                if (resource.equals(entry.getKey())) {
                     return true;
                 }
             }

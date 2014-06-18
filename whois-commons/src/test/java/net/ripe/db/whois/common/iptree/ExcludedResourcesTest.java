@@ -55,8 +55,12 @@ public class ExcludedResourcesTest {
         Assert.assertFalse(excludedResources.isExcluded((Ipv4Entry) null));
         Assert.assertTrue(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("0/0"), 1)));
         Assert.assertFalse(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("11.100.0.0/16"), 1)));
-        Assert.assertTrue(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("196.100.15.0/24"), 1)));
-        Assert.assertTrue(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("196.100.1.56"), 1)));
+        Assert.assertTrue(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("196/8"), 1)));
+        Assert.assertTrue(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("196.0.0.0/8"), 1)));
+        // only the /8 is excluded, not the IP itself
+        Assert.assertFalse(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("196.0.0.0"), 1)));
+        Assert.assertFalse(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("196.100.15.0/24"), 1)));
+        Assert.assertFalse(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("196.100.1.56"), 1)));
     }
 
     @Test
@@ -65,17 +69,23 @@ public class ExcludedResourcesTest {
         String [] excludedV6Resources = null;
 
         ExcludedResources excludedResources = new ExcludedResources(excludedV4Resources, excludedV6Resources);
+        Ipv4Resource forbiddenResource = Ipv4Resource.parse("197/8");
 
         List<Ipv4Entry> list = new ArrayList<Ipv4Entry>();
         list.add(new Ipv4Entry(Ipv4Resource.parse("0/0"), 1));
         list.add(new Ipv4Entry(Ipv4Resource.parse("196.100.15.0/24"), 2));
         list.add(new Ipv4Entry(Ipv4Resource.parse("11.100.0.0/16"), 3));
-        list.add(new Ipv4Entry(Ipv4Resource.parse("196.100.1.56"), 4));
+        list.add(new Ipv4Entry(Ipv4Resource.parse("197/8"), 4));
+        list.add(new Ipv4Entry(Ipv4Resource.parse("197.100.1.56"), 5));
+        list.add(new Ipv4Entry(Ipv4Resource.parse("196/8"), 6));
+        list.add(new Ipv4Entry(new Ipv4Resource(forbiddenResource.begin(), forbiddenResource.end()), 7));
 
         List<Ipv4Entry> filteredList = excludedResources.removeV4Excluded(list);
 
-        Assert.assertEquals(filteredList.size(), 1);
-        Assert.assertEquals(filteredList.get(0), new Ipv4Entry(Ipv4Resource.parse("11.100.0.0/16"), 3));
+        Assert.assertEquals(filteredList.size(), 3);
+        Assert.assertEquals(filteredList.get(0), new Ipv4Entry(Ipv4Resource.parse("196.100.15.0/24"), 3));
+        Assert.assertEquals(filteredList.get(1), new Ipv4Entry(Ipv4Resource.parse("11.100.0.0/16"), 3));
+        Assert.assertEquals(filteredList.get(2), new Ipv4Entry(Ipv4Resource.parse("197.100.1.56"), 3));
     }
 
     @Test
@@ -87,6 +97,7 @@ public class ExcludedResourcesTest {
 
         Assert.assertFalse(excludedResources.isExcluded((Ipv4Entry) null));
         Assert.assertTrue(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("0/0"), 1)));
-        Assert.assertTrue(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("11.100.0.0/16"), 1)));
+        Assert.assertFalse(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("0/8"), 1)));
+        Assert.assertFalse(excludedResources.isExcluded(new Ipv4Entry(Ipv4Resource.parse("11.100.0.0/16"), 1)));
     }
 }
