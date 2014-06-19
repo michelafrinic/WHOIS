@@ -202,7 +202,8 @@ public final class RpslAttribute {
     }
 
     public void writeTo(final Writer writer) throws IOException {
-        if(!type.isTransientValue()) {
+        boolean writeAttribute = (type != null) ? !type.isTransientValue() : true;
+        if(writeAttribute) {
             writer.write(key);
             writer.write(':');
 

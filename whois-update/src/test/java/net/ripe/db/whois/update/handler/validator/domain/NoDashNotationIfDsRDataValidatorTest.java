@@ -39,7 +39,8 @@ public class NoDashNotationIfDsRDataValidatorTest {
     public void validate_range_succeeds() {
 
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("" +
-                "domain:         1-10.11.102.in-addr.arpa\n" +
+                "domain:         1.11.102.in-addr.arpa\n" +
+                "from-dash-notation: true\n" +
                 "descr:          Link Egypt A\n" +
                 "admin-c:        MO35-AFRINIC\n" +
                 "tech-c:         MO35-AFRINIC\n" +
@@ -78,7 +79,8 @@ public class NoDashNotationIfDsRDataValidatorTest {
     public void validate_range_and_dsrdata_fails() {
 
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("" +
-                "domain:         1-10.11.102.in-addr.arpa\n" +
+                "domain:         1.11.102.in-addr.arpa\n" +
+                "from-dash-notation: true\n" +
                 "descr:          Link Egypt A\n" +
                 "admin-c:        MO35-AFRINIC\n" +
                 "tech-c:         MO35-AFRINIC\n" +

@@ -681,7 +681,7 @@ public enum AttributeType implements Documented {
     private final AttributeSyntax syntax;
     private final AttributeValueType valueType;
     private final Set<ObjectType> references;
-    private boolean transientValue = false;
+    private final boolean transientValue;
 
     private AttributeType(final Builder builder) {
         this.name = builder.name;

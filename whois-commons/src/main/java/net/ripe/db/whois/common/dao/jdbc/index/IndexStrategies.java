@@ -47,7 +47,7 @@ public final class IndexStrategies {
                 new Unindexed(AttributeType.FILTER),
                 new IndexWithValue(AttributeType.FILTER_SET, "filter_set", "filter_set"),
                 new IndexWithValue(AttributeType.FINGERPR, "fingerpr", "fingerpr"),
-                //new IndexWithReference(AttributeType.FORM, "form", "form_id"),/*-AFRINIC-*/
+                new Unindexed(AttributeType.FROM_DASH_NOTATION),
                 new Unindexed(AttributeType.GEOLOC),
                 new Unindexed(AttributeType.HOLES),
                 new IndexWithIfAddr(AttributeType.IFADDR),
