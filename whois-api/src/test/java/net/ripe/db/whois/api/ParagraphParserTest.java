@@ -693,4 +693,121 @@ public class ParagraphParserTest {
         assertThat(paragraphs.get(0).getContent(), is(content));
         assertThat(paragraphs.get(0).getCredentials().all(), hasSize(0));
     }
+
+    @Test
+    public void testDomainWithDashNotationOnThe3rdOctetIsSplitted() throws Exception {
+        final String domainKey = "domain:1-3.11.102.in-addr.arpa";
+        final String domainBody = "descr:          Link Egypt A\n" +
+                "admin-c:        MO35-AFRINIC\n" +
+                "tech-c:         MO35-AFRINIC\n" +
+                "zone-c:         MO35-AFRINIC\n" +
+                "nserver:        michel.afrinic.net\n" +
+                "mnt-by:         AFRINIC-HM-MNT\n" +
+                "changed:        michel.odou@afrinic.net\n" +
+                "source:         AFRINIC";
+
+        final String generatedAttribute = "\nfrom-dash-notation: true\n";
+
+        final String content = domainKey + "\n" + domainBody;
+
+        final List<Paragraph> paragraphs = subject.createParagraphs(new ContentWithCredentials(content), updateContext);
+        assertThat(paragraphs, hasSize(3));
+
+        final Paragraph paragraph1 = paragraphs.get(0);
+        assertThat(paragraph1.getContent(), is("domain:1.11.102.in-addr.arpa" + generatedAttribute + domainBody));
+
+        final Paragraph paragraph2 = paragraphs.get(1);
+        assertThat(paragraph2.getContent(), is("domain:2.11.102.in-addr.arpa" + generatedAttribute + domainBody));
+
+        final Paragraph paragraph3 = paragraphs.get(2);
+        assertThat(paragraph3.getContent(), is("domain:3.11.102.in-addr.arpa" + generatedAttribute + domainBody));
+    }
+
+    @Test
+    public void testDomainWithDashNotationOnThe2ndOctetIsSplitted() throws Exception {
+        final String domainKey = "domain:1-3.102.in-addr.arpa";
+        final String domainBody = "descr:          Link Egypt A\n" +
+                "admin-c:        MO35-AFRINIC\n" +
+                "tech-c:         MO35-AFRINIC\n" +
+                "zone-c:         MO35-AFRINIC\n" +
+                "nserver:        michel.afrinic.net\n" +
+                "mnt-by:         AFRINIC-HM-MNT\n" +
+                "changed:        michel.odou@afrinic.net\n" +
+                "source:         AFRINIC";
+
+        final String generatedAttribute = "\nfrom-dash-notation: true\n";
+
+        final String content = domainKey + "\n" + domainBody;
+
+        final List<Paragraph> paragraphs = subject.createParagraphs(new ContentWithCredentials(content), updateContext);
+        assertThat(paragraphs, hasSize(3));
+
+        final Paragraph paragraph1 = paragraphs.get(0);
+        assertThat(paragraph1.getContent(), is("domain:1.102.in-addr.arpa" + generatedAttribute + domainBody));
+
+        final Paragraph paragraph2 = paragraphs.get(1);
+        assertThat(paragraph2.getContent(), is("domain:2.102.in-addr.arpa" + generatedAttribute + domainBody));
+
+        final Paragraph paragraph3 = paragraphs.get(2);
+        assertThat(paragraph3.getContent(), is("domain:3.102.in-addr.arpa" + generatedAttribute + domainBody));
+    }
+
+    @Test
+    public void testDomainWithDashNotationOnThe1stOctetIsSplitted() throws Exception {
+        final String domainKey = "domain:102-107.in-addr.arpa";
+        final String domainBody = "descr:          Link Egypt A\n" +
+                "admin-c:        MO35-AFRINIC\n" +
+                "tech-c:         MO35-AFRINIC\n" +
+                "zone-c:         MO35-AFRINIC\n" +
+                "nserver:        michel.afrinic.net\n" +
+                "mnt-by:         AFRINIC-HM-MNT\n" +
+                "changed:        michel.odou@afrinic.net\n" +
+                "source:         AFRINIC";
+
+        final String generatedAttribute = "\nfrom-dash-notation: true\n";
+
+        final String content = domainKey + "\n" + domainBody;
+
+        final List<Paragraph> paragraphs = subject.createParagraphs(new ContentWithCredentials(content), updateContext);
+        assertThat(paragraphs, hasSize(6));
+
+        final Paragraph paragraph1 = paragraphs.get(0);
+        assertThat(paragraph1.getContent(), is("domain:102.in-addr.arpa" + generatedAttribute + domainBody));
+
+        final Paragraph paragraph2 = paragraphs.get(1);
+        assertThat(paragraph2.getContent(), is("domain:103.in-addr.arpa" + generatedAttribute + domainBody));
+
+        final Paragraph paragraph3 = paragraphs.get(2);
+        assertThat(paragraph3.getContent(), is("domain:104.in-addr.arpa" + generatedAttribute + domainBody));
+
+        final Paragraph paragraph4 = paragraphs.get(3);
+        assertThat(paragraph4.getContent(), is("domain:105.in-addr.arpa" + generatedAttribute + domainBody));
+
+        final Paragraph paragraph5 = paragraphs.get(4);
+        assertThat(paragraph5.getContent(), is("domain:106.in-addr.arpa" + generatedAttribute + domainBody));
+
+        final Paragraph paragraph6 = paragraphs.get(5);
+        assertThat(paragraph6.getContent(), is("domain:107.in-addr.arpa" + generatedAttribute + domainBody));
+    }
+
+    @Test
+    public void testDomainWithoutDashNotation() throws Exception {
+        final String domainKey = "domain:102.107.41.in-addr.arpa";
+        final String domainBody = "descr:          Link Egypt A\n" +
+                "admin-c:        MO35-AFRINIC\n" +
+                "tech-c:         MO35-AFRINIC\n" +
+                "zone-c:         MO35-AFRINIC\n" +
+                "nserver:        michel.afrinic.net\n" +
+                "mnt-by:         AFRINIC-HM-MNT\n" +
+                "changed:        michel.odou@afrinic.net\n" +
+                "source:         AFRINIC";
+
+        final String content = domainKey + "\n" + domainBody;
+
+        final List<Paragraph> paragraphs = subject.createParagraphs(new ContentWithCredentials(content), updateContext);
+        assertThat(paragraphs, hasSize(1));
+
+        final Paragraph paragraph1 = paragraphs.get(0);
+        assertThat(paragraph1.getContent(), is(content));
+    }
 }

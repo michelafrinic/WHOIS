@@ -202,41 +202,43 @@ public final class RpslAttribute {
     }
 
     public void writeTo(final Writer writer) throws IOException {
-        writer.write(key);
-        writer.write(':');
+        if(!type.isTransientValue()) {
+            writer.write(key);
+            writer.write(':');
 
-        final int column = key.startsWith("*") ? LEADING_CHARS_SHORTHAND : LEADING_CHARS;
-        final char[] chars = value.toCharArray();
+            final int column = key.startsWith("*") ? LEADING_CHARS_SHORTHAND : LEADING_CHARS;
+            final char[] chars = value.toCharArray();
 
-        int leadColumn = key.length() + 1;
-        int spaces = 0;
+            int leadColumn = key.length() + 1;
+            int spaces = 0;
 
-        for (final char c : chars) {
-            if (leadColumn == 0 && spaces == 0 && c == '+') {
-                writer.write(c);
-                leadColumn++;
-            } else if (c == ' ' || c == '\t' || c == '\r') {
-                spaces++;
-            } else if (c == '\n') {
-                leadColumn = 0;
-                spaces = 0;
-                writer.write(c);
-            } else {
-                if (leadColumn < column) {
-                    spaces = column - leadColumn;
-                    leadColumn = column;
+            for (final char c : chars) {
+                if (leadColumn == 0 && spaces == 0 && c == '+') {
+                    writer.write(c);
+                    leadColumn++;
+                } else if (c == ' ' || c == '\t' || c == '\r') {
+                    spaces++;
+                } else if (c == '\n') {
+                    leadColumn = 0;
+                    spaces = 0;
+                    writer.write(c);
+                } else {
+                    if (leadColumn < column) {
+                        spaces = column - leadColumn;
+                        leadColumn = column;
+                    }
+
+                    while (spaces > 0) {
+                        writer.write(' ');
+                        spaces--;
+                    }
+
+                    writer.write(c);
                 }
-
-                while (spaces > 0) {
-                    writer.write(' ');
-                    spaces--;
-                }
-
-                writer.write(c);
             }
-        }
 
-        writer.write('\n');
+            writer.write('\n');
+        }
     }
 
     @Override

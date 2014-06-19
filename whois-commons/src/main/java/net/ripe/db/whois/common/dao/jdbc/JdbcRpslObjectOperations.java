@@ -69,21 +69,23 @@ public class JdbcRpslObjectOperations {
     private static Set<CIString> insertAttributeIndex(final JdbcTemplate jdbcTemplate, final RpslObjectInfo rpslObjectInfo, final RpslObject rpslObject, final AttributeType attributeType) {
         final Set<CIString> missingReferences = Sets.newHashSet();
 
-        final IndexStrategy indexStrategy = IndexStrategies.get(attributeType);
+        if(!attributeType.isTransientValue()) {
+            final IndexStrategy indexStrategy = IndexStrategies.get(attributeType);
 
-        final Set<CIString> uniqueValues = Sets.newHashSet();
-        final List<RpslAttribute> attributes = rpslObject.findAttributes(attributeType);
-        for (final RpslAttribute attribute : attributes) {
-            for (final CIString value : attribute.getCleanValues()) {
-                if (uniqueValues.add(value)) {
-                    try {
-                        final int rows = indexStrategy.addToIndex(jdbcTemplate, rpslObjectInfo, rpslObject, value.toString());
-                        if (rows < 1) {
-                            throw new DataIntegrityViolationException("Rows affected: " + rows);
+            final Set<CIString> uniqueValues = Sets.newHashSet();
+            final List<RpslAttribute> attributes = rpslObject.findAttributes(attributeType);
+            for (final RpslAttribute attribute : attributes) {
+                for (final CIString value : attribute.getCleanValues()) {
+                    if (uniqueValues.add(value)) {
+                        try {
+                            final int rows = indexStrategy.addToIndex(jdbcTemplate, rpslObjectInfo, rpslObject, value.toString());
+                            if (rows < 1) {
+                                throw new DataIntegrityViolationException("Rows affected: " + rows);
+                            }
+                        } catch (IllegalArgumentException e) {
+                            LOGGER.debug("Missing reference: {}", value);
+                            missingReferences.add(value);
                         }
-                    } catch (IllegalArgumentException e) {
-                        LOGGER.debug("Missing reference: {}", value);
-                        missingReferences.add(value);
                     }
                 }
             }

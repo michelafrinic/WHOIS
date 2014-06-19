@@ -610,4 +610,8 @@ public final class UpdateMessages {
     public static Message noDashNotationIfDsRData() {
         return new Message(Messages.Type.ERROR, "The dash notation is not allowed if " + AttributeType.DS_RDATA.getName() + " is specified.");
     }
+
+    public static Message noDashNotationAllowedExceptForCreating() {
+        return new Message(Messages.Type.ERROR, "The dash notation is allowed only when creating a domain.");
+    }
 }

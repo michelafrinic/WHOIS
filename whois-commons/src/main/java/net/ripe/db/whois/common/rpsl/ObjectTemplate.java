@@ -94,7 +94,8 @@ public class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(MNT_LOWER, OPTIONAL, MULTIPLE, INVERSE_KEY),
                         new AttributeTemplate(REFER, OPTIONAL, SINGLE),
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
-                        new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
+                        new AttributeTemplate(SOURCE, MANDATORY, SINGLE),
+                        new AttributeTemplate(FROM_DASH_NOTATION, GENERATED, SINGLE)),
 
                 new ObjectTemplate(ObjectType.FILTER_SET, 21,
                         new AttributeTemplate(FILTER_SET, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),

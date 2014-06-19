@@ -16,6 +16,10 @@ import static net.ripe.db.whois.common.domain.CIString.ciString;
 
 @Immutable
 public class Domain {
+    public static final Pattern DOMAIN_DASH_3_PATTERN = Pattern.compile("domain:\\s*(?<domainValue>\\d{1,3}-\\d{1,3}.\\d{1,3}.\\d{1,3}.in-addr.arpa)");
+    public static final Pattern DOMAIN_DASH_2_PATTERN = Pattern.compile("domain:\\s*(?<domainValue>\\d{1,3}-\\d{1,3}.\\d{1,3}.in-addr.arpa)");
+    public static final Pattern DOMAIN_DASH_1_PATTERN = Pattern.compile("domain:\\s*(?<domainValue>\\d{1,3}-\\d{1,3}.in-addr.arpa)");
+
     private static final Pattern E164_SYNTAX = Pattern.compile("(?i)^(?:[0-9]\\.)+e164.arpa$");
     private static final int DOMAIN_COLUMN_WIDTH = 254;
 

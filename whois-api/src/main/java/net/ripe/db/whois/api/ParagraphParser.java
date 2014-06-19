@@ -3,11 +3,15 @@ package net.ripe.db.whois.api;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import net.ripe.db.whois.common.domain.attrs.Domain;
+import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.update.domain.*;
 import net.ripe.db.whois.update.keycert.PgpSignedMessage;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -101,6 +105,35 @@ public class ParagraphParser {
         return result;
     }
 
+    private Matcher isThisParagraphADomainToSplit(String paragraph) {
+        Matcher matcher = Domain.DOMAIN_DASH_3_PATTERN.matcher(paragraph);
+        if(!matcher.find()) {
+            matcher = Domain.DOMAIN_DASH_2_PATTERN.matcher(paragraph);
+            if(!matcher.find()) {
+                matcher = Domain.DOMAIN_DASH_1_PATTERN.matcher(paragraph);
+                if(!matcher.find()) {
+                    return null;
+                }
+            }
+        }
+        return matcher;
+    }
+
+    private Collection<? extends Paragraph> splitDomainIntoMultipleParagraphs(String cleanedParagraph, Set<Credential> credentials, Matcher matcher) {
+        List<Paragraph> paragraphs = new ArrayList<Paragraph>();
+        String domainValue = matcher.group("domainValue");
+
+        List<String> splittedDomainValues = (new SplitDomainWithDashNotation()).split(domainValue);
+        for (String domain : splittedDomainValues) {
+            // add the generated attribute
+            String newSplittedDomainValue = domain + "\n" + AttributeType.FROM_DASH_NOTATION.getName() + ": true";
+
+            String newParagraph = cleanedParagraph.replaceFirst(domainValue, newSplittedDomainValue);
+            paragraphs.add(new Paragraph(newParagraph, new Credentials(credentials)));
+        }
+        return paragraphs;
+    }
+
     private void addParagraphs(final List<Paragraph> paragraphs, final String content, final Set<Credential> baseCredentials) {
         for (final String paragraph : CONTENT_SPLITTER.split(content)) {
             if (StringUtils.isNotEmpty(paragraph)) {
@@ -113,8 +146,14 @@ public class ParagraphParser {
                 cleanedParagraph = extractOverride(credentials, cleanedParagraph);
                 cleanedParagraph = cleanedParagraph.trim();
 
-                // Also add empty paragraphs to detect dangling credentials
-                paragraphs.add(new Paragraph(cleanedParagraph, new Credentials(credentials)));
+                Matcher matcher = isThisParagraphADomainToSplit(cleanedParagraph);
+
+                if (matcher == null) {
+                    // Also add empty paragraphs to detect dangling credentials
+                    paragraphs.add(new Paragraph(cleanedParagraph, new Credentials(credentials)));
+                } else {
+                    paragraphs.addAll(splitDomainIntoMultipleParagraphs(cleanedParagraph, credentials, matcher));
+                }
             }
         }
     }
@@ -134,5 +173,29 @@ public class ParagraphParser {
         }
 
         return overrideMatcher.reset().replaceAll("");
+    }
+
+    private class SplitDomainWithDashNotation {
+        public List<String> split(String domainValue) {
+            List<String> splitDomains = null;
+
+            int indexOfFirstDot = domainValue.indexOf('.');
+            int indexOfDash = domainValue.indexOf('-');
+
+            if (indexOfDash < indexOfFirstDot) {
+                int intervalStart = Integer.valueOf(domainValue.substring(0, indexOfDash));
+                int intervalEnd = Integer.valueOf(domainValue.substring(indexOfDash + 1, indexOfFirstDot));
+
+                if (intervalEnd >= intervalStart) {
+                    splitDomains = new ArrayList<String>();
+
+                    for (int i = intervalStart; i <= intervalEnd; i++) {
+                        String newDomainValue = i + domainValue.substring(indexOfFirstDot);
+                        splitDomains.add(newDomainValue);
+                    }
+                }
+            }
+            return splitDomains;
+        }
     }
 }
