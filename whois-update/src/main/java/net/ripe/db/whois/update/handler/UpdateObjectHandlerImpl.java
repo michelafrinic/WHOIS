@@ -27,10 +27,11 @@ class UpdateObjectHandlerImpl implements UpdateObjectHandler {
     private final DateTimeProvider dateTimeProvider;
     private final RpslObjectUpdateDao rpslObjectUpdateDao;
     private final Map<Action, Map<ObjectType, List<BusinessRuleValidator>>> validatorsByActionAndType;
+    private final DatabaseEventNotifier databaseEventNotifier;
 
     @Autowired
     public UpdateObjectHandlerImpl(final RpslObjectUpdateDao rpslObjectUpdateDao, final List<BusinessRuleValidator> businessRuleValidators,
-                                   final DateTimeProvider dateTimeProvider) {
+                                   final DateTimeProvider dateTimeProvider, final DatabaseEventNotifier databaseEventNotifier) {
 
         // Sort the business rules in some predictable order so they are processed for end-to-end error checking
        Collections.sort(businessRuleValidators, new Comparator<BusinessRuleValidator>(){
@@ -40,6 +41,7 @@ class UpdateObjectHandlerImpl implements UpdateObjectHandler {
         });
         this.rpslObjectUpdateDao = rpslObjectUpdateDao;
         this.dateTimeProvider = dateTimeProvider;
+        this.databaseEventNotifier = databaseEventNotifier;
 
         validatorsByActionAndType = Maps.newEnumMap(Action.class);
         for (final Action action : Action.values()) {
@@ -86,6 +88,7 @@ class UpdateObjectHandlerImpl implements UpdateObjectHandler {
                 default:
                     throw new IllegalStateException("Unhandled action: " + update.getAction());
             }
+            databaseEventNotifier.execute(update);
         }
     }
 
