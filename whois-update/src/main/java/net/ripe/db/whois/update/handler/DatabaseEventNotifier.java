@@ -1,5 +1,6 @@
 package net.ripe.db.whois.update.handler;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
 import net.ripe.db.whois.common.PropertyConverter;
 import net.ripe.db.whois.update.domain.Action;
@@ -113,7 +114,9 @@ public class DatabaseEventNotifier {
         } catch (EOFException e) {
             // Ignore
         } catch (IOException e) {
-            LOGGER.error("Exception parsing ${event.notification} properties. Value should be a valid JSON.", e);
+            String message = "Exception parsing ${event.notification} properties. Value should be a valid JSON.";
+            LOGGER.error(message, e);
+            throw new RuntimeException(message);
         }
         if (propertyMap != null) {
             LOGGER.info("Event notification properties: {}", propertyMap);
@@ -147,6 +150,20 @@ public class DatabaseEventNotifier {
     private boolean match(Pattern pattern, String input) {
         return pattern != null && pattern.matcher(input).matches();
     }
+
+    /* */
+    @Override
+    public String toString() {
+
+        Map m = Maps.newHashMap(regexMap);
+        m.put("Email Recipient", emailRecipient);
+        m.put("Email Subject", emailSubject);
+
+        Joiner.MapJoiner mapJoiner = Joiner.on("\n").useForNull("<not set>").withKeyValueSeparator("\t= ");
+
+        return mapJoiner.join(m);
+    }
+    /* */
 
     public Map<Action, String> getActionMap() {
         return actionMap;
