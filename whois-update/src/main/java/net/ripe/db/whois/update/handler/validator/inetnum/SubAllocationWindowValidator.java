@@ -5,35 +5,30 @@ import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateDao;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.domain.IpRanges;
 import net.ripe.db.whois.common.domain.Ipv4Resource;
-import net.ripe.db.whois.common.domain.attrs.InetStatus;
 import net.ripe.db.whois.common.domain.attrs.InetnumStatus;
 import net.ripe.db.whois.common.domain.attrs.OrgType;
-import net.ripe.db.whois.common.iptree.IpEntry;
 import net.ripe.db.whois.common.iptree.Ipv4Entry;
 import net.ripe.db.whois.common.iptree.Ipv4Tree;
 import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.update.authentication.Principal;
-import net.ripe.db.whois.update.domain.*;
+import net.ripe.db.whois.update.domain.Action;
+import net.ripe.db.whois.update.domain.PreparedUpdate;
+import net.ripe.db.whois.update.domain.UpdateContext;
+import net.ripe.db.whois.update.domain.UpdateMessages;
 import net.ripe.db.whois.update.handler.validator.BusinessRuleValidator;
 import net.ripe.db.whois.update.rest.SubAllocationWindowRESTCaller;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static net.ripe.db.whois.update.handler.validator.inetnum.InetStatusHelper.getStatus;
-
 @Component
 public class SubAllocationWindowValidator implements BusinessRuleValidator {
     private static final int MAX_PREFIX_LENGTH = 24;
+    private static final int MAX_PREFIX_LENGTH_FOR_HOSTMASTER = 30;
 
     private final SubAllocationWindowRESTCaller subAllocationWindowRESTCaller;
     private final RpslObjectUpdateDao rpslObjectUpdateDao;
@@ -101,17 +96,19 @@ public class SubAllocationWindowValidator implements BusinessRuleValidator {
         int inetPrefixLength = ipv4Resource.getPrefixLength();
         final Ipv4Entry parent = ipv4Tree.findFirstLessSpecific(ipv4Resource).get(0);
         int parentInetPrefixLength = parent != null ? parent.getKey().getPrefixLength() : 1;
+        boolean hostmaster = updateContext.getSubject(update).isHostmaster();
+        final int maxPrefixLength = hostmaster ? MAX_PREFIX_LENGTH_FOR_HOSTMASTER : MAX_PREFIX_LENGTH;
 
-        if (inetPrefixLength <= MAX_PREFIX_LENGTH && inetPrefixLength > parentInetPrefixLength) {
-            validateWithRightPrefixLengths(update, updateContext, inetPrefixLength, subAllocationWindowSizePrefix);
+        if (inetPrefixLength <= maxPrefixLength && inetPrefixLength > parentInetPrefixLength) {
+            validateWithRightPrefixLengths(update, updateContext, inetPrefixLength, subAllocationWindowSizePrefix, hostmaster);
         } else {
-            updateContext.addMessage(update, UpdateMessages.invalidPrefixLengthRange(inetPrefixLength, MAX_PREFIX_LENGTH, parentInetPrefixLength));
+            updateContext.addMessage(update, UpdateMessages.invalidPrefixLengthRange(inetPrefixLength, maxPrefixLength, parentInetPrefixLength));
         }
     }
 
-    private void validateWithRightPrefixLengths(final PreparedUpdate update, final UpdateContext updateContext, int inetPrefixLength, Integer subAllocationWindowSizePrefix) {
+    private void validateWithRightPrefixLengths(final PreparedUpdate update, final UpdateContext updateContext, int inetPrefixLength, Integer subAllocationWindowSizePrefix, boolean hostmaster) {
         if (subAllocationWindowSizePrefix.intValue() == 0) {
-            validateWithSAWIsZero(update, updateContext);
+            validateWithSAWIsZero(update, updateContext, hostmaster);
         } else if (subAllocationWindowSizePrefix.intValue() > 0) {
             validateWithSAWIsGreaterThanZero(update, updateContext, inetPrefixLength, subAllocationWindowSizePrefix);
         } else {
@@ -119,8 +116,7 @@ public class SubAllocationWindowValidator implements BusinessRuleValidator {
         }
     }
 
-    private void validateWithSAWIsZero(final PreparedUpdate update, final UpdateContext updateContext) {
-        boolean hostmaster = updateContext.getSubject(update).isHostmaster();
+    private void validateWithSAWIsZero(final PreparedUpdate update, final UpdateContext updateContext, boolean hostmaster) {
         if (!hostmaster) {
             updateContext.addMessage(update, UpdateMessages.onlyHostMasterCanCreateSubAllocationWhenSAWNull());
         }

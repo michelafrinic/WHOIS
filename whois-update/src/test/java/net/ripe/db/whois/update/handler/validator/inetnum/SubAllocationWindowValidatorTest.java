@@ -238,9 +238,39 @@ public class SubAllocationWindowValidatorTest {
 
         final Ipv4Entry entry = new Ipv4Entry(Ipv4Resource.parse("193.0/16"), 2);
         when(ipv4Tree.findFirstLessSpecific(any(Ipv4Resource.class))).thenReturn(Lists.<Ipv4Entry>newArrayList(entry));
+        when(updateContext.getSubject(any(Update.class))).thenReturn(hostMasterSubject);
+        when(hostMasterSubject.isHostmaster()).thenReturn(false);
 
         subject.validate(update, updateContext);
         verify(updateContext).addMessage(update, UpdateMessages.invalidPrefixLengthRange(32, 24, 16));
+    }
+
+    @Test
+    public void verifyRangeTooLowWithHostmaster() {
+        RpslObject inetnum = RpslObject.parse("" +
+                "inetnum:        193.0.7.125 - 193.0.7.125\n" +
+                "netname:        AFRINIC\n" +
+                "org:            ORG-SA56-AFRINIC\n" +
+                "status:         SUB-ALLOCATED PA\n");
+
+        RpslObjectInfo organisationRpslObjectInfo = new RpslObjectInfo(1, ObjectType.ORGANISATION, CIString.ciString("ORG-SA56-AFRINIC"));
+
+        RpslObject organisationRpslObject = RpslObject.parse("" +
+                "organisation:  ORG-SA56-AFRINIC\n" +
+                "org-type: LIR\n");
+
+        when(update.getUpdatedObject()).thenReturn(inetnum);
+        when(rpslObjectUpdateDao.getAttributeReference(any(AttributeType.class), any(CIString.class))).thenReturn(organisationRpslObjectInfo);
+        when(rpslObjectDao.getByKey(ObjectType.ORGANISATION, "ORG-SA56-AFRINIC")).thenReturn(organisationRpslObject);
+        when(subAllocationWindowRESTCaller.getSAW4(any(String.class))).thenReturn(Integer.valueOf(24));
+
+        final Ipv4Entry entry = new Ipv4Entry(Ipv4Resource.parse("193.0/16"), 2);
+        when(ipv4Tree.findFirstLessSpecific(any(Ipv4Resource.class))).thenReturn(Lists.<Ipv4Entry>newArrayList(entry));
+        when(updateContext.getSubject(any(Update.class))).thenReturn(hostMasterSubject);
+        when(hostMasterSubject.isHostmaster()).thenReturn(true);
+
+        subject.validate(update, updateContext);
+        verify(updateContext).addMessage(update, UpdateMessages.invalidPrefixLengthRange(32, 30, 16));
     }
 
     @Test
@@ -264,6 +294,8 @@ public class SubAllocationWindowValidatorTest {
 
         final Ipv4Entry entry = new Ipv4Entry(Ipv4Resource.parse("193.0/16"), 2);
         when(ipv4Tree.findFirstLessSpecific(any(Ipv4Resource.class))).thenReturn(Lists.<Ipv4Entry>newArrayList(entry));
+        when(updateContext.getSubject(any(Update.class))).thenReturn(hostMasterSubject);
+        when(hostMasterSubject.isHostmaster()).thenReturn(false);
 
         subject.validate(update, updateContext);
         verify(updateContext).addMessage(update, UpdateMessages.invalidPrefixLengthRange(8, 24, 16));
@@ -287,6 +319,8 @@ public class SubAllocationWindowValidatorTest {
         when(rpslObjectUpdateDao.getAttributeReference(any(AttributeType.class), any(CIString.class))).thenReturn(organisationRpslObjectInfo);
         when(rpslObjectDao.getByKey(ObjectType.ORGANISATION, "ORG-SA56-AFRINIC")).thenReturn(organisationRpslObject);
         when(subAllocationWindowRESTCaller.getSAW4(any(String.class))).thenReturn(Integer.valueOf(24));
+        when(updateContext.getSubject(any(Update.class))).thenReturn(hostMasterSubject);
+        when(hostMasterSubject.isHostmaster()).thenReturn(false);
 
         final Ipv4Entry entry = new Ipv4Entry(Ipv4Resource.parse("193.0/16"), 2);
         when(ipv4Tree.findFirstLessSpecific(any(Ipv4Resource.class))).thenReturn(Lists.<Ipv4Entry>newArrayList(entry));
@@ -320,7 +354,8 @@ public class SubAllocationWindowValidatorTest {
         when(hostMasterSubject.isHostmaster()).thenReturn(false);
 
         subject.validate(update, updateContext);
-        verifyZeroInteractions(updateContext);
+        verify(updateContext).getSubject(any(Update.class));
+        verifyNoMoreInteractions(updateContext);
     }
 
     @Test
@@ -348,6 +383,64 @@ public class SubAllocationWindowValidatorTest {
         when(hostMasterSubject.isHostmaster()).thenReturn(true);
 
         subject.validate(update, updateContext);
+        verify(updateContext).getSubject(any(Update.class));
         verifyZeroInteractions(updateContext);
+    }
+
+    @Test
+    public void verifySubAllocationSuccessWithASlash29WithHostmaster() {
+        RpslObject inetnum = RpslObject.parse("" +
+                "inetnum:        193.0.7.0 - 193.0.7.7\n" +
+                "netname:        AFRINIC\n" +
+                "org:            ORG-SA56-AFRINIC\n" +
+                "status:         SUB-ALLOCATED PA\n");
+
+        RpslObjectInfo organisationRpslObjectInfo = new RpslObjectInfo(1, ObjectType.ORGANISATION, CIString.ciString("ORG-SA56-AFRINIC"));
+
+        RpslObject organisationRpslObject = RpslObject.parse("" +
+                "organisation:  ORG-SA56-AFRINIC\n" +
+                "org-type: LIR\n");
+
+        when(update.getUpdatedObject()).thenReturn(inetnum);
+        when(rpslObjectUpdateDao.getAttributeReference(any(AttributeType.class), any(CIString.class))).thenReturn(organisationRpslObjectInfo);
+        when(rpslObjectDao.getByKey(ObjectType.ORGANISATION, "ORG-SA56-AFRINIC")).thenReturn(organisationRpslObject);
+        when(subAllocationWindowRESTCaller.getSAW4(any(String.class))).thenReturn(Integer.valueOf(16));
+
+        final Ipv4Entry entry = new Ipv4Entry(Ipv4Resource.parse("193.0/16"), 2);
+        when(ipv4Tree.findFirstLessSpecific(any(Ipv4Resource.class))).thenReturn(Lists.<Ipv4Entry>newArrayList(entry));
+        when(updateContext.getSubject(any(Update.class))).thenReturn(hostMasterSubject);
+        when(hostMasterSubject.isHostmaster()).thenReturn(true);
+
+        subject.validate(update, updateContext);
+        verify(updateContext).getSubject(any(Update.class));
+        verifyZeroInteractions(updateContext);
+    }
+
+    @Test
+    public void verifySubAllocationFailWithASlash29WithoutHostmaster() {
+        RpslObject inetnum = RpslObject.parse("" +
+                "inetnum:        193.0.7.0 - 193.0.7.7\n" +
+                "netname:        AFRINIC\n" +
+                "org:            ORG-SA56-AFRINIC\n" +
+                "status:         SUB-ALLOCATED PA\n");
+
+        RpslObjectInfo organisationRpslObjectInfo = new RpslObjectInfo(1, ObjectType.ORGANISATION, CIString.ciString("ORG-SA56-AFRINIC"));
+
+        RpslObject organisationRpslObject = RpslObject.parse("" +
+                "organisation:  ORG-SA56-AFRINIC\n" +
+                "org-type: LIR\n");
+
+        when(update.getUpdatedObject()).thenReturn(inetnum);
+        when(rpslObjectUpdateDao.getAttributeReference(any(AttributeType.class), any(CIString.class))).thenReturn(organisationRpslObjectInfo);
+        when(rpslObjectDao.getByKey(ObjectType.ORGANISATION, "ORG-SA56-AFRINIC")).thenReturn(organisationRpslObject);
+        when(subAllocationWindowRESTCaller.getSAW4(any(String.class))).thenReturn(Integer.valueOf(16));
+
+        final Ipv4Entry entry = new Ipv4Entry(Ipv4Resource.parse("193.0/16"), 2);
+        when(ipv4Tree.findFirstLessSpecific(any(Ipv4Resource.class))).thenReturn(Lists.<Ipv4Entry>newArrayList(entry));
+        when(updateContext.getSubject(any(Update.class))).thenReturn(hostMasterSubject);
+        when(hostMasterSubject.isHostmaster()).thenReturn(false);
+
+        subject.validate(update, updateContext);
+        verify(updateContext).addMessage(update, UpdateMessages.invalidPrefixLengthRange(29, 24, 16));
     }
 }
