@@ -58,6 +58,38 @@ public class DroolsTest {
     }
 
     @Test
+    @Category(ExampleTestGroup.class)
+    public void testExample() {
+        //Create KnowledgeBase...
+        KnowledgeBase knowledgeBase = createKnowledgeBase();
+        //Create a stateful session
+        StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
+        try {
+
+            //Create Facts and insert them
+            ObjectTemplate objectTemplatePerson = new ObjectTemplate();
+            objectTemplatePerson.setObjectType(ObjectType.PERSON);
+
+            objectTemplatePerson.setAttributeTemplates(new AttributeTemplate(PERSON, MANDATORY, SINGLE, LOOKUP_KEY));
+
+            session.insert(objectTemplatePerson);
+            session.fireAllRules();
+
+            AttributeTemplate email = objectTemplatePerson.getAttributeTemplate(E_MAIL);
+            AttributeTemplate mntBy = objectTemplatePerson.getAttributeTemplate(MNT_BY);
+
+            Assert.assertNotNull(email);
+            Assert.assertNotNull(mntBy);
+
+            Assert.assertEquals(AttributeTemplate.Requirement.MANDATORY, email.getRequirement());
+            Assert.assertEquals(AttributeTemplate.Requirement.OPTIONAL, mntBy.getRequirement());
+
+        } finally {
+            session.dispose();
+        }
+    }
+
+    @Test
     @Category(AfrinicTestGroup.class)
     public void testAfrinic() {
         //Create KnowledgeBase...

@@ -1,0 +1,33 @@
+package net.afrinic.db.rules;
+
+import net.ripe.db.whois.common.rpsl.ObjectTemplate;
+import net.ripe.db.whois.common.rpsl.AttributeType;
+import net.ripe.db.whois.common.rpsl.AttributeTemplate;
+
+dialect "mvel"
+
+rule "Set rules"
+	no-loop
+	when
+		// condition
+		$objectTemplatePerson : ObjectTemplate(objectType == ObjectType.PERSON) 
+	then
+		// consequence
+		System.out.println("Found PERSON object template");
+		modify($objectTemplatePerson) {
+			setAttributeTemplates(
+				new AttributeTemplate(AttributeType.E_MAIL, AttributeTemplate.Requirement.MANDATORY, AttributeTemplate.Cardinality.MULTIPLE, AttributeTemplate.Key.LOOKUP_KEY),
+				new AttributeTemplate(AttributeType.MNT_BY, AttributeTemplate.Requirement.OPTIONAL, AttributeTemplate.Cardinality.MULTIPLE, AttributeTemplate.Key.INVERSE_KEY),
+				new AttributeTemplate(AttributeType.ADDRESS, AttributeTemplate.Requirement.MANDATORY, AttributeTemplate.Cardinality.MULTIPLE),
+				new AttributeTemplate(AttributeType.PHONE, AttributeTemplate.Requirement.MANDATORY, AttributeTemplate.Cardinality.MULTIPLE),
+				new AttributeTemplate(AttributeType.FAX_NO, AttributeTemplate.Requirement.OPTIONAL, AttributeTemplate.Cardinality.MULTIPLE),
+				new AttributeTemplate(AttributeType.ORG, AttributeTemplate.Requirement.OPTIONAL, AttributeTemplate.Cardinality.MULTIPLE, AttributeTemplate.Key.INVERSE_KEY),
+				new AttributeTemplate(AttributeType.NIC_HDL, AttributeTemplate.Requirement.MANDATORY, AttributeTemplate.Cardinality.SINGLE, AttributeTemplate.Key.PRIMARY_KEY, AttributeTemplate.Key.LOOKUP_KEY),
+				new AttributeTemplate(AttributeType.REMARKS, AttributeTemplate.Requirement.OPTIONAL, AttributeTemplate.Cardinality.MULTIPLE),
+				new AttributeTemplate(AttributeType.NOTIFY, AttributeTemplate.Requirement.OPTIONAL, AttributeTemplate.Cardinality.MULTIPLE, AttributeTemplate.Key.INVERSE_KEY),
+				new AttributeTemplate(AttributeType.ABUSE_MAILBOX, AttributeTemplate.Requirement.OPTIONAL, AttributeTemplate.Cardinality.MULTIPLE, AttributeTemplate.Key.INVERSE_KEY),
+				new AttributeTemplate(AttributeType.CHANGED, AttributeTemplate.Requirement.MANDATORY, AttributeTemplate.Cardinality.MULTIPLE),
+				new AttributeTemplate(AttributeType.SOURCE, AttributeTemplate.Requirement.MANDATORY, AttributeTemplate.Cardinality.SINGLE)
+			);
+		};
+	end

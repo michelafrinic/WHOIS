@@ -37,6 +37,29 @@ public class RulesTest {
     }
 
     @Test
+    @Category(ExampleTestGroup.class)
+    public void examplePersonObjectTemplate() {
+        AttributeTemplate personEmail = null;
+        AttributeTemplate personMntBy = null;
+
+        AttributeTemplate[] attributeTemplates = whoisRulesUnderTest.getAttributeTemplates();
+
+
+        for (AttributeTemplate attributeTemplate: attributeTemplates) {
+            if (ObjectType.PERSON.equals(attributeTemplate.getObjectType()))  {
+                if (AttributeType.E_MAIL.equals(attributeTemplate.getAttributeType())) {
+                    personEmail = attributeTemplate;
+
+                } else if (AttributeType.MNT_BY.equals(attributeTemplate.getAttributeType())) {
+                    personMntBy = attributeTemplate;
+                }
+            }
+        }
+        Assert.assertEquals(AttributeTemplate.Requirement.MANDATORY, personEmail.getRequirement());
+        Assert.assertEquals(AttributeTemplate.Requirement.OPTIONAL, personMntBy.getRequirement());
+    }
+
+    @Test
     @Category(AfrinicTestGroup.class)
     public void afrinicPersonObjectTemplate() {
         AttributeTemplate personEmail = null;

@@ -24,6 +24,18 @@
 
     <profiles>
         <profile>
+            <id>example</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <rulesFilename>ExampleWhoisRules.xls</rulesFilename>
+                <rulesGroups>net.afrinic.db.rules.ExampleTestGroup</rulesGroups>
+                <droolsRulesFile>example.drl</droolsRulesFile>
+            </properties>
+        </profile>
+
+        <profile>
             <id>afrinic</id>
             <properties>
                 <rulesFilename>AfrinicWhoisRules.xls</rulesFilename>
