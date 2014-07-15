@@ -68,6 +68,8 @@
         <module>whois-oneshot</module>
         <module>whois-logsearch</module>
         <module>whois-object-xp</module>
+        <module>whois-object-xp-afrinic</module>
+        <module>whois-object-xp-apnic</module>
         <!--<module>whois-rules</module>-->
     </modules>
 
