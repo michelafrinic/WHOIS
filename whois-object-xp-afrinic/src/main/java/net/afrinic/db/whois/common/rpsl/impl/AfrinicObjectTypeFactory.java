@@ -15,16 +15,32 @@ public class AfrinicObjectTypeFactory extends RipeObjectTypeFactory {
 
     @Override
     public IObjectType get(Class<? extends IObjectType> clazz) {
-        return TYPE_CLASSES.get(moreSpecificLookup(clazz));
+        return TYPE_CLASSES.get(depthLookup(clazz));
     }
 
-    private Class moreSpecificLookup(Class<? extends IObjectType> clazz) {
+    private Class depthLookup(Class<? extends IObjectType> clazz) {
+        int maxDepth = 0;
+        Class<? extends IObjectType> returnClass = clazz;
+
         for(Class typeClass : TYPE_CLASSES.keySet()) {
-            Class superClass = typeClass.getSuperclass();
-            if(superClass.equals(clazz)) {
-                return moreSpecificLookup(typeClass);
+            int depth = getAncestorDepth(clazz, typeClass);
+            if(depth > maxDepth) {
+                maxDepth = depth;
+                returnClass = typeClass;
             }
         }
-        return clazz;
+        return returnClass;
+    }
+
+    private int getAncestorDepth(Class<? extends IObjectType> ancestorClass, Class<? extends IObjectType> clazz) {
+        int depth = 0;
+        boolean found = false;
+        for(Class superClazz = clazz.getSuperclass(); superClazz != Object.class && !found; superClazz = superClazz.getSuperclass()) {
+            if(superClazz == ancestorClass) {
+                found = true;
+            }
+            depth++;
+        }
+        return found ? depth : 0;
     }
 }
