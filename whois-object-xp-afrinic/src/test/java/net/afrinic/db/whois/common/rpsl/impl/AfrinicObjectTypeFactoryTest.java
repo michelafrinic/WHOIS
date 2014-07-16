@@ -106,6 +106,12 @@ public class AfrinicObjectTypeFactoryTest {
         Assert.assertEquals(objectType, personObjectType);
     }
 
+    @Test
+    public void testGetInterfaceClass() {
+        IObjectType objectType = afrinicObjectTypeFactory.get(IObjectType.class);
+        Assert.assertNull(objectType);
+    }
+
     class MyRoleObjectType extends Role {
         @Override
         public String getName() {

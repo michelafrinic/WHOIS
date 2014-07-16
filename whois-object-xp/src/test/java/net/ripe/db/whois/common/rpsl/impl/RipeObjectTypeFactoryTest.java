@@ -63,6 +63,9 @@ public class RipeObjectTypeFactoryTest {
 
         objectType = objectTypeFactory.get(Role.class);
         Assert.assertEquals(objectType, roleObjectType);
+
+        objectType = objectTypeFactory.get(IObjectType.class);
+        Assert.assertNull(objectType);
     }
 
     @Test
